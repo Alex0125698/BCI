@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>images/tmp2.png</file>
+    </qresource>
+    <qresource prefix="/icons">
+        <file>icons/arrow_green.jpg</file>
+        <file>icons/arrow_orange.jpg</file>
+        <file>icons/cool arrow effect.jpg</file>
+        <file>icons/debug.png</file>
+    </qresource>
+</RCC>
