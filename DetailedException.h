@@ -13,6 +13,16 @@
 #include <QString>
 #include <QObject>
 
+enum MSG_TYPE
+{
+	FATAL,
+	STD,
+	NON_FATAL,
+	WARNING,
+	MESSAGE,
+	GOOD_NEWS
+};
+
 class DetailedException
 {
 private:
@@ -59,3 +69,7 @@ private:
 	DebugOutput& operator= (DebugOutput&) = delete;
 	static DebugOutput m_dbg;
 };
+
+// use this to automatically print stuff in the debug window
+#define DEBUG_PRINTLN(x) DebugOutput::println(x, __FILE__, __LINE__, MSG_TYPE::MESSAGE);
+//#define DEBUG_PRINTLN(x,y) DebugOutput::println(x, __LINE__, __FILE__,y);

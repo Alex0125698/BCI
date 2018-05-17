@@ -27,12 +27,11 @@ bci::EmotivInterface::EmotivInterface()
 	if (EE_EngineConnect() != EDK_OK)
 		throw DETAILEDEXCEPTION("Could not start Emotiv Engine");
 
-	// Attempt to find the device
 	mDataHandle = EE_DataCreate();
 	if (mDataHandle == 0)
 		throw DETAILEDEXCEPTION("Could not get EE data handle");
 
-	std::cout << "Successfully started Emotiv Engine !!!" << std::endl;
+	DEBUG_PRINTLN("Successfully started Emotiv Engine !!!");
 }
 
 bci::EmotivInterface::~EmotivInterface()
@@ -69,16 +68,17 @@ void bci::EmotivInterface::connect()
 	// wait for a user added event
 	Timer timeout;
 	int loop_count = 0;
+	const double timeout_period = 2.0;
 	bool connect_success = false;
 	bool headset_on = false;
 
-	while (timeout.getDuration() < 2.0)
+	while (timeout.getDuration() < timeout_period)
 	{
 		++loop_count;
 		if (EE_EngineGetNextEvent(mEvent) == EDK_OK)
 		{
-			std::cout << "Successfuly retrieved an event from an Emotiv headset !!!" << std::endl;
-			std::cout << "Time to connect = " + std::to_string(timeout.getDuration()) + " sec ; number of attempts = " + std::to_string(loop_count) << std::endl;
+			DEBUG_PRINTLN("Successfuly retrieved an event from an Emotiv headset !!!");
+			DEBUG_PRINTLN(QString("Time to connect = %1sec; number of attempts = %2").arg(timeout.getDuration()).arg(loop_count));
 
 			auto eventType = EE_EmoEngineEventGetType(mEvent);
 			EE_EmoEngineEventGetUserId(mEvent, &userID);
@@ -87,7 +87,6 @@ void bci::EmotivInterface::connect()
 				throw DETAILEDEXCEPTION("More than one user connected. The current software only supports 1 user");
 
 			// eventTypes are flags - they are not mutually exclusive
-
 			switch (eventType)
 			{
 			case EE_UnknownEvent:
@@ -97,6 +96,7 @@ void bci::EmotivInterface::connect()
 				throw DETAILEDEXCEPTION("Emulator error. Please restart application");
 
 			case EE_ReservedEvent:
+				throw DETAILEDEXCEPTION("Unsupported Event: 'Reserved Event'");
 
 			case EE_UserAdded:
 				EE_DataAcquisitionEnable(userID, true);
@@ -112,7 +112,7 @@ void bci::EmotivInterface::connect()
 				// If we have a headset on, we're ready to go
 				if (ES_GetHeadsetOn(mState))
 				{
-					std::cout << "Headset on. Starting data aquisition" << std::endl;
+					DEBUG_PRINTLN("Headset on. Starting data aquisition");
 					headset_on = true;
 					goto exit_loop;
 				}
@@ -133,16 +133,18 @@ void bci::EmotivInterface::connect()
 exit_loop:
 
 	if (!connect_success)
-		throw DETAILEDEXCEPTION("No events from an Emotiv headset were detected\nTimout period = 2.0 sec ; number of attempts = " + QString(loop_count));
+		throw DETAILEDEXCEPTION(QString("No events from an Emotiv headset were detected\nTimout period = %1sec ; number of attempts = %2").arg(timeout_period).arg(loop_count));
 
 	if (!headset_on)
-		throw DETAILEDEXCEPTION("Events detected but headset not on (waited 2s). Data aquision cannot be started");
+		throw DETAILEDEXCEPTION("Events detected but headset not on. Data aquision cannot be started");
 
 	// get Sampling Rate
 	// TODO: record this
 	unsigned int samplingRate = 0;
 	if (EE_DataGetSamplingRate(userID, &samplingRate) == EDK_OK)
-		std::cout << "Sampling Rate is = " << samplingRate << std::endl;
+	{
+		DEBUG_PRINTLN(QString("Sampling Rate is = %1").arg(samplingRate));
+	}
 	else
 		throw DETAILEDEXCEPTION("Could not retreive Emotiv sampling rate ");
 }
@@ -150,6 +152,8 @@ exit_loop:
 bci::BCI_Packet& bci::EmotivInterface::getData()
 {
 	Timer timeout;
+	const double timeout_period = 0.1;
+
 	while (true)
 	{
 		// check that we can still collect data

@@ -35,13 +35,18 @@ public:
     QWidget *centralwidget;
     QVBoxLayout *verticalLayout_4;
     QWidget *wtitle;
-    QVBoxLayout *verticalLayout_3;
     QHBoxLayout *horizontalLayout_7;
     QLabel *label;
+    QVBoxLayout *verticalLayout_3;
+    QSpacerItem *verticalSpacer_2;
     QLabel *label_2;
+    QSpacerItem *verticalSpacer;
+    QFrame *line_2;
     QHBoxLayout *horizontalLayout_4;
     QLabel *label_3;
+    QSpacerItem *horizontalSpacer_5;
     QFrame *line;
+    QSpacerItem *horizontalSpacer_4;
     QLabel *label_6;
     QSpacerItem *horizontalSpacer_3;
     QHBoxLayout *horizontalLayout_5;
@@ -87,10 +92,10 @@ public:
 "\n"
 "\n"
 ""));
-        verticalLayout_3 = new QVBoxLayout(wtitle);
-        verticalLayout_3->setObjectName(QStringLiteral("verticalLayout_3"));
-        horizontalLayout_7 = new QHBoxLayout();
+        horizontalLayout_7 = new QHBoxLayout(wtitle);
+        horizontalLayout_7->setSpacing(2);
         horizontalLayout_7->setObjectName(QStringLiteral("horizontalLayout_7"));
+        horizontalLayout_7->setContentsMargins(3, 3, 3, 3);
         label = new QLabel(wtitle);
         label->setObjectName(QStringLiteral("label"));
         label->setMaximumSize(QSize(100, 100));
@@ -102,6 +107,12 @@ public:
 
         horizontalLayout_7->addWidget(label);
 
+        verticalLayout_3 = new QVBoxLayout();
+        verticalLayout_3->setObjectName(QStringLiteral("verticalLayout_3"));
+        verticalSpacer_2 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        verticalLayout_3->addItem(verticalSpacer_2);
+
         label_2 = new QLabel(wtitle);
         label_2->setObjectName(QStringLiteral("label_2"));
         label_2->setMaximumSize(QSize(16777215, 100));
@@ -109,10 +120,18 @@ public:
         font1.setFamily(QStringLiteral("Arial Rounded MT Bold"));
         label_2->setFont(font1);
 
-        horizontalLayout_7->addWidget(label_2);
+        verticalLayout_3->addWidget(label_2);
 
+        verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
-        verticalLayout_3->addLayout(horizontalLayout_7);
+        verticalLayout_3->addItem(verticalSpacer);
+
+        line_2 = new QFrame(wtitle);
+        line_2->setObjectName(QStringLiteral("line_2"));
+        line_2->setFrameShape(QFrame::HLine);
+        line_2->setFrameShadow(QFrame::Sunken);
+
+        verticalLayout_3->addWidget(line_2);
 
         horizontalLayout_4 = new QHBoxLayout();
         horizontalLayout_4->setObjectName(QStringLiteral("horizontalLayout_4"));
@@ -122,12 +141,20 @@ public:
 
         horizontalLayout_4->addWidget(label_3);
 
+        horizontalSpacer_5 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_4->addItem(horizontalSpacer_5);
+
         line = new QFrame(wtitle);
         line->setObjectName(QStringLiteral("line"));
-        line->setFrameShadow(QFrame::Sunken);
+        line->setFrameShadow(QFrame::Raised);
         line->setFrameShape(QFrame::VLine);
 
         horizontalLayout_4->addWidget(line);
+
+        horizontalSpacer_4 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_4->addItem(horizontalSpacer_4);
 
         label_6 = new QLabel(wtitle);
         label_6->setObjectName(QStringLiteral("label_6"));
@@ -139,8 +166,14 @@ public:
 
         horizontalLayout_4->addItem(horizontalSpacer_3);
 
+        horizontalLayout_4->setStretch(1, 1);
+        horizontalLayout_4->setStretch(3, 1);
+        horizontalLayout_4->setStretch(5, 12);
 
         verticalLayout_3->addLayout(horizontalLayout_4);
+
+
+        horizontalLayout_7->addLayout(verticalLayout_3);
 
 
         verticalLayout_4->addWidget(wtitle);
@@ -171,6 +204,7 @@ public:
         btn_connect->setIconSize(QSize(32, 32));
         btn_connect->setCheckable(true);
         btn_connect->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+        btn_connect->setAutoRaise(false);
 
         horizontalLayout_8->addWidget(btn_connect);
 
@@ -264,6 +298,8 @@ public:
 
         verticalLayout_4->addLayout(horizontalLayout_5);
 
+        verticalLayout_4->setStretch(0, 1);
+        verticalLayout_4->setStretch(1, 10);
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QStringLiteral("menubar"));

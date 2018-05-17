@@ -20,14 +20,3 @@
 #include "Uncopyable.h"
 #include "DetailedException.h"
 #include "Timer.h"
-
-
-enum MSG_TYPE
-{
-    FATAL,
-    STD,
-    NON_FATAL,
-    WARNING,
-    MESSAGE,
-    GOOD_NEWS
-};
