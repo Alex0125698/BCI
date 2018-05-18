@@ -49,22 +49,20 @@ public:
     QSpacerItem *horizontalSpacer_4;
     QLabel *label_6;
     QSpacerItem *horizontalSpacer_3;
-    QHBoxLayout *horizontalLayout_5;
-    QVBoxLayout *verticalLayout;
-    GraphWidgetWrapper *plot_time;
     QHBoxLayout *horizontalLayout_2;
+    GraphWidgetWrapper *plot_time;
+    GraphWidgetWrapper *plot_freq;
+    QHBoxLayout *horizontalLayout;
+    QVBoxLayout *verticalLayout;
     QWidget *widget_2;
     QHBoxLayout *horizontalLayout_8;
     QToolButton *btn_connect;
     QSpacerItem *horizontalSpacer;
-    QHBoxLayout *horizontalLayout;
     QWidget *widget_3;
     QHBoxLayout *horizontalLayout_9;
     QLabel *label_4;
     QProgressBar *progress_battery;
     QVBoxLayout *verticalLayout_2;
-    GraphWidgetWrapper *plot_freq;
-    QHBoxLayout *horizontalLayout_3;
     QWidget *widget;
     QHBoxLayout *horizontalLayout_6;
     QLabel *label_5;
@@ -77,7 +75,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(800, 600);
+        MainWindow->resize(730, 577);
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QStringLiteral("centralwidget"));
         centralwidget->setStyleSheet(QLatin1String("QWidget#centralwidget{\n"
@@ -85,9 +83,15 @@ public:
 "}"));
         verticalLayout_4 = new QVBoxLayout(centralwidget);
         verticalLayout_4->setObjectName(QStringLiteral("verticalLayout_4"));
-        verticalLayout_4->setContentsMargins(0, 0, 0, 0);
+        verticalLayout_4->setContentsMargins(0, 0, 0, 6);
         wtitle = new QWidget(centralwidget);
         wtitle->setObjectName(QStringLiteral("wtitle"));
+        QSizePolicy sizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(wtitle->sizePolicy().hasHeightForWidth());
+        wtitle->setSizePolicy(sizePolicy);
+        wtitle->setMaximumSize(QSize(16777215, 100));
         wtitle->setStyleSheet(QLatin1String("QWidget#wtitle {background-color: qlineargradient(spread:pad, x1:0.546, y1:0, x2:0.539909, y2:0.489, stop:0 rgba(192, 143, 101, 255), stop:1 rgba(255, 255, 255, 255));}\n"
 "\n"
 "\n"
@@ -178,18 +182,27 @@ public:
 
         verticalLayout_4->addWidget(wtitle);
 
-        horizontalLayout_5 = new QHBoxLayout();
-        horizontalLayout_5->setObjectName(QStringLiteral("horizontalLayout_5"));
-        verticalLayout = new QVBoxLayout();
-        verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
+        horizontalLayout_2 = new QHBoxLayout();
+        horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
         plot_time = new GraphWidgetWrapper(centralwidget);
         plot_time->setObjectName(QStringLiteral("plot_time"));
         plot_time->setMinimumSize(QSize(350, 200));
 
-        verticalLayout->addWidget(plot_time);
+        horizontalLayout_2->addWidget(plot_time);
 
-        horizontalLayout_2 = new QHBoxLayout();
-        horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
+        plot_freq = new GraphWidgetWrapper(centralwidget);
+        plot_freq->setObjectName(QStringLiteral("plot_freq"));
+        plot_freq->setMinimumSize(QSize(350, 200));
+
+        horizontalLayout_2->addWidget(plot_freq);
+
+
+        verticalLayout_4->addLayout(horizontalLayout_2);
+
+        horizontalLayout = new QHBoxLayout();
+        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
+        verticalLayout = new QVBoxLayout();
+        verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
         widget_2 = new QWidget(centralwidget);
         widget_2->setObjectName(QStringLiteral("widget_2"));
         widget_2->setStyleSheet(QStringLiteral("QWidget#widget_2{background-color: rgb(255, 255, 255);}"));
@@ -213,13 +226,8 @@ public:
         horizontalLayout_8->addItem(horizontalSpacer);
 
 
-        horizontalLayout_2->addWidget(widget_2);
+        verticalLayout->addWidget(widget_2);
 
-
-        verticalLayout->addLayout(horizontalLayout_2);
-
-        horizontalLayout = new QHBoxLayout();
-        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
         widget_3 = new QWidget(centralwidget);
         widget_3->setObjectName(QStringLiteral("widget_3"));
         widget_3->setMinimumSize(QSize(10, 0));
@@ -240,30 +248,20 @@ public:
         horizontalLayout_9->addWidget(progress_battery);
 
 
-        horizontalLayout->addWidget(widget_3);
+        verticalLayout->addWidget(widget_3);
 
 
-        verticalLayout->addLayout(horizontalLayout);
-
-        verticalLayout->setStretch(0, 1);
-
-        horizontalLayout_5->addLayout(verticalLayout);
+        horizontalLayout->addLayout(verticalLayout);
 
         verticalLayout_2 = new QVBoxLayout();
+        verticalLayout_2->setSpacing(0);
         verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
-        plot_freq = new GraphWidgetWrapper(centralwidget);
-        plot_freq->setObjectName(QStringLiteral("plot_freq"));
-        plot_freq->setMinimumSize(QSize(350, 200));
-
-        verticalLayout_2->addWidget(plot_freq);
-
-        horizontalLayout_3 = new QHBoxLayout();
-        horizontalLayout_3->setObjectName(QStringLiteral("horizontalLayout_3"));
         widget = new QWidget(centralwidget);
         widget->setObjectName(QStringLiteral("widget"));
         widget->setStyleSheet(QStringLiteral("background-color: rgb(255, 255, 255);"));
         horizontalLayout_6 = new QHBoxLayout(widget);
         horizontalLayout_6->setObjectName(QStringLiteral("horizontalLayout_6"));
+        horizontalLayout_6->setContentsMargins(-1, 0, -1, 0);
         label_5 = new QLabel(widget);
         label_5->setObjectName(QStringLiteral("label_5"));
         QFont font2;
@@ -277,10 +275,7 @@ public:
         horizontalLayout_6->addItem(horizontalSpacer_2);
 
 
-        horizontalLayout_3->addWidget(widget);
-
-
-        verticalLayout_2->addLayout(horizontalLayout_3);
+        verticalLayout_2->addWidget(widget);
 
         plot_channels = new QWidget(centralwidget);
         plot_channels->setObjectName(QStringLiteral("plot_channels"));
@@ -289,21 +284,17 @@ public:
 
         verticalLayout_2->addWidget(plot_channels);
 
-        verticalLayout_2->setStretch(0, 1);
 
-        horizontalLayout_5->addLayout(verticalLayout_2);
+        horizontalLayout->addLayout(verticalLayout_2);
 
-        horizontalLayout_5->setStretch(0, 1);
-        horizontalLayout_5->setStretch(1, 1);
 
-        verticalLayout_4->addLayout(horizontalLayout_5);
+        verticalLayout_4->addLayout(horizontalLayout);
 
-        verticalLayout_4->setStretch(0, 1);
-        verticalLayout_4->setStretch(1, 10);
+        verticalLayout_4->setStretch(1, 1);
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QStringLiteral("menubar"));
-        menubar->setGeometry(QRect(0, 0, 800, 21));
+        menubar->setGeometry(QRect(0, 0, 730, 21));
         MainWindow->setMenuBar(menubar);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName(QStringLiteral("statusbar"));
