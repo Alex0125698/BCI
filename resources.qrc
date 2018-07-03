@@ -1,11 +1,19 @@
 <RCC>
     <qresource prefix="/images">
         <file>images/tmp2.png</file>
+        <file>images/background-dark.png</file>
+        <file>images/Emotiv.png</file>
+        <file>images/UoA_Logo.png</file>
     </qresource>
     <qresource prefix="/icons">
         <file>icons/arrow_green.jpg</file>
         <file>icons/arrow_orange.jpg</file>
         <file>icons/cool arrow effect.jpg</file>
         <file>icons/debug.png</file>
+        <file>icons/Save.JPG</file>
+        <file>icons/Settings.png</file>
+        <file>icons/spanner.png</file>
+        <file>icons/usb.png</file>
+        <file>icons/Stop_32.jpg</file>
     </qresource>
 </RCC>

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "resources.h"
-
 namespace bci
 {
 	struct BCI_Packet;
@@ -20,3 +18,5 @@ namespace bci
 		BCI_Packet& CSP(BCI_Packet& data);
 	}
 }
+
+

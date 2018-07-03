@@ -1,7 +1,6 @@
 #pragma once
 
-#include "resources.h"
-#include "BCI_Interface.h"
+#include "bciinterface.h"
 
 // forward declarations
 typedef void* EmoEngineEventHandle;
@@ -16,6 +15,7 @@ public:
 	EmotivInterface();
 	~EmotivInterface();
 	void connect();
+	void disconnect();
 	virtual BCI_Packet& getData();
 	
 

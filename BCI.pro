@@ -25,11 +25,38 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += \
-        main.cpp \
-        mainwindow.cpp
+    bciinterface.cpp \
+    controller.cpp \
+    core.cpp \
+    csvio.cpp \
+    emotivinterface.cpp \
+    error.cpp \
+    graphwidget.cpp \
+    main.cpp \
+    mainwindow.cpp \
+    qcustomplot.cpp \
+    serialio.cpp \
+    spatial_filter.cpp \
+    state.cpp \
+    statevariable.cpp
 
 HEADERS += \
-        mainwindow.h
+    bciinterface.h \
+    controller.h \
+    core.h \
+    csvio.h \
+    emotivinterface.h \
+    error.h \
+    graphwidget.h \
+    main.h \
+    mainwindow.h \
+    qcustomplot.h \
+    serialio.h \
+    spatial_filter.h \
+    state.h \
+    statevariable.h \
+    timer.h \
+    translation.h
 
 FORMS += \
         mainwindow.ui

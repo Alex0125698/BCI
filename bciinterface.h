@@ -10,7 +10,10 @@
 
 #pragma once
 
-#include "resources.h"
+#include <array>
+#include <vector>
+#include <ostream>
+#include <string>
 
 namespace bci {
 /*
@@ -41,6 +44,15 @@ enum BCI_Channels
 	END_OF_DATA
 };
 
+struct Channel
+{
+	// the position of the electrode
+	// (0,0) is directly on top
+	double x_pos{ 0 };
+	double y_pos{ 0 };
+	//static const Channel AF3, F7, F3;
+};
+
 
 struct BCI_Packet
 {
@@ -58,15 +70,29 @@ struct BCI_Packet
 	}
 };
 
-class BCI_Interface : public Uncopyable
+class BCI_Interface
 {
 public:
+	
 	virtual ~BCI_Interface() = default;
 	virtual void connect() = 0;
 	virtual BCI_Packet& getData() = 0;
+	static BCI_Packet data;
+	// need to use a 1D array for data as we don't know how
+	// wide the data packet is. Interpert as sequential blocks
+	// of channel data
+	std::vector<double> rawData;
+	// spatial filtered data - move to controller
+	std::vector<double> filteredData;
+	// total number of channels inc. references
+	uint32_t getNumChannels() { return m_channels.size(); }
 
 protected:
 	BCI_Packet m_data;
+	// list of channels - needed to size data packet
+	// and for spatial filtering
+	std::vector<Channel> m_channels;
+
 };
 
 }

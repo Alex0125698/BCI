@@ -1,6 +1,5 @@
 #include "spatial_filter.h"
-
-#include "BCI_Interface.h"
+#include "bciinterface.h"
 
 bci::BCI_Packet& bci::spatial_filter::CAR(bci::BCI_Packet& data)
 {

@@ -1,6 +1,9 @@
-#include "EmotivInterface.h"
-
+#include <thread>
 #include "lib/edk.h" // Library
+#include "emotivinterface.h"
+#include "error.h"
+#include "timer.h"
+
 
 
 const EE_InputChannels_t electrodes[] =
@@ -19,6 +22,18 @@ const std::string electrodeNames[] =
 
 bci::EmotivInterface::EmotivInterface()
 {
+
+}
+
+bci::EmotivInterface::~EmotivInterface()
+{
+	disconnect();
+}
+
+void bci::EmotivInterface::connect()
+{
+	disconnect();
+
 	// Allocate memory for the Emotiv API
 	mEvent = EE_EmoEngineEventCreate();
 	mState = EE_EmoStateCreate();
@@ -32,35 +47,7 @@ bci::EmotivInterface::EmotivInterface()
 		throw DETAILEDEXCEPTION("Could not get EE data handle");
 
 	DEBUG_PRINTLN("Successfully started Emotiv Engine !!!");
-}
 
-bci::EmotivInterface::~EmotivInterface()
-{
-	// Deallocate device data memory
-	if (mDataHandle)
-	{
-		EE_DataFree(mDataHandle);
-		mDataHandle = nullptr;
-	}
-
-	// Disconnect from the Emotiv Engine
-	EE_EngineDisconnect();
-
-	// Deallocate the memory for the Emotiv Engine API
-	if (mState)
-	{
-		EE_EmoStateFree(mState);
-		mState = nullptr;
-	}
-	if (mEvent)
-	{
-		EE_EmoEngineEventFree(mEvent);
-		mEvent = nullptr;
-	}
-}
-
-void bci::EmotivInterface::connect()
-{
 	// Create a one second buffer
 	if (EE_DataSetBufferSizeInSec(1) != EDK_OK)
 		throw DETAILEDEXCEPTION("Could not set Emotiv Engine buffer size");
@@ -91,20 +78,25 @@ void bci::EmotivInterface::connect()
 			{
 			case EE_UnknownEvent:
 				throw DETAILEDEXCEPTION("Unknown event detected");
+				break;
 
 			case EE_EmulatorError:
 				throw DETAILEDEXCEPTION("Emulator error. Please restart application");
+				break;
 
 			case EE_ReservedEvent:
 				throw DETAILEDEXCEPTION("Unsupported Event: 'Reserved Event'");
+				break;
 
 			case EE_UserAdded:
 				EE_DataAcquisitionEnable(userID, true);
-				std::cout << "Emotiv User Connected.  Waiting for Headset on..." << std::endl;
-				
+				DEBUG_PRINTLN("Emotiv User Connected.  Waiting for Headset on...");
+				break;
+
 			case EE_UserRemoved:
 				EE_DataAcquisitionEnable(userID, false);
 				throw DETAILEDEXCEPTION("Emotiv User disconnected. Please reconnect and restart data aquisition");
+				break;
 
 			case EE_EmoStateUpdated:
 				EE_EmoEngineEventGetEmoState(mEvent, mState);
@@ -149,10 +141,36 @@ exit_loop:
 		throw DETAILEDEXCEPTION("Could not retreive Emotiv sampling rate ");
 }
 
+void bci::EmotivInterface::disconnect()
+{
+	bool tmp = mDataHandle || mState || mEvent;
+	// Deallocate device data memory
+	if (mDataHandle)
+	{
+		EE_DataFree(mDataHandle);
+		mDataHandle = nullptr;
+	}
+
+	// Disconnect from the Emotiv Engine
+	if (tmp) EE_EngineDisconnect();
+
+	// Deallocate the memory for the Emotiv Engine API
+	if (mState)
+	{
+		EE_EmoStateFree(mState);
+		mState = nullptr;
+	}
+	if (mEvent)
+	{
+		EE_EmoEngineEventFree(mEvent);
+		mEvent = nullptr;
+	}
+}
+
 bci::BCI_Packet& bci::EmotivInterface::getData()
 {
 	Timer timeout;
-	const double timeout_period = 0.1;
+	const double timeout_period = 3;
 
 	while (true)
 	{
@@ -227,15 +245,15 @@ bci::BCI_Packet& bci::EmotivInterface::getData()
 			bcierr << "Emotiv Error getting Contact Quality" << endl;
 			*/
 
-			std::this_thread::sleep_for(std::chrono::milliseconds(3));
-			break;
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
+			return m_data;
 		}
 		else
 		{
 			std::this_thread::sleep_for(std::chrono::milliseconds(0));
 		}
 
-		if (timeout.getDuration() > 3.0)
+		if (timeout.getDuration() > timeout_period)
 			throw DETAILEDEXCEPTION("Data aquisition timeout");
 	}
 

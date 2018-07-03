@@ -2,30 +2,34 @@
 
 #include <vector>
 #include <QWidget>
-#include "qcustomplot.h"
-#include "Timer.h"
+#include "../shared/qcustomplot.h"
+#include "timer.h"
 
 class QDialog;
 class StateVariable;
 class QGridLayout;
 class QCheckBox;
 
-class GraphWidgetWrapper : public QWidget
+class GraphWidget : public QWidget
 {
 	Q_OBJECT
 
-	friend class MainWindow;
 public:
-	GraphWidgetWrapper(QWidget* parent);
+	GraphWidget(QWidget* parent);
+	// add titles ; setup dialog
 	void init(QString title, QString x_title, QString y_title_left, QString y_title_right = "");
+	// add variable to plot
 	void addVariable(StateVariable* var, bool show);
+	// grab data from StateVariables (but don't plot)
 	void refresh();
+	// replot data stored in buffers; redraw labels
 	void replot();
+	// clear data and reset time to 0
 	void clear();
-	~GraphWidgetWrapper();
 
 public slots:
 	void setVisiblePlots();
+	void slotRefreshNames();
 
 private:
 	// graph library
@@ -44,10 +48,6 @@ private:
 	bool m_autoscroll{ true };
 	// dialog to select display graphs
 	QDialog* m_dialog_select{ nullptr };
-	// will refresh the graphs to display
-	void m_select_points();
-	// !!! HACK !!!
-	QGridLayout* layout_vars{ 0 };
-
-	friend class Ui_MainWindow;
+	// layout to store check boxes
+	QGridLayout* m_dialogLayout{ 0 };
 };
