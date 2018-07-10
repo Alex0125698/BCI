@@ -1,9 +1,10 @@
 #pragma once
 
 #include <QObject>
+#include <memory>
 
 namespace bci {
-	class BCI_Interface;
+	class Interface;
 }
 
 class Controller :public QObject
@@ -12,23 +13,20 @@ class Controller :public QObject
 
 public:
 	Controller();
-	~Controller();
-
-public slots:
-	void mainwindowIsReady();
-
-protected:
-	bool m_mainwindow_ready{ true };
 
 signals:
 	void requestViewUpdate();
 
 public slots:
-	void run();
+	void mainwindowIsReady();
+	void slotRun();
 	void stop();
 
+protected:
+	bool m_mainwindow_ready{ true };
+
 private:
-	bci::BCI_Interface* m_bci_hardware;
+	std::unique_ptr<bci::Interface> m_bci;
 	bool m_running{ false };
 
 	friend class Core;

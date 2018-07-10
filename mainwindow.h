@@ -26,9 +26,10 @@ public:
 
 signals:
 	void mainwindowReady();
-	void sigRunController();
-	void sigStopController();
+	void sigChangeControllerState(bool on);
 	void sigSaveStateChanged(bool saving);
+	void sigSendInFileName(QString file);
+	void sigSendOutFileName(QString file);
 
 public slots:
 	// add message to debug window
@@ -43,7 +44,7 @@ public slots:
 	void slotSaveStateChanged(bool saving);
 
 private slots:
-	void on_btn_connect_toggled(bool checked);
+	void on_btn_connect_clicked(bool checked);
 	void on_btn_uoa_clicked();
 	void on_btn_out_file_clicked();
 	void on_btn_save_options_clicked();

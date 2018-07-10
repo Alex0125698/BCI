@@ -38,27 +38,28 @@ MainWindow::MainWindow(QWidget *parent) :
 	DEBUG_PRINTLN("Program Started");
 
 	// ===== ADD STATEVARIABLES TO STATEGROUPS =====
+	for (size_t i=0; i<sizeof(VAR) / sizeof(VAR[0]); ++i)
+	{
+		uint32_t* in = nullptr;
+		if (VAR[i].IN_INDEX != Input::NONE) in = &Input::Vars[VAR[i].IN_INDEX];
+
+		uint32_t* out = nullptr;
+		if (VAR[i].OUT_INDEX != Output::NONE) out = &Output::Vars[VAR[i].OUT_INDEX];
+
+		m_vars.push_back(new StateVariable(VAR[i].NAME, VAR[i].SIZE_IN_BYTES, in, VAR[i].MIN, VAR[i].MAX, out, VAR[i].NAME_EDITABLE));
+	}
+
 
 	// ===== SET UP GRAPHS =====
 
 	ui->plot_freq->init("Frequency Bands", "Time (s)", "");
 	ui->plot_time->init("Time-Domain", "Time (s)", "");
 
-	/*
-	ui->plot_freq->addVariable(m_vars[VAR_NAMES::DISP], true);
-
-	for (int i = 0; i < bci::BCI_Channels::END_OF_DATA; ++i)
+	for (size_t i = 0; i<sizeof(VAR) / sizeof(VAR[0]); ++i)
 	{
-		m_channels[i].setup(QString::fromStdString(bci::BCI_Channel_names[i]), "raw", false, false);
-		ui->plot_time->addVariable(&m_channels[i], true);
+		if (VAR[i].LOC == Var::CHANNEL)
+			ui->plot_time->addVariable(m_vars[i], (i < (size_t)10));
 	}
-
-	for (int i = 0; i < 6; ++i)
-	{
-		m_bands[i].setup(QString::fromStdString(BCI_band_names[i]), "mag", false, false);
-		ui->plot_freq->addVariable(&m_bands[i], true);
-	}
-	*/
 
 	m_core = new Core(this);
 }
@@ -165,12 +166,9 @@ void MainWindow::slotSaveStateChanged(bool saving)
 	}
 }
 
-void MainWindow::on_btn_connect_toggled(bool checked)
+void MainWindow::on_btn_connect_clicked(bool checked)
 {
-	if (checked)
-		emit sigRunController();
-	else
-		emit sigStopController();
+	emit sigChangeControllerState(checked);
 }
 
 void MainWindow::on_btn_uoa_clicked()
@@ -190,12 +188,12 @@ void MainWindow::on_btn_save_options_clicked()
 
 void MainWindow::on_btn_save_start_clicked()
 {
-
+	
 }
 
 void MainWindow::on_btn_save_stop_clicked()
 {
-
+	
 }
 
 void MainWindow::on_box_source_currentIndexChanged(const QString& arg1)

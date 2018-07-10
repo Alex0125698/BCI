@@ -15,13 +15,13 @@ public:
 	~Core();
 
 signals:
-	void runController();
+	void sigRun();
 
 private:
 	Controller* m_controller{ nullptr };
 	QThread* m_io_thread{ nullptr };
 
 public slots:
-	void changeControllerState(bool on);
+	void slotChangeControllerState(bool on);
 };
 

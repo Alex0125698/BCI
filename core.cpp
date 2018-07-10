@@ -17,7 +17,10 @@ Core::Core(MainWindow* wnd)
 
 	// ====== Connections ======
 
-	//connect(this, &Core::runController, m_controller, &Controller::run, Qt::QueuedConnection);
+	connect(wnd, &MainWindow::sigChangeControllerState, this, &Core::slotChangeControllerState, Qt::QueuedConnection);
+	connect(this, &Core::sigRun, m_controller, &Controller::slotRun, Qt::QueuedConnection);
+
+
 	//connect(wnd, &MainWindow::mainwindowReady, m_controller, &Controller::mainwindowIsReady, Qt::QueuedConnection);
 	//connect(m_controller, &Controller::requestViewUpdate, wnd, &MainWindow::processViewUpdate, Qt::QueuedConnection);
 }
@@ -28,14 +31,15 @@ Core::~Core()
 	delete m_io_thread;
 }
 
-void Core::changeControllerState(bool on)
+void Core::slotChangeControllerState(bool on)
 {
+	if (m_controller->m_running) return;
+	m_controller->m_running = true;
+
 	if (on)
 	{
-		//emit runController();
+		emit sigRun();
 	}
 	else
-	{
-		//m_controller->stop();
-	}
+		m_controller->m_running = false;
 }

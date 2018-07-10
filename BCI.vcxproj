@@ -198,15 +198,15 @@
     </QtUic>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="bciinterface.cpp" />
     <ClCompile Include="controller.cpp" />
     <ClCompile Include="core.cpp" />
     <ClCompile Include="csvio.cpp" />
-    <ClCompile Include="emotivinterface.cpp" />
+    <ClCompile Include="emotiv.cpp" />
     <ClCompile Include="error.cpp" />
     <ClCompile Include="graphwidget.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mainwindow.cpp" />
+    <ClCompile Include="offline.cpp" />
     <ClCompile Include="qcustomplot.cpp" />
     <ClCompile Include="serialio.cpp" />
     <ClCompile Include="spatial_filter.cpp" />
@@ -250,7 +250,7 @@
       <Define Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">_WINDOWS;UNICODE;_UNICODE;WIN32;QT_DEPRECATED_WARNINGS;QT_NO_DEBUG;QT_PRINTSUPPORT_LIB;QT_WIDGETS_LIB;QT_WINEXTRAS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB;NDEBUG</Define>
     </QtMoc>
     <ClInclude Include="csvio.h" />
-    <ClInclude Include="emotivinterface.h" />
+    <ClInclude Include="emotiv.h" />
     <QtMoc Include="error.h">
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;.\..\..\..\..\QT\5.10.1\MSVC2015\include;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtPrintSupport;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtWidgets;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtWinExtras;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtGui;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtANGLE;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtSerialPort;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtCore;.\debug;\include;.\..\..\..\..\QT\5.10.1\MSVC2015\mkspecs\win32-msvc</IncludePath>
       <Define Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">_WINDOWS;UNICODE;_UNICODE;WIN32;QT_DEPRECATED_WARNINGS;QT_PRINTSUPPORT_LIB;QT_WIDGETS_LIB;QT_WINEXTRAS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB</Define>
@@ -270,6 +270,7 @@
       <Define Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">_WINDOWS;UNICODE;_UNICODE;WIN32;QT_DEPRECATED_WARNINGS;QT_NO_DEBUG;QT_PRINTSUPPORT_LIB;QT_WIDGETS_LIB;QT_WINEXTRAS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB;NDEBUG</Define>
     </QtMoc>
     <ClInclude Include="GeneratedFiles\ui_mainwindow.h" />
+    <ClInclude Include="offline.h" />
     <ClInclude Include="serialio.h" />
     <ClInclude Include="spatial_filter.h" />
     <ClInclude Include="state.h" />

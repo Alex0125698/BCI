@@ -1,11 +1,16 @@
 #pragma once
 
+#include <vector>
+#include <utility>
+
 namespace bci
 {
-	struct BCI_Packet;
+	std::pair<std::vector<double>,std::vector<double>> DFT(std::vector<double>& data);
+
 
 	namespace spatial_filter
 	{
+		/*
 		// Common Average Reference - removes common signal
 		BCI_Packet& CAR(BCI_Packet& data);
 		// Subtracts neighbouring electrodes
@@ -16,6 +21,7 @@ namespace bci
 		BCI_Packet& biophysical(BCI_Packet& data);
 		// ??? 
 		BCI_Packet& CSP(BCI_Packet& data);
+		*/
 	}
 }
 
