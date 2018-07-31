@@ -1,19 +1,17 @@
-#include <cmath>
 #include <QtWidgets>
 #include <QFont>
-#include "statevariable.h"
-#include "error.h"
+#include "StateVariable.h"
 
 
 // ===== Unit =====
 
 
 Unit::Unit(QString name, double scale, double offset, bool is_signed)
-	: m_name{ name }, m_scale { scale }, m_offset{ offset }, m_signed{ is_signed }
+	: m_name{ name }, m_scale{ scale }, m_offset{ offset }, m_signed{ is_signed }
 {
 }
 
-double Unit::convert(uint32_t raw, uint32_t size_in_bytes)
+double Unit::convert(const uint32_t raw, const uint32_t size_in_bytes) const
 {
 	if (m_signed)
 	{
@@ -36,14 +34,14 @@ double Unit::convert(uint32_t raw, uint32_t size_in_bytes)
 	}
 	else
 	{
-		return raw*m_scale + m_offset;
+		return raw * m_scale + m_offset;
 	}
 }
 
-uint32_t Unit::getRaw(double value, uint32_t size_in_bytes)
+uint32_t Unit::getRaw(const double value, const uint32_t size_in_bytes) const
 {
-	value = (value-m_offset) / m_scale;
-	uint32_t result = round(value);
+	auto tmp = (value - m_offset) / m_scale;
+	uint32_t result = round(tmp);
 
 	if (m_signed)
 	{
@@ -99,7 +97,7 @@ double StateVariable::getMinimum()
 
 double StateVariable::getStepSize()
 {
-	return units[m_active_unit].convert(2,m_size_in_bytes)-units[m_active_unit].convert(1,m_size_in_bytes);
+	return units[m_active_unit].convert(2, m_size_in_bytes) - units[m_active_unit].convert(1, m_size_in_bytes);
 }
 
 void StateVariable::setName(QString str)
@@ -138,7 +136,7 @@ void StateVariable::setActiveUnit(int unit_index)
 
 
 StateView::StateView(StateVariable& var, TYPE type, std::vector<QString> names)
-	: m_var_ref{var}, m_type{type}
+	: m_var_ref{ var }, m_type{ type }
 {
 	QFont BankGothic("BankGothic Md BT");
 
@@ -180,17 +178,17 @@ StateView::StateView(StateVariable& var, TYPE type, std::vector<QString> names)
 		}
 		else if (type == BUTTONS)
 		{
-			auto num_buttons = size_t(size_t(1)+round((var.getMaximum()-var.getMinimum())/var.getStepSize()));
+			auto num_buttons = size_t(size_t(1) + round((var.getMaximum() - var.getMinimum()) / var.getStepSize()));
 			if (num_buttons > size_t(16)) num_buttons = size_t(16);
 			if (names.size() < num_buttons) num_buttons = names.size();
 			m_setpoint = new QWidget;
 			QGridLayout* tmp = new QGridLayout;
 			m_setpoint->setLayout(tmp);
 
-			for (uint32_t i=0; i<num_buttons; ++i)
+			for (uint32_t i = 0; i<num_buttons; ++i)
 			{
 				auto btn = new QRadioButton(names[i]);
-				tmp->addWidget(btn, i/4, i%4);
+				tmp->addWidget(btn, i / 4, i % 4);
 				// Better Solution Needed
 				// for now, set flag in class
 				//connect(btn, &QRadioButton::toggled, [i,this](bool b){if (b) {m_var_ref.setValue(i);}});
@@ -229,7 +227,7 @@ StateView::StateView(StateVariable& var, TYPE type, std::vector<QString> names)
 			layout->addWidget(m_setpoint);
 		layout->addWidget(m_units);
 
-		setSizing({64,50,64,64});
+		setSizing({ 64,50,64,64 });
 	}
 	else if (type == BUTTONS)
 	{
@@ -418,9 +416,9 @@ void StateView::slotUnitsChanged()
 
 
 StateGroup::StateGroup(QWidget* parent)
-	:  QWidget(parent)
+	: QWidget(parent)
 {
-	static int id=0;
+	static int id = 0;
 	QString name = QString("StateGroup%1").arg(id);
 	this->setObjectName(name);
 	//this->setStyleSheet("background-color: rgba(150,150,170,130);");//QString("QWidget#%1 { background-color: rgba(150,150,170,130); }").arg(name));

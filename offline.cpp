@@ -1,13 +1,12 @@
 #include "offline.h"
 #include "csvio.h"
-#include "error.h"
 
 bci::Offline::Offline(const std::string & fileName)
 	: m_file_name{ fileName }, m_in{ new CSVreader }
 {
 }
 
-void bci::Offline::connect()
+void bci::Offline::start()
 {
 	disconnect();
 	m_in->open(m_file_name);
@@ -27,17 +26,17 @@ void bci::Offline::connect()
 
 		++num_cols;
 	}
-	channels.resize(num_cols);
+	m_channel.resize(num_cols);
 	// TODO: fill in positions
 	m_connected = true;
 }
 
-void bci::Offline::disconnect()
+void bci::Offline::stop()
 {
 	m_connected = false;
 	m_in->close();
 }
-
+/*
 void bci::Offline::update()
 {
 	// get next row of data
@@ -66,4 +65,4 @@ void bci::Offline::update()
 			disconnect();
 	}
 }
-
+*/

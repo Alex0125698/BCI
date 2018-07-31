@@ -1,8 +1,7 @@
 /*****************************************************************************************
 *    File:    StateVariable.h                                                            *
 *    Author:  A.S. Woodcock (alex.woodcock@outlook.com)                                  *
-*    Project: Lynx/TestRig (P0011)                                                       *
-*    Company: The Dynamic Engineering Solution Ptd. Ltd.                                 *
+*    Project: Generic                                                                    *
 *                                                                                        *
 *    StateVariable class - This class stores all information about a particular variable *
 *            including its name, raw size and units. It keeps track of two pointers      *
@@ -12,19 +11,16 @@
 *****************************************************************************************/
 
 /* This class lists out the variables in formatted groups
- * with titles (and a group title)
- *
- * It is Graphical only - no special functions
- *
- * For not, promote to this class in ui file
- */
+* with titles (and a group title)
+*
+* It is Graphical only - no special functions
+*
+* For not, promote to this class in ui file
+*/
 
 #pragma once
 
-#include <cstdint>
-#include <cassert>
-#include <vector>
-#include <QObject>
+#include "resources.h"
 #include <QWidget>
 #include <QDebug>
 
@@ -36,8 +32,8 @@ class Unit
 {
 public:
 	Unit(QString name, double scale, double offset, bool is_signed);
-	double convert(uint32_t raw, uint32_t size_in_bytes);
-	uint32_t getRaw(double value, uint32_t size_in_bytes);
+	double convert(const uint32_t raw, const uint32_t size_in_bytes) const;
+	uint32_t getRaw(const double value, const uint32_t size_in_bytes) const;
 	const QString& getName() { return m_name; }
 
 private:
@@ -60,7 +56,7 @@ public:
 	// is a setpoint avaliable for the variable?
 	bool isOutput() { return m_raw_out_ptr != nullptr; }
 	// is a measured/sensor value avaliable?
-	bool isInput() { return m_raw_in_ptr  != nullptr; }
+	bool isInput() { return m_raw_in_ptr != nullptr; }
 	// can the user modify the variable name?
 	bool isEditable() { return m_name_editable; }
 	// get the input value (in the active unit)
@@ -83,7 +79,7 @@ public:
 	// the minimum change in raw data (i.e. 1) mapped to the current unit
 	double getStepSize();
 	// get the active unit index
-	const uint32_t getActiveUnit(){ return m_active_unit; }
+	const uint32_t getActiveUnit() { return m_active_unit; }
 	// get the name of the active unit
 	const QString& getUnitName() { return units[m_active_unit].getName(); }
 
@@ -99,7 +95,7 @@ public:
 	// add units to this vector - default raw units only
 	std::vector<Unit> units;
 
-public slots:
+	public slots:
 	// set the variable name string
 	void setName(QString str);
 	// causes associated views to update
@@ -142,7 +138,7 @@ public:
 	// the view type (see enum)
 	StateView::TYPE getType();
 
-public slots:
+	public slots:
 	void slotGetSetpoint();
 	void slotNameChanged();
 	void slotValueChanged();
@@ -151,11 +147,11 @@ public slots:
 
 public:
 	// everything must put inside this layout
-	QLayout* layout{ nullptr };
+	QLayout * layout{ nullptr };
 
 protected:
 	// stored the underlying state + units
-	StateVariable& m_var_ref;
+	StateVariable & m_var_ref;
 	// how the view displays the state
 	StateView::TYPE m_type;
 	QWidget* m_name{ nullptr };

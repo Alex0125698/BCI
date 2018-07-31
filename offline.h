@@ -1,7 +1,6 @@
 #pragma once
 
-#include <string>
-#include <memory>
+#include "resources.h"
 #include "bciinterface.h"
 
 class CSVreader;
@@ -13,10 +12,9 @@ class Offline : public bci::Interface
 public:
 	Offline(const std::string& fileName);
 	Offline(const std::string&& fileName) : Offline( fileName ) {}
-	~Offline() { disconnect(); }
-	void connect();
-	void disconnect();
-	void update();
+	virtual ~Offline() { disconnect(); }
+	virtual void start();
+	virtual void stop();
 
 private:
 	const std::string m_file_name;

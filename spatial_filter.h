@@ -1,11 +1,10 @@
 #pragma once
 
-#include <vector>
-#include <utility>
+#include "resources.h"
 
 namespace bci
 {
-	std::pair<std::vector<double>,std::vector<double>> DFT(std::vector<double>& data);
+	std::vector<double> DFT(std::vector<double>& data);
 
 
 	namespace spatial_filter

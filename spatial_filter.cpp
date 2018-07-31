@@ -1,5 +1,3 @@
-#include <vector>
-#include <cmath>
 #include "spatial_filter.h"
 #include "bciinterface.h"
 
@@ -23,14 +21,15 @@ std::pair<std::vector<double>,std::vector<double>> generateSinusoid(double fd, s
 	return std::pair<std::vector<double>,std::vector<double>>(std::move(wav_odd), std::move(wav_even));
 }
 
-std::pair<std::vector<double>,std::vector<double>> bci::DFT(std::vector<double>& data)
+
+std::vector<double> bci::DFT(std::vector<double>& data)
 {
 	// the dft size, N, is the same as the number of time points
 	// we also use N freq points
 	size_t N = data.size();
 	std::vector<double> y_odd(N,0);
 	std::vector<double> y_even(N,0);
-	
+
 	for (size_t i = 0; i < N; ++i)
 	{
 		// DFT for single freq slice
@@ -43,9 +42,11 @@ std::pair<std::vector<double>,std::vector<double>> bci::DFT(std::vector<double>&
 		}
 		y_odd[i] /= double(N);
 		y_even[i] /= double(N);
+		// put mag in y_odd
+		y_odd[i] = std::sqrt(y_odd[i] * y_odd[i] + y_even[i] * y_even[i]);
 	}
 
-	return std::pair<std::vector<double>,std::vector<double>>(std::move(y_odd), std::move(y_even));
+	return std::move(y_odd);
 }
 
 

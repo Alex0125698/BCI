@@ -1,13 +1,8 @@
 #pragma once
 
-#include <QObject>
+#include "resources.h"
 #include <QMainWindow>
-/*
-const std::string BCI_band_names[] =
-{
-	"Delta","Theta", "Alpha", "Mu", "Beta", "Gamma"
-};
-*/
+
 class QLabel;
 class QPlainTextEdit;
 class Core;
@@ -39,7 +34,7 @@ public slots:
 	// add data to graphs but do not replot
 	void slotGraphUpdate();
 	// called controller starts/stops
-	void slotConnectStateChanged(bool running);
+	void slotRunStateChanged(bool running);
 	// called when save starts/stops
 	void slotSaveStateChanged(bool saving);
 
@@ -63,7 +58,4 @@ private:
 	QLabel* m_lbl_refreshrate;
 	QThread* m_coreThread;
 	Core* m_core;
-
-	//StateVariable m_channels[bci::BCI_Channels::END_OF_DATA];
-	//StateVariable m_bands[sizeof(BCI_band_names) / sizeof(BCI_band_names[0])];
 };

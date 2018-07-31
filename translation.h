@@ -1,5 +1,7 @@
 #pragma once
 
+#include "resources.h"
+
 namespace bci
 {
 	class BCI_Packet;

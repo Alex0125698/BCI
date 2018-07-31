@@ -1,8 +1,6 @@
 #pragma once
 
-#include <vector>
-#include <string>
-#include <cstdint>
+#include "resources.h"
 
 struct libusb_context;
 

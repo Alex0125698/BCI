@@ -661,7 +661,7 @@ background-color: rgba(150,150,170, 130);
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_9" stretch="1,1">
           <item>
-           <widget class="QWidget" name="widget_3" native="true"/>
+           <widget class="StateGroup" name="group_freqs" native="true"/>
           </item>
           <item>
            <widget class="QWidget" name="widget_4" native="true"/>
@@ -686,6 +686,12 @@ background-color: rgba(150,150,170, 130);
    <class>GraphWidget</class>
    <extends>QWidget</extends>
    <header>graphwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>StateGroup</class>
+   <extends>QWidget</extends>
+   <header location="global">view.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

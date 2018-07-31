@@ -1,6 +1,4 @@
 #include "csvio.h"
-#include "error.h"
-#include <QString>
 
 void CSVreader::open(const std::string& name)
 {

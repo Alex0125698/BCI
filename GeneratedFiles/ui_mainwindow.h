@@ -28,6 +28,7 @@
 #include <QtWidgets/QToolButton>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
+#include <view.h>
 #include "graphwidget.h"
 
 QT_BEGIN_NAMESPACE
@@ -102,7 +103,7 @@ public:
     QVBoxLayout *verticalLayout_10;
     GraphWidget *plot_freq;
     QHBoxLayout *horizontalLayout_9;
-    QWidget *widget_3;
+    StateGroup *group_freqs;
     QWidget *widget_4;
     QWidget *tab_activity;
     QStatusBar *statusbar;
@@ -479,10 +480,10 @@ public:
 
         horizontalLayout_9 = new QHBoxLayout();
         horizontalLayout_9->setObjectName(QStringLiteral("horizontalLayout_9"));
-        widget_3 = new QWidget(tab_freq);
-        widget_3->setObjectName(QStringLiteral("widget_3"));
+        group_freqs = new StateGroup(tab_freq);
+        group_freqs->setObjectName(QStringLiteral("group_freqs"));
 
-        horizontalLayout_9->addWidget(widget_3);
+        horizontalLayout_9->addWidget(group_freqs);
 
         widget_4 = new QWidget(tab_freq);
         widget_4->setObjectName(QStringLiteral("widget_4"));

@@ -1,12 +1,11 @@
 #pragma once
 
-#include <vector>
+#include "resources.h"
 #include <QWidget>
 #include "../shared/qcustomplot.h"
-#include "timer.h"
 
 class QDialog;
-class StateVariable;
+class Variable;
 class QGridLayout;
 class QCheckBox;
 
@@ -17,11 +16,11 @@ class GraphWidget : public QWidget
 public:
 	GraphWidget(QWidget* parent);
 	// add titles ; setup dialog
-	void init(QString title, QString x_title, QString y_title_left, QString y_title_right = "");
+	void init(const QString title, const QString x_title, const QString y_title_left, const QString y_title_right = "");
 	// add variable to plot
-	void addVariable(StateVariable* var, bool show);
+	void addVariable(Variable* const var, const bool visible);
 	// grab data from StateVariables (but don't plot)
-	void refresh();
+	void addData();
 	// replot data stored in buffers; redraw labels
 	void replot();
 	// clear data and reset time to 0
@@ -35,7 +34,7 @@ private:
 	// graph library
 	QCustomPlot* m_plot{ nullptr };
 	// store variables ; graph will automatically plot
-	std::vector<StateVariable*> m_vars;
+	std::vector<Variable*> m_vars;
 	// which variables currently visible on graph?
 	std::vector<bool> m_display;
 	// store the checkboxes

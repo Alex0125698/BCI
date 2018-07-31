@@ -59,22 +59,10 @@
     <ClCompile Include="core.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="csvio.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="error.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="graphwidget.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="mainwindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="serialio.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="spatial_filter.cpp">
@@ -83,13 +71,31 @@
     <ClCompile Include="state.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="statevariable.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="emotiv.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="offline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="error.cpp">
+      <Filter>Libraries</Filter>
+    </ClCompile>
+    <ClCompile Include="variable.cpp">
+      <Filter>Libraries</Filter>
+    </ClCompile>
+    <ClCompile Include="serialio.cpp">
+      <Filter>Libraries</Filter>
+    </ClCompile>
+    <ClCompile Include="csvio.cpp">
+      <Filter>Libraries</Filter>
+    </ClCompile>
+    <ClCompile Include="graphwidget.cpp">
+      <Filter>Libraries</Filter>
+    </ClCompile>
+    <ClCompile Include="view.cpp">
+      <Filter>Libraries</Filter>
+    </ClCompile>
+    <ClCompile Include="bciinterface.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cytoninterface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -103,16 +109,28 @@
     <QtMoc Include="core.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="error.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="graphwidget.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
     <QtMoc Include="mainwindow.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="statevariable.h">
+    <QtMoc Include="error.h">
+      <Filter>Libraries</Filter>
+    </QtMoc>
+    <QtMoc Include="variable.h">
+      <Filter>Libraries</Filter>
+    </QtMoc>
+    <QtMoc Include="graphwidget.h">
+      <Filter>Libraries</Filter>
+    </QtMoc>
+    <QtMoc Include="view.h">
+      <Filter>Libraries</Filter>
+    </QtMoc>
+    <QtMoc Include="state.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="bciinterface.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="cytoninterface.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
@@ -159,22 +177,7 @@
     <ResourceCompile Include=".\BCI_resource.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="bciinterface.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="csvio.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="serialio.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="spatial_filter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="state.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="timer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="translation.h">
@@ -183,11 +186,20 @@
     <ClInclude Include="GeneratedFiles\ui_mainwindow.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
-    <ClInclude Include="emotiv.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="offline.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resources.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="timer.h">
+      <Filter>Libraries</Filter>
+    </ClInclude>
+    <ClInclude Include="serialio.h">
+      <Filter>Libraries</Filter>
+    </ClInclude>
+    <ClInclude Include="csvio.h">
+      <Filter>Libraries</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

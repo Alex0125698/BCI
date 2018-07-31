@@ -1,7 +1,6 @@
 #pragma once
 
-#include <QObject>
-#include <memory>
+#include "resources.h"
 
 namespace bci {
 	class Interface;
@@ -15,15 +14,17 @@ public:
 	Controller();
 
 signals:
-	void requestViewUpdate();
+	void sigViewUpdate();
+	void sigGraphUpdate();
+	void sigRunStateChanged(bool running);
+	void sigSaveStateChanged(bool saving);
 
 public slots:
-	void mainwindowIsReady();
 	void slotRun();
 	void stop();
 
 protected:
-	bool m_mainwindow_ready{ true };
+	bool m_view_ready{ true };
 
 private:
 	std::unique_ptr<bci::Interface> m_bci;

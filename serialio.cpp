@@ -1,7 +1,5 @@
 /*#include "libusb.h"
-#include <QString>
 #include "serialio.h"
-#include "error.h"
 
 // ===== SerialInterface =====
 

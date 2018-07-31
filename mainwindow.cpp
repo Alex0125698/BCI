@@ -5,16 +5,16 @@
 #include "ui_mainwindow.h"
 #include "core.h"
 #include "graphwidget.h"
-#include "error.h"
 #include "state.h"
-
-std::vector<StateVariable*> m_vars;
-std::vector<StateView*> m_views;
+#include "variable.h"
+#include "view.h"
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
 	ui(new Ui::MainWindow)
 {
+	bci::State::init();
+
 	// ===== SETUP MAINWINDOW =====
 	ui->setupUi(this);
 	m_core = new Core(this);
@@ -38,27 +38,38 @@ MainWindow::MainWindow(QWidget *parent) :
 	DEBUG_PRINTLN("Program Started");
 
 	// ===== ADD STATEVARIABLES TO STATEGROUPS =====
-	for (size_t i=0; i<sizeof(VAR) / sizeof(VAR[0]); ++i)
-	{
-		uint32_t* in = nullptr;
-		if (VAR[i].IN_INDEX != Input::NONE) in = &Input::Vars[VAR[i].IN_INDEX];
 
-		uint32_t* out = nullptr;
-		if (VAR[i].OUT_INDEX != Output::NONE) out = &Output::Vars[VAR[i].OUT_INDEX];
+	auto chVars = bci::State::program.searchVars({ Tag::DATA_CHANNEL });
+	auto fbandVars = bci::State::program.searchVars({ Tag::FREQ_BAND });
+	fbandVars.push_back(fbandVars[0]);
+	auto freqViews = bci::State::program.generateViews(fbandVars, View::Type::TABLE);
 
-		m_vars.push_back(new StateVariable(VAR[i].NAME, VAR[i].SIZE_IN_BYTES, in, VAR[i].MIN, VAR[i].MAX, out, VAR[i].NAME_EDITABLE));
-	}
-
+	ui->group_freqs->setup("", {}, freqViews);
 
 	// ===== SET UP GRAPHS =====
 
 	ui->plot_freq->init("Frequency Bands", "Time (s)", "");
 	ui->plot_time->init("Time-Domain", "Time (s)", "");
 
-	for (size_t i = 0; i<sizeof(VAR) / sizeof(VAR[0]); ++i)
+	for (auto& var : chVars)
 	{
-		if (VAR[i].LOC == Var::CHANNEL)
-			ui->plot_time->addVariable(m_vars[i], (i < (size_t)10));
+		ui->plot_time->addVariable(var, true);
+	}
+	for (auto& var : fbandVars)
+	{
+		ui->plot_freq->addVariable(var, true);
+	}
+
+	// ===== set up status bar =====
+
+	auto statusVars = bci::State::program.searchVars({ Tag::STATUS_BAR });
+	auto statusViews = bci::State::program.generateViews(statusVars, View::Type::TABLE);
+
+	for (auto& view : statusViews)
+	{
+		auto tmp = new QWidget();
+		tmp->setLayout(view->getLayout());
+		ui->statusbar->addPermanentWidget(tmp);
 	}
 
 	m_core = new Core(this);
@@ -121,11 +132,6 @@ void MainWindow::slotDebugMessage(QString msg, QString file, int line, int type)
 
 void MainWindow::slotViewUpdate()
 {
-	for (auto& var : m_vars)
-	{
-		var->updateValue();
-	}
-
 	ui->plot_time->replot();
 	ui->plot_freq->replot();
 
@@ -134,11 +140,11 @@ void MainWindow::slotViewUpdate()
 
 void MainWindow::slotGraphUpdate()
 {
-	ui->plot_time->refresh();
-	ui->plot_freq->refresh();
+	ui->plot_time->addData();
+	ui->plot_freq->addData();
 }
 
-void MainWindow::slotConnectStateChanged(bool running)
+void MainWindow::slotRunStateChanged(bool running)
 {
 	if (running)
 	{

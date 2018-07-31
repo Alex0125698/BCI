@@ -1,8 +1,5 @@
-#include <thread>
 #include "lib/edk.h"
 #include "emotiv.h"
-#include "error.h"
-#include "timer.h"
 
 const EE_InputChannels_t electrodes[] =
 {
@@ -219,7 +216,7 @@ void bci::EmotivInterface::update()
 
 		if (num_samples > 0)
 		{
-			for (int i = 0; i < channels.size(); ++i)
+			for (int i = 0; (size_t)i < channels.size(); ++i)
 			{
 				double data;
 				if (EE_DataGet(m_data_handle, EE_DataChannel_t(EE_DataChannels_enum::ED_AF3 + i), &data, 1) != EDK_OK)
