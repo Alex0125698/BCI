@@ -50,9 +50,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="qcustomplot.cpp">
-      <Filter>Libraries</Filter>
-    </ClCompile>
     <ClCompile Include="controller.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -74,35 +71,35 @@
     <ClCompile Include="offline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="error.cpp">
-      <Filter>Libraries</Filter>
-    </ClCompile>
-    <ClCompile Include="variable.cpp">
-      <Filter>Libraries</Filter>
-    </ClCompile>
-    <ClCompile Include="serialio.cpp">
-      <Filter>Libraries</Filter>
-    </ClCompile>
-    <ClCompile Include="csvio.cpp">
-      <Filter>Libraries</Filter>
-    </ClCompile>
-    <ClCompile Include="graphwidget.cpp">
-      <Filter>Libraries</Filter>
-    </ClCompile>
-    <ClCompile Include="view.cpp">
-      <Filter>Libraries</Filter>
-    </ClCompile>
     <ClCompile Include="cytoninterface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="bciinterface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="serialio.cpp">
+      <Filter>Libraries</Filter>
+    </ClCompile>
+    <ClCompile Include="variable.cpp">
+      <Filter>Libraries</Filter>
+    </ClCompile>
+    <ClCompile Include="view.cpp">
+      <Filter>Libraries</Filter>
+    </ClCompile>
+    <ClCompile Include="csvio.cpp">
+      <Filter>Libraries</Filter>
+    </ClCompile>
+    <ClCompile Include="error.cpp">
+      <Filter>Libraries</Filter>
+    </ClCompile>
+    <ClCompile Include="graphwidget.cpp">
+      <Filter>Libraries</Filter>
+    </ClCompile>
+    <ClCompile Include="qcustomplot.cpp">
+      <Filter>Libraries</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="qcustomplot.h">
-      <Filter>Libraries</Filter>
-    </QtMoc>
     <QtMoc Include="controller.h">
       <Filter>Header Files</Filter>
     </QtMoc>
@@ -112,18 +109,6 @@
     <QtMoc Include="mainwindow.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="error.h">
-      <Filter>Libraries</Filter>
-    </QtMoc>
-    <QtMoc Include="variable.h">
-      <Filter>Libraries</Filter>
-    </QtMoc>
-    <QtMoc Include="graphwidget.h">
-      <Filter>Libraries</Filter>
-    </QtMoc>
-    <QtMoc Include="view.h">
-      <Filter>Libraries</Filter>
-    </QtMoc>
     <QtMoc Include="state.h">
       <Filter>Header Files</Filter>
     </QtMoc>
@@ -132,6 +117,21 @@
     </QtMoc>
     <QtMoc Include="cytoninterface.h">
       <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="graphwidget.h">
+      <Filter>Libraries</Filter>
+    </QtMoc>
+    <QtMoc Include="variable.h">
+      <Filter>Libraries</Filter>
+    </QtMoc>
+    <QtMoc Include="view.h">
+      <Filter>Libraries</Filter>
+    </QtMoc>
+    <QtMoc Include="error.h">
+      <Filter>Libraries</Filter>
+    </QtMoc>
+    <QtMoc Include="qcustomplot.h">
+      <Filter>Libraries</Filter>
     </QtMoc>
   </ItemGroup>
   <ItemGroup>
@@ -192,10 +192,10 @@
     <ClInclude Include="resources.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="timer.h">
+    <ClInclude Include="serialio.h">
       <Filter>Libraries</Filter>
     </ClInclude>
-    <ClInclude Include="serialio.h">
+    <ClInclude Include="timer.h">
       <Filter>Libraries</Filter>
     </ClInclude>
     <ClInclude Include="csvio.h">

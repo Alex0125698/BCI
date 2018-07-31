@@ -1,4 +1,5 @@
 #include "view.h"
+#include "state.h"
 #include <QtWidgets>
 
 TableView::TableView(const std::vector<Variable*>& vars, const std::vector<QString>&& titles)
@@ -25,17 +26,20 @@ TableView::TableView(const std::vector<Variable*>& vars, const std::vector<QStri
 			{
 				auto tmp = new QLineEdit(QString::fromStdString(var->getName()));
 				tmp->setAlignment(Qt::AlignHCenter);
-				connect(tmp, &QLineEdit::editingFinished, var, [tmp, var]() {var->slotSetName(tmp->text()); });
-				connect(var, &Variable::sigNameChanged, tmp, [tmp, var]() {tmp->setText(QString::fromStdString(var->getName())); });
+				connect(tmp, &QLineEdit::editingFinished, var, [tmp, var]() {var->slotSetName(tmp->text()); }, Qt::QueuedConnection);
+				connect(var, &Variable::sigNameChanged, tmp, [tmp, var]() {tmp->setText(QString::fromStdString(var->getName())); }, Qt::QueuedConnection);
 				m_layout->addWidget(tmp);
+				tmp->setMaximumWidth(70);
+				tmp->setMinimumWidth(70);
 			}
 			else
 			{
 				auto tmp = new QLabel(QString::fromStdString(var->getName()));
 				tmp->setAlignment(Qt::AlignHCenter);
-				connect(var, &Variable::sigNameChanged, tmp, [tmp, var]() {tmp->setText(QString::fromStdString(var->getName())); });
+				connect(var, &Variable::sigNameChanged, tmp, [tmp, var]() {tmp->setText(QString::fromStdString(var->getName())); }, Qt::QueuedConnection);
 				m_layout->addWidget(tmp);
-
+				tmp->setMaximumWidth(66);
+				tmp->setMinimumWidth(66);
 			}
 		}
 
@@ -43,21 +47,51 @@ TableView::TableView(const std::vector<Variable*>& vars, const std::vector<QStri
 		if (var->checkTag(Tag::USER_INPUT))
 		{
 			auto tmp = new QDoubleSpinBox;
+			tmp->setMaximumWidth(60);
+			tmp->setMinimumWidth(60);
+			tmp->setMaximum(var->getMax());
+			tmp->setMinimum(var->getMin());
+			tmp->setSingleStep(var->getStepSize());
+			tmp->setValue(var->getValue());
+			tmp->setDecimals(3);
 			connect(var, &Variable::sigUnitsChanged, [tmp,var]()
 			{
-				tmp->setValue(var->getValue());
-				tmp->setMaximum(var->getMax());
-				tmp->setMinimum(var->getMin());
+				auto val = var->getValue();
+
+				if (val > tmp->maximum())
+				{
+					tmp->setMaximum(var->getMax());
+					tmp->setValue(val);
+					tmp->setMinimum(var->getMin());
+				}
+				else if (val < tmp->minimum())
+				{
+					tmp->setMinimum(var->getMin());
+					tmp->setValue(val);
+					tmp->setMaximum(var->getMax());
+				}
+				else
+				{
+					tmp->setMinimum(var->getMin());
+					tmp->setMaximum(var->getMax());
+					tmp->setValue(val);
+				}
+				tmp->setValue(val);
+				
 				tmp->setSingleStep(var->getStepSize());
+				
 			});
-			connect(tmp, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), var, &Variable::slotSetValue);
+			connect(tmp, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), var, &Variable::slotSetValue, Qt::QueuedConnection);
+			connect(&bci::State::program, &bci::State::sigVarReset, tmp, [tmp,var]() {tmp->setValue(var->getValue()); });
 			// TODO: connect var::value changed sig
 			m_layout->addWidget(tmp);
 		}
 		else
 		{
 			auto tmp = new QLabel("N/A");
-			connect(var, &Variable::sigValueChanged, [var,tmp]() {tmp->setText(QString::number(var->getValue())); });
+			tmp->setMaximumWidth(46);
+			tmp->setMinimumWidth(46);
+			connect(var, &Variable::sigValueChanged, [var,tmp]() {tmp->setText(QString::number(var->getValue(), 'f', 3)); });
 			connect(var, &Variable::sigUnitsChanged, [tmp, var]()
 			{
 				tmp->setText(QString::number(var->getValue()));
@@ -70,121 +104,94 @@ TableView::TableView(const std::vector<Variable*>& vars, const std::vector<QStri
 		if (!singleUnit || currUnitsBox == nullptr)
 		{
 			currUnitsBox = new QComboBox;
+			currUnitsBox->setMaximumWidth(55);
+			currUnitsBox->setMinimumWidth(55);
 			for (auto& name : vars[0]->getUnitNames()) currUnitsBox->addItem(QString::fromStdString(name));
 			if (!singleUnit) m_layout->addWidget(currUnitsBox);
 		}
-		connect(currUnitsBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), var, &Variable::slotSetActiveUnit);
+		connect(currUnitsBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), var, &Variable::slotSetActiveUnit, Qt::QueuedConnection);
 	}
 
 	if (singleUnit) m_layout->addWidget(currUnitsBox);
-
-
-	/*
-	// ----- value -----
-	if (var.isInput() && (type != BUTTONS))
-	{
-		QLabel* tmp = new QLabel(" N/A ");
-		tmp->setAlignment(Qt::AlignHCenter);
-		m_value = tmp;
-		connect(&var, &StateVariable::sigValueChanged, this, &StateView::slotValueChanged);
-	}
-	*/
-
-	// ----- setpoint -----
-	/*
-		if (type == BUTTONS)
-		{
-			auto num_buttons = size_t(size_t(1) + round((var.getMaximum() - var.getMinimum()) / var.getStepSize()));
-			if (num_buttons > size_t(16)) num_buttons = size_t(16);
-			if (names.size() < num_buttons) num_buttons = names.size();
-			m_setpoint = new QWidget;
-			QGridLayout* tmp = new QGridLayout;
-			m_setpoint->setLayout(tmp);
-
-			for (uint32_t i = 0; i<num_buttons; ++i)
-			{
-				auto btn = new QRadioButton(names[i]);
-				tmp->addWidget(btn, i / 4, i % 4);
-				// Better Solution Needed
-				// for now, set flag in class
-				//connect(btn, &QRadioButton::toggled, [i,this](bool b){if (b) {m_var_ref.setValue(i);}});
-			}
-		}
-		else if (type == SLIDER)
-		{
-			QSlider* tmp = new QSlider(Qt::Horizontal, nullptr);
-			connect(tmp, &QSlider::valueChanged, this, &StateView::slotValueChanged);
-			//connect(tmp, static_cast<void (QSlider::*)(double)>(&QSlider::valueChanged), [&](double d){m_var_ref.setValue(d);});
-			//tmp->setTickPosition(QSlider::TicksBothSides);
-			tmp->setTickInterval(10);
-			tmp->setSingleStep(1);
-			m_setpoint = tmp;
-		}
-		connect(&var, &StateVariable::sigSetpointChanged, this, &StateView::slotSetpointChanged);
-
-		//setSizing({ 64,50,64,64 });
-	
-	if (type == BUTTONS)
-	{
-		QVBoxLayout* mainLayout = new QVBoxLayout;
-		QHBoxLayout* topLayout = new QHBoxLayout;
-		QHBoxLayout* bottomLayout = new QHBoxLayout;
-		topLayout->addWidget(m_name);
-		bottomLayout->addWidget(m_setpoint);
-
-		mainLayout->addLayout(topLayout);
-		mainLayout->addLayout(bottomLayout);
-
-		layout = mainLayout;
-	}
-	else if (type == SLIDER)
-	{
-		QVBoxLayout* mainLayout = new QVBoxLayout;
-		QHBoxLayout* topLayout = new QHBoxLayout;
-		QHBoxLayout* bottomLayout = new QHBoxLayout;
-
-		topLayout->addWidget(m_name);
-		if (var.isInput())
-			topLayout->addWidget(m_value);
-		if (var.isOutput())
-			bottomLayout->addWidget(m_setpoint);
-		bottomLayout->addWidget(m_units);
-
-		mainLayout->addLayout(topLayout);
-		mainLayout->addLayout(bottomLayout);
-
-		layout = mainLayout;
-	}*/
 }
 
-/*
-void StateView::setSizing(std::vector<int> sizes)
+SliderView::SliderView(const std::vector<Variable*>& vars, const std::vector<QString>&& titles)
+	: View{ vars, std::move(titles) }
 {
-	if (getType() == TABLE)
-	{
-		if (sizes.size() != 4)
-			throw DETAILEDEXCEPTION("TableView sizing requires 4 sizes");
+	assert(vars.size() == 1);
+	m_layout = new QHBoxLayout;
 
-		m_name->setMaximumWidth(sizes[0]);
-		m_name->setMinimumWidth(sizes[0]);
+	auto var = vars[0];
+	// ensure that we have set the limits
+	assert(var->getMax() != std::numeric_limits<double>::max());
+	assert(var->getMin() != std::numeric_limits<double>::min());
 
-		if (m_var_ref.isInput())
-		{
-			m_value->setMaximumWidth(sizes[1]);
-			m_value->setMinimumWidth(sizes[1]);
-		}
+	// ----- TITLE -----
+	
+	auto title = new QLabel(QString::fromStdString(var->getName() + " (%)"));
+	title->setMaximumWidth(70);
+	title->setMinimumWidth(70);
+	title->setAlignment(Qt::AlignHCenter);
+	connect(var, &Variable::sigNameChanged, title, [title, var]() {title->setText(QString::fromStdString(var->getName() + " (%)")); });
+	// TODO: connect value changed
+	m_layout->addWidget(title);
 
-		if (m_var_ref.isOutput())
-		{
-			m_setpoint->setMaximumWidth(sizes[2]);
-			m_setpoint->setMinimumWidth(sizes[2]);
-		}
-
-		m_units->setMaximumWidth(sizes[3]);
-		m_units->setMinimumWidth(sizes[3]);
-	}
+	QSlider* tmp = new QSlider(Qt::Horizontal, nullptr);
+	tmp->setMaximumWidth(140);
+	tmp->setMinimumWidth(140);
+	tmp->setMaximum(1000);
+	tmp->setMinimum(0);
+	tmp->setValue(int(1000.0*(var->getValue() - var->getMin()) / (var->getMax() - var->getMin())));
+	connect(tmp, &QSlider::valueChanged, this, [tmp, var]() {var->setValue((tmp->value()/1000.0)*(var->getMax() - var->getMin()) + var->getMin()); });
+	connect(&bci::State::program, &bci::State::sigVarReset, tmp, [tmp, var]() {tmp->setValue(int(1000.0*(var->getValue() - var->getMin())/ (var->getMax() - var->getMin()))); });
+	tmp->setTickInterval(100);
+	tmp->setSingleStep(1);
+	m_layout->addWidget(tmp);
 }
-*/
+
+ButtonsView::ButtonsView(const std::vector<Variable*>& vars, const std::vector<QString>&& titles)
+	: View{ vars, std::move(titles) }
+{
+	assert(vars.size() == 1);
+	assert(titles.size() > 0);
+	m_layout = new QVBoxLayout;
+
+	auto var = vars[0];
+	
+	// ----- TITLE -----
+
+	if (var->checkTag(Tag::EDITABLE))
+	{
+		auto tmp = new QLineEdit(QString::fromStdString(var->getName()));
+		tmp->setAlignment(Qt::AlignHCenter);
+		connect(tmp, &QLineEdit::editingFinished, var, [tmp, var]() {var->slotSetName(tmp->text()); });
+		connect(var, &Variable::sigNameChanged, tmp, [tmp, var]() {tmp->setText(QString::fromStdString(var->getName())); });
+		m_layout->addWidget(tmp);
+	}
+	else
+	{
+		auto lbl = new QLabel(QString::fromStdString(var->getName()));
+		lbl->setAlignment(Qt::AlignHCenter);
+		connect(var, &Variable::sigNameChanged, lbl, [lbl, var]() {lbl->setText(QString::fromStdString(var->getName())); });
+		m_layout->addWidget(lbl);
+
+	}
+
+	// ----- BUTTONS -----
+
+	auto buttonsLayout = new QGridLayout;
+	for (size_t i=0; i<titles.size(); ++i)
+	{
+		auto tmp = new QRadioButton;
+		tmp->setText(titles[i]);
+		tmp->setChecked(i==var->getValue());
+		buttonsLayout->addWidget(tmp, i / 3, i % 3);
+		// TODO: set value
+		connect(tmp, &QRadioButton::toggled, [tmp, var, i]() {if (tmp->isChecked()) var->setValue(i); });
+		// TODO: reset val ??
+	}
+	reinterpret_cast<QVBoxLayout*>(m_layout)->addLayout(buttonsLayout);
+}
 
 void StateGroup::setup(QString groupName, std::vector<QString> colNames, std::vector<View*> views)
 {
@@ -210,7 +217,7 @@ void StateGroup::setup(QString groupName, std::vector<QString> colNames, std::ve
 			widget->setMaximumWidth(width);
 			widget->setMaximumWidth(width);
 		}
-		//lbl_title->setFont(QFont("BankGothic Md BT"));
+		widget->setFont(QFont("BankGothic Md BT"));
 		if (background != "")
 			widget->setStyleSheet(QString("background-color: %1;").arg(background));
 		return widget;
@@ -219,9 +226,9 @@ void StateGroup::setup(QString groupName, std::vector<QString> colNames, std::ve
 	// ----- TITLE -----
 	if (groupName != "")
 	{
-		addLine();
-		titleLayout->addWidget(createLabel(groupName, 13, "583f22", "rgb(80,100,130)"));
-		addLine();
+		//addLine();
+		titleLayout->addWidget(createLabel(groupName, 13, "D9E3F7", "rgb(93,115,160)"));
+		//addLine();
 		titleLayout->setSpacing(0);
 		mainLayout->addLayout(titleLayout);
 	}

@@ -45,10 +45,6 @@ std::string CSVreader::read()
 		{
 			break;
 		}
-		else if (c == char(-1))
-		{
-			return "";
-		}
 		result += c;
 	}
 	return result;

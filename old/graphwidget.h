@@ -16,24 +16,19 @@ class GraphWidget : public QWidget
 public:
 	GraphWidget(QWidget* parent);
 	// add titles ; setup dialog
-	void init(const QString title, const QString x_title, const int yBottom, const int yTop, const QString y_title_left, const QString y_title_right = "");
+	void init(const QString title, const QString x_title, const QString y_title_left, const QString y_title_right = "");
 	// add variable to plot
 	void addVariable(Variable* const var, const bool visible);
-	void addVariables(std::vector<Variable*>& vars, const bool visible);
-	// replot data stored in buffers; redraw labels
-	void replot();
-
-public slots:
 	// grab data from StateVariables (but don't plot)
 	void addData();
-	void setVisiblePlots();
-	void slotRefreshNames();
+	// replot data stored in buffers; redraw labels
+	void replot();
 	// clear data and reset time to 0
 	void clear();
 
-public:
-	// does the graph move over time
-	bool m_autoscroll{ true };
+public slots:
+	void setVisiblePlots();
+	void slotRefreshNames();
 
 private:
 	// graph library
@@ -48,6 +43,8 @@ private:
 	Timer m_timer;
 	// time format for axis
 	QSharedPointer<QCPAxisTickerTime> m_timeticker;
+	// does the graph move over time
+	bool m_autoscroll{ true };
 	// dialog to select display graphs
 	QDialog* m_dialog_select{ nullptr };
 	// layout to store check boxes

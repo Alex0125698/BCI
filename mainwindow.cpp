@@ -28,6 +28,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	m_debug_window->setReadOnly(true);
 	m_debug_window->setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowTitleHint | Qt::WindowMinMaxButtonsHint);
 	m_debug_window->setWindowTitle("Debug Window");
+	m_debug_window->setMinimumSize(350, 200);
 	m_debug_window->show();
 	//m_debug_window->setWindowIcon(QIcon(":/icons/icons/debug.png"));
 	this->setWindowTitle("Brain-Computer Interface Controller");
@@ -48,17 +49,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	// ===== SET UP GRAPHS =====
 
-	ui->plot_freq->init("Frequency Bands", "Time (s)", "");
-	ui->plot_time->init("Time-Domain", "Time (s)", "");
+	ui->plot_freq->init("Frequency Bands", "Time (s)", -20, +20, "");
+	ui->plot_time->init("Time-Domain", "Time (s)", 0, 1, "");
 
-	for (auto& var : chVars)
-	{
-		ui->plot_time->addVariable(var, true);
-	}
-	for (auto& var : fbandVars)
-	{
-		ui->plot_freq->addVariable(var, true);
-	}
+	ui->plot_time->addVariables(chVars, true);
+	ui->plot_freq->addVariables(fbandVars, true);
 
 	// ===== set up status bar =====
 

@@ -11,8 +11,7 @@ namespace bci
 	{
 		Q_OBJECT
 
-		// List all variables here - these represent physical quantities
-		// TODO: move this outside class somehow
+	public:
 		enum class Vars
 		{
 			CH1,
@@ -54,6 +53,9 @@ namespace bci
 		static void init();
 
 	public:
+		void reset() { m_reset = true; }
+		auto& getVars() { return m_vars; }
+		auto& getFastVars() { return m_fast_var_buffer; }
 		// load vars into buffer
 		void loadVars();
 		// flush var buffer + update views
@@ -68,7 +70,7 @@ namespace bci
 			return (*this)[size_t(index)];
 		}
 		// store a non-atomic copy of the vars for fast arithematic
-		std::vector<double> m_fast_var_buffer{ size_t(Vars::END_OF_DATA), 0.0 };
+		std::vector<double> m_fast_var_buffer;
 
 	public:
 		// get a list of all variables with the given tags
@@ -78,9 +80,12 @@ namespace bci
 		const std::vector<View*> generateViews(const std::vector<Variable*> vars, View::Type viewType);
 		//void save(std::string fileName);
 		//void load(std::string fileName);
+		const std::vector<View*> generateView(Variable* vars, View::Type viewType, const std::vector<QString>&& names);
 
 	signals:
+		void sigViewUpdate();
 		void sigVarUpdate();
+		void sigVarReset();
 
 	public slots:
 		void slotViewReady();
@@ -97,6 +102,10 @@ namespace bci
 		State(const State&) = delete;
 		State& operator=(const State&) = delete;
 		Timer updateTimer;
+		// used to reset state to default OR reset setpoints to inputs
+		bool m_reset = true;
 	};
 
 }
+
+typedef bci::State::Vars Vars;

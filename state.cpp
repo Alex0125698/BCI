@@ -38,6 +38,7 @@ void bci::State::init()
 		new Variable("Refresh Freq", Dimension::FREQUENCY,{ Tag::STATUS_BAR, Tag::EDITABLE, Tag::USER_INPUT })
 	};
 	assert(bci::State::program.m_vars.size() == size_t(Vars::END_OF_DATA));
+	State::program.m_fast_var_buffer.resize(State::program.m_vars.size(), 0.0);
 }
 
 void bci::State::loadVars()
@@ -50,12 +51,66 @@ void bci::State::loadVars()
 
 void bci::State::updateVars()
 {
+	bool update = false;
+	if (updateTimer.getDuration() > 0.08)
+	{
+		//State::program[Vars::REFRESH_RATE] = 1.0 / updateTimer.getDuration();
+		update = true;
+		updateTimer.restart();
+	}
+
 	for (size_t i = 0; i<m_fast_var_buffer.size(); ++i)
 	{
 		// synchronised data copy
 		if (!m_vars[i]->checkTag(Tag::USER_INPUT))
+		{
 			m_vars[i]->data() = m_fast_var_buffer[i];
+			if (update) m_vars[i]->refresh();
+		}
 	}
+
+	if (m_reset)
+	{
+		m_reset = false;
+		static std::vector<bool> used;
+		used.resize(m_vars.size(), false);
+
+		for (size_t i = 0; i < m_vars.size(); ++i)
+		{
+			// check for matching names
+			for (size_t j = i + 1; j < m_vars.size(); ++j)
+			{
+				if (used[j]) continue;
+
+				if (m_vars[j]->getName() != m_vars[i]->getName()) continue;
+				{
+					used[j] = true;
+					used[i] = true;
+
+					// figure out if we have a setpoint + value pair
+					if (m_vars[j]->checkTag(Tag::USER_INPUT) && (!m_vars[i]->checkTag(Tag::USER_INPUT)))
+						m_vars[j]->setValue(m_vars[i]->getValue());
+					else if (m_vars[i]->checkTag(Tag::USER_INPUT) && (!m_vars[j]->checkTag(Tag::USER_INPUT)))
+						m_vars[i]->setValue(m_vars[j]->getValue());
+					else
+					{
+						assert(false); // probably a mistake
+					}
+					break;
+				}
+			}
+
+			if (!used[i])
+			{
+				//m_vars[i]->setValue(0);
+				// TODO: default reset value here
+			}
+		}
+		emit sigVarReset();
+	}
+
+	if (update) emit sigViewUpdate();
+	emit sigVarUpdate();
 }
 
 const std::vector<Variable*> bci::State::searchVars(const std::vector<Tag> tags) const
@@ -104,11 +159,27 @@ const std::vector<View*> bci::State::generateViews(const std::vector<Variable*> 
 			m_views.push_back(new TableView{ relatedVars,{} });
 			result.push_back(m_views[m_views.size() - 1]);
 		}
+		else if (viewType == View::Type::SLIDER)
+		{
+			m_views.push_back(new SliderView{ relatedVars,{} });
+			result.push_back(m_views[m_views.size() - 1]);
+		}
 		else
 			assert(false); // not supported yet	
 	}
 
 	return std::move(result);
+}
+
+const std::vector<View*> bci::State::generateView(Variable* var, View::Type viewType, const std::vector<QString>&& names)
+{
+	if (viewType != View::Type::BUTTONS)
+	{
+		assert(false);
+	}
+	std::vector<Variable*> vars{ var };
+	m_views.push_back(new ButtonsView(vars, std::move(names)));
+	return std::vector<View*>{m_views[m_views.size() - 1]};
 }
 
 void bci::State::slotViewReady()

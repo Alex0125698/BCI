@@ -4,7 +4,7 @@
 #include "cytoninterface.h"
 #include "offline.h"
 #include "spatial_filter.h"
-//#include "state.h"
+#include "state.h"
 
 
 template<typename T>
@@ -61,6 +61,19 @@ void Controller::slotDataReady()
 {
 	m_bci->getData(store);
 
+	//
+
+	auto start = (size_t)Vars::CH1;
+	auto stop = (size_t)Vars::CH16;
+
+	bci::State::program.loadVars();
+
+	for (auto i = start; i < stop; ++i)
+	{
+		bci::State::program[i] = store[i];
+	}
+
+	bci::State::program.updateVars();
 
 	/*
 	dft_data.resize(m_bci->channels.size());

@@ -30,7 +30,6 @@ enum class Dimension
 	VOLUME,
 	ACCELERATION,
 	VOLTAGE,
-	ENERGY,
 	END_OF_DATA
 };
 
@@ -68,20 +67,14 @@ public:
 
 enum class Tag
 {
-	DATA_CHANNEL,
-	FREQ_BAND,
 	MCU_INPUT,
 	MCU_OUTPUT,
 	USER_INPUT,
-	PID_CONTROL,
-	CONTROL,
-	PID_SIGNAL,
-	PHYSICS_CALC,
+	FREQ_BAND,
+	DATA_CHANNEL,
 	EDITABLE,
 	SAVABLE,
 	STATUS_BAR,
-	XVA,
-	LIMITS,
 	END_OF_DATA
 };
 
@@ -109,16 +102,12 @@ class Variable : public Taggable
 	Q_OBJECT
 
 public:
-	Variable(const std::string&& name, const Dimension dim, const double val, const double min, const double max, const double step, const std::vector<Tag>&& tags);
-	Variable(const std::string& name, const Dimension dim, const double val, const double min, const double max, const double step, const std::vector<Tag>& tags);
+	Variable(const std::string&& name, const Dimension dim, const double min, const double max, const std::vector<Tag>&& tags);
+	Variable(const std::string& name, const Dimension dim, const double min, const double max, const std::vector<Tag>& tags);
 	Variable(const std::string&& name, const Dimension dim, const std::vector<Tag>&& tags);
 	Variable(const std::string&& name, const std::vector<Tag>&& tags);
 
 public:
-	void changeUnit()
-	{
-		m_current_unit = m_tmp_current_unit.load();
-	}
 	// access the plain SI base data
 	auto& data()
 	{ return m_data_si; };
@@ -137,10 +126,6 @@ public:
 	// get the active unit name
 	auto getActiveUnitName() const
 	{ return m_units[m_current_unit]->getName(); }
-	auto getSIUnitName() const
-	{
-		return m_units[0]->getName();
-	}
 	// set the current unit
 	void setActiveUnit(const std::string& name);
 	void setActiveUnit(const std::string&& name)
@@ -201,7 +186,6 @@ private:
 	std::string m_name;
 	// index of current unit - default is SI base
 	std::atomic<size_t> m_current_unit{ 0 };
-	std::atomic<size_t> m_tmp_current_unit{ 0 };
 	// the minimum possible value the quantity can take
 	const double m_min;
 	// the maximum possible value the quantity can take

@@ -15,31 +15,25 @@ std::vector<Unit> Unit::SI
 	{ Dimension::FREQUENCY, "Hz" },{ Dimension::FORCE, "N" } ,
 	{ Dimension::PRESSURE, "Pa" },{ Dimension::VELOCITY, "mps2" } ,
 	{ Dimension::AREA, "m2" },{ Dimension::VOLUME, "m3" } ,
-	{ Dimension::ACCELERATION, "mps3" },{ Dimension::VOLTAGE, "V" },
-	{ Dimension::ENERGY, "J" }
+	{ Dimension::ACCELERATION, "mps3" },{ Dimension::VOLTAGE, "V" }
 };
 
-std::vector<Unit> Unit::Other
-{
-	{ Dimension::MASS, "g", 0.001, 0 },{ Dimension::LENGTH, "mm", 1000, 0 },
-	{ Dimension::TEMPERATURE, "deg C", 1.0, -273 },{ Dimension::FORCE, "kG", 1.0/9.8, 0 },
-	{ Dimension::FORCE, "kN", 0.001, 0 },{ Dimension::TIME, "m", 1.0/60.0, 0 }
-};
+std::vector<Unit> Unit::Other{ { Dimension::MASS, "g", 0.001, 0 },{ Dimension::LENGTH, "mm", 0.001, 0 } };
 
-Variable::Variable(const std::string&& name, const Dimension dim, const double val, const double min, const double max, const double step, const std::vector<Tag>&& tags)
-	: Variable{ name, dim, val, min, max, step, tags }
+Variable::Variable(const std::string&& name, const Dimension dim, const double min, const double max, const std::vector<Tag>&& tags)
+	: Variable{ name, dim, min, max, tags }
 {
 }
 
-Variable::Variable(const std::string& name, const Dimension dim, const double val, const double min, const double max, const double step, const std::vector<Tag>& tags)
-	: m_name{ name }, m_dim{ dim }, m_min{ min }, m_max{ max }, Taggable{ tags }, m_data_si{ val }, m_step_size{ step }
+Variable::Variable(const std::string& name, const Dimension dim, const double min, const double max, const std::vector<Tag>& tags)
+	: m_name{ name }, m_dim{ dim }, m_min{ min }, m_max{ max }, Taggable{ tags }
 {
 	load_default_units();
 	assert(m_units.size() > (size_t)0);
 }
 
 Variable::Variable(const std::string&& name, const Dimension dim, const std::vector<Tag>&& tags)
-	: Variable{ name, dim, 0.0, std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), 1.0, tags }
+	: Variable{ name, dim, std::numeric_limits<double>::min(), std::numeric_limits<double>::max(), tags }
 {
 }
 
@@ -67,6 +61,7 @@ const std::vector<std::string> Variable::getUnitNames() const
 
 	return std::move(tmp);
 }
+
 
 // set the current unit
 
@@ -101,12 +96,6 @@ void Variable::load_default_units()
 	{
 		if (si_unit.getDimension() == this->m_dim)
 			m_units.push_back(&si_unit);
-	}
-
-	for (auto& other_unit : Unit::Other)
-	{
-		if (other_unit.getDimension() == this->m_dim)
-			m_units.push_back(&other_unit);
 	}
 }
 

@@ -26,5 +26,5 @@ void Timer::restart()
 double Timer::getDuration()
 {
 	auto tmp = std::chrono::high_resolution_clock::now();
-	return std::chrono::duration<double>(tmp-m_time).count();
+	return std::chrono::duration<double>(tmp - m_time).count();
 }

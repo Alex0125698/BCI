@@ -1,7 +1,6 @@
 #include <QtWidgets>
 #include "graphwidget.h"
 #include "variable.h"
-#include "state.h"
 
 const std::array<QColor,size_t(15)> PALETTE
 {
@@ -30,7 +29,7 @@ GraphWidget::GraphWidget(QWidget* parent)
 	m_plot = new QCustomPlot(this);
 }
 
-void GraphWidget::init(const QString title, const QString x_title, const int yBottom, const int yTop, const QString y_title_left, const QString y_title_right)
+void GraphWidget::init(const QString title, const QString x_title, const QString y_title_left, const QString y_title_right)
 {
 	// ===== ADD TITLES =====
 	m_plot->plotLayout()->insertRow(0);
@@ -46,22 +45,19 @@ void GraphWidget::init(const QString title, const QString x_title, const int yBo
 	m_timeticker->setTimeFormat("%h:%m:%s");
 	m_plot->xAxis->setTicker(m_timeticker);
 	m_plot->axisRect()->setupFullAxesBox();
-	m_plot->yAxis->setRange(yBottom, yTop);
+	m_plot->yAxis->setRange(0, 255);
 	m_plot->xAxis->grid()->setSubGridVisible(true);
 	m_plot->yAxis->grid()->setSubGridVisible(true);
 	m_plot->setOpenGl(true,1);
-	
+
 	// ===== ADD GUI ELEMENTS =====
 	// auto_scroll check box
 	QCheckBox* auto_scroll = new QCheckBox(this);
 	auto_scroll->setText(tr("Auto-Scroll"));
 	auto_scroll->move({30,0});
 	auto_scroll->setChecked(true);
-	connect(auto_scroll, &QCheckBox::toggled, [this](bool b) {m_autoscroll = b; }); // TODO
-	//connect(m_plot->xAxis, static_cast<void(QCPAxis::*)(const QCPRange&)>(&QCPAxis::rangeChanged), [auto_scroll]() {auto_scroll->setChecked(false); });
-	connect(m_plot, &QCustomPlot::mousePress, [auto_scroll]() {auto_scroll->setChecked(false); });
-	connect(m_plot, &QCustomPlot::mouseWheel, [auto_scroll]() {auto_scroll->setChecked(false); });
-	
+	//connect(auto_scroll, &QCheckBox::stateChanged, [this](int state) {}); // TODO
+
 	// options button
 	QToolButton* btn_options = new QToolButton(this);
 	QIcon icon(":/icons/icons/spanner.png");
@@ -96,9 +92,9 @@ void GraphWidget::init(const QString title, const QString x_title, const int yBo
 	mainLayout->setSpacing(0);
 
 	// ===== CONNECTIONS =====
-	connect(m_dialog_select, &QDialog::accepted, this, &GraphWidget::setVisiblePlots, Qt::QueuedConnection);
-	connect(btn_ok, &QPushButton::clicked, m_dialog_select, &QDialog::accept, Qt::QueuedConnection);
-	connect(btn_cancel, &QPushButton::clicked, m_dialog_select, &QDialog::reject, Qt::QueuedConnection);
+	connect(m_dialog_select, &QDialog::accepted, this, &GraphWidget::setVisiblePlots);
+	connect(btn_ok, &QPushButton::clicked, m_dialog_select, &QDialog::accept);
+	connect(btn_cancel, &QPushButton::clicked, m_dialog_select, &QDialog::reject);
 	connect(btn_options, &QToolButton::clicked, [this]() {m_dialog_select->show(); m_dialog_select->raise(); });
 
 	// TODO: extra connections
@@ -106,9 +102,6 @@ void GraphWidget::init(const QString title, const QString x_title, const int yBo
 	// TODO: Mouse Drag should uncheck box
 	//connect(this->graph, &GraphWidget::mousePressEvent, [this]() {graph->m_autoscroll = false; auto_scroll->setChecked(false); });
 	//mainLayout->addWidget(auto_scroll);
-
-	connect(&bci::State::program, &bci::State::sigVarUpdate, this, &GraphWidget::addData, Qt::QueuedConnection);
-	connect(&bci::State::program, &bci::State::sigVarReset, this, &GraphWidget::clear, Qt::QueuedConnection);
 }
 
 void GraphWidget::addVariable(Variable* const var, const bool visible)
@@ -130,18 +123,14 @@ void GraphWidget::addVariable(Variable* const var, const bool visible)
 
 	connect(var, &Variable::sigUnitsChanged, this, &GraphWidget::slotRefreshNames, Qt::QueuedConnection);
 	connect(var, &Variable::sigNameChanged, this, &GraphWidget::slotRefreshNames, Qt::QueuedConnection);
-	
-	slotRefreshNames();
-}
 
-void GraphWidget::addVariables(std::vector<Variable*>& vars, const bool visible)
-{
-	for (auto& var : vars) addVariable(var, visible);
+	slotRefreshNames();
 }
 
 void GraphWidget::addData()
 {
 	double key = m_timer.getDuration();
+
 	size_t index = 0;
 	for (size_t i=0; i<m_vars.size(); ++i)
 	{
@@ -160,8 +149,7 @@ void GraphWidget::replot()
 	if (m_autoscroll)
 	{
 		double key = m_timer.getDuration();
-
-		m_plot->xAxis->setRange(std::clamp(key-20,0.0,key), key);
+		m_plot->xAxis->setRange(key - 10, key);
 	}
 }
 

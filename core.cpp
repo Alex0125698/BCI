@@ -2,6 +2,7 @@
 #include "controller.h"
 #include "mainwindow.h"
 #include "bciinterface.h"
+#include "state.h"
 
 #include <QThread>
 
@@ -19,6 +20,7 @@ Core::Core(MainWindow* wnd)
 	//DEBUG_PRINTLN(m_io_thread->currentThreadId());
 
 	// ====== Connections ======
+	connect(&bci::State::program, &bci::State::sigViewUpdate, wnd, &MainWindow::slotViewUpdate, Qt::QueuedConnection);
 	connect(wnd, &MainWindow::sigRunController, m_controller, &Controller::slotStart, Qt::QueuedConnection);
 	connect(wnd, &MainWindow::sigStopController, m_controller, &Controller::slotStop, Qt::QueuedConnection);
 	connect(m_controller, &Controller::sigRunStateChanged, wnd, &MainWindow::slotRunStateChanged, Qt::QueuedConnection);

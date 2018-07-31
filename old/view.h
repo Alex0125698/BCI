@@ -20,8 +20,7 @@ public:
 		SLIDER,
 		GAUGE,
 		DIAL,
-		GRAPH,
-		BUTTONS
+		GRAPH
 	};
 
 public:
@@ -44,24 +43,21 @@ class TableView : public View
 public:
 	TableView(const std::vector<Variable*>& vars, const std::vector<QString>&& titles = {});
 };
-
+/*
 class SliderView : public View
 {
 	Q_OBJECT
 
-public:
-	SliderView(const std::vector<Variable*>& vars, const std::vector<QString>&& titles = {});
-
+protected slots:
+	void slotUnitsChanged();
+	// update setpoint variable with index
+	void slotSetpointChanged(size_t index);
+	// update all vars
+	void slotUpdateVars();
+	// refresh names of variables
+	void slotNamesChanged();
 };
-
-class ButtonsView : public View
-{
-	Q_OBJECT
-
-public:
-	ButtonsView(const std::vector<Variable*>& vars, const std::vector<QString>&& titles = {});
-
-};
+*/
 
 class StateGroup : public QWidget
 {
