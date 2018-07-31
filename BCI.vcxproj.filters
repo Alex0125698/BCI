@@ -92,10 +92,10 @@
     <ClCompile Include="view.cpp">
       <Filter>Libraries</Filter>
     </ClCompile>
-    <ClCompile Include="bciinterface.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="cytoninterface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="bciinterface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

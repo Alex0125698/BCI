@@ -71,8 +71,6 @@ MainWindow::MainWindow(QWidget *parent) :
 		tmp->setLayout(view->getLayout());
 		ui->statusbar->addPermanentWidget(tmp);
 	}
-
-	m_core = new Core(this);
 }
 
 MainWindow::~MainWindow()
@@ -134,14 +132,6 @@ void MainWindow::slotViewUpdate()
 {
 	ui->plot_time->replot();
 	ui->plot_freq->replot();
-
-	emit mainwindowReady();
-}
-
-void MainWindow::slotGraphUpdate()
-{
-	ui->plot_time->addData();
-	ui->plot_freq->addData();
 }
 
 void MainWindow::slotRunStateChanged(bool running)
@@ -153,6 +143,7 @@ void MainWindow::slotRunStateChanged(bool running)
 	}
 	else
 	{
+		if (ui->btn_connect->isChecked()) ui->btn_connect->setChecked(false);
 		ui->btn_connect->setIcon(QIcon(":/icons/icons/arrow_green.jpg"));
 		ui->btn_connect->setText("Connect");
 	}
@@ -174,7 +165,10 @@ void MainWindow::slotSaveStateChanged(bool saving)
 
 void MainWindow::on_btn_connect_clicked(bool checked)
 {
-	emit sigChangeControllerState(checked);
+	if (checked)
+		emit sigRunController();
+	else
+		emit sigStopController();
 }
 
 void MainWindow::on_btn_uoa_clicked()
@@ -204,5 +198,5 @@ void MainWindow::on_btn_save_stop_clicked()
 
 void MainWindow::on_box_source_currentIndexChanged(const QString& arg1)
 {
-
+	arg1;
 }

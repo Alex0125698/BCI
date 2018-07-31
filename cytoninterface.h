@@ -5,6 +5,7 @@
 
 class QTimer;
 class QSerialPort;
+class QThread;
 
 namespace bci
 {
@@ -17,10 +18,13 @@ public:
 	CytonInterface();
 	virtual ~CytonInterface();
 	// acquire resources + connect to device + start stream
-	virtual void start();
+	virtual void start_helper() override;
 	
 	// free resources + disconnect
-	virtual void stop();
+	virtual void stop_helper() override;
+
+protected:
+	virtual void init() override;
 
 private slots:
 	void slotTimeout();
@@ -35,7 +39,7 @@ private:
 	void decode();
 
 private:
-	std::unique_ptr<QSerialPort> m_serialPort;
+	QSerialPort* m_serialPort{ nullptr };
 	// used to ensure data sent on time
 	std::unique_ptr<QTimer> m_timer;
 	// stores how many send bytes written so far
@@ -56,7 +60,9 @@ private:
 	QString m_pkt_hex;
 	// stores any non packet received data
 	QString m_info;
-	
+	// block using the serial port
+	bool m_error_state{ false };
+	bool m_interleave{ false };
 };
 
 }

@@ -14,14 +14,8 @@ public:
 	Core(MainWindow* wnd);
 	~Core();
 
-signals:
-	void sigRun();
-
 private:
 	Controller* m_controller{ nullptr };
 	QThread* m_io_thread{ nullptr };
-
-public slots:
-	void slotChangeControllerState(bool on);
 };
 

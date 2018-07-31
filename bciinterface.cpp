@@ -1,4 +1,5 @@
 #include "bciinterface.h"
+#include <QThread>
 
  const size_t bci::Interface::numChannels()
  { 
@@ -32,4 +33,17 @@
 	 std::lock_guard<std::mutex> lock(m_imp_mtx);
 	 for (size_t i = 0; i < m_elec_imp.size(); ++i)
 		 rx[i] = m_elec_imp[i];
+ }
+
+ bci::Interface::Interface()
+ {
+	 m_bci_thread = new QThread;
+	 this->moveToThread(m_bci_thread);
+	 m_bci_thread->setObjectName("BCI Thread");
+	 m_bci_thread->start(QThread::HighestPriority);
+
+	 connect(this, &bci::Interface::sigCallInit, this, &bci::Interface::init, Qt::QueuedConnection);
+	 connect(this, &bci::Interface::sigCallStartHelper, this, &bci::Interface::start_helper, Qt::QueuedConnection);
+	 connect(this, &bci::Interface::sigCallStopHelper, this, &bci::Interface::stop_helper, Qt::QueuedConnection);
+	 emit sigCallInit();
  }

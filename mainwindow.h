@@ -20,19 +20,18 @@ public:
 	~MainWindow();
 
 signals:
-	void mainwindowReady();
-	void sigChangeControllerState(bool on);
-	void sigSaveStateChanged(bool saving);
+	void sigRunController();
+	void sigStopController();
 	void sigSendInFileName(QString file);
 	void sigSendOutFileName(QString file);
+	void sigSaveStateChanged(bool saving);
+	void sigSourceChanged(QString mode);
 
 public slots:
 	// add message to debug window
 	void slotDebugMessage(QString msg, QString file, int line, int type);
 	// update var labels + graphs
 	void slotViewUpdate();
-	// add data to graphs but do not replot
-	void slotGraphUpdate();
 	// called controller starts/stops
 	void slotRunStateChanged(bool running);
 	// called when save starts/stops

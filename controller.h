@@ -12,7 +12,7 @@ class Controller :public QObject
 
 public:
 	Controller();
-
+	
 signals:
 	void sigViewUpdate();
 	void sigGraphUpdate();
@@ -20,16 +20,12 @@ signals:
 	void sigSaveStateChanged(bool saving);
 
 public slots:
-	void slotRun();
-	void stop();
+	void slotStart();
+	void slotStop();;
+	void slotDataReady();
 
 protected:
-	bool m_view_ready{ true };
-
-private:
 	std::unique_ptr<bci::Interface> m_bci;
-	bool m_running{ false };
-
-	friend class Core;
+	std::atomic<bool> m_running{ false };
 };
 

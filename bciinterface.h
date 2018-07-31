@@ -13,6 +13,8 @@
 #include "resources.h"
 #include <ostream>
 
+class QThread;
+
 namespace bci {
 
 class Interface : public QObject
@@ -23,9 +25,9 @@ public:
 	const bool connected() const { return m_connected; }
 	const size_t numChannels();
 	// acquire resources + connect to device + start stream
-	virtual void start() = 0;
+	virtual void start() { emit sigCallStartHelper(); }
 	// free resources + disconnect
-	virtual void stop() = 0;
+	virtual void stop() { emit sigCallStopHelper(); };
 	// copy data from channels vector
 	void getData(std::vector<double>& rx);
 	// copy gyro data
@@ -33,11 +35,22 @@ public:
 	// copy electrode impedances
 	void getElecImpedance(std::vector<double>& rx);
 	// need to re-implement this
+	Interface();
 	virtual ~Interface() = default;
 
 signals:
+	void sigCallInit();
+	//void sigCallExit();
 	// emitted when data avaliable - need to keep up
-	void dataReady();
+	void sigDataReady();
+	void sigCallStartHelper();
+	void sigCallStopHelper();
+
+protected slots:
+	// use this to set up class in BCI Thread
+	virtual void init() {};
+	virtual void start_helper() {};
+	virtual void stop_helper() {};
 
 protected:
 	// list of channels - can be resized as necessary
@@ -48,6 +61,9 @@ protected:
 	std::vector<double> m_elec_imp;
 
 protected:
+	// we need to ensure events go to new thread
+	// to avoid other stuff slowing it down
+	QThread* m_bci_thread{ nullptr };
 	std::atomic<bool> m_connected{ false };
 	std::atomic<bool> m_data_copied{ true };
 	std::mutex m_ch_mtx;
