@@ -14,6 +14,7 @@ namespace bci
 	public:
 		enum class Vars
 		{
+			TIME,
 			CH1,
 			CH2,
 			CH3,
@@ -84,7 +85,7 @@ namespace bci
 
 	signals:
 		void sigViewUpdate();
-		void sigVarUpdate();
+		void sigVarUpdate(double time);
 		void sigVarReset();
 
 	public slots:

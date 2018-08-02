@@ -7,6 +7,7 @@ void bci::State::init()
 	assert(bci::State::program.m_vars.size() == 0);
 	bci::State::program.m_vars =
 	{
+		new Variable("TIME", Dimension::VOLTAGE,{ Tag::DATA_CHANNEL }),
 		new Variable("CH1", Dimension::VOLTAGE,{ Tag::MCU_INPUT, Tag::DATA_CHANNEL }),
 		new Variable("CH2", Dimension::VOLTAGE,{ Tag::MCU_INPUT, Tag::DATA_CHANNEL }),
 		new Variable("CH3", Dimension::VOLTAGE,{ Tag::MCU_INPUT, Tag::DATA_CHANNEL }),
@@ -108,9 +109,10 @@ void bci::State::updateVars()
 		}
 		emit sigVarReset();
 	}
+	
 
 	if (update) emit sigViewUpdate();
-	emit sigVarUpdate();
+	emit sigVarUpdate(m_vars[(size_t)Vars::TIME]->data().load());
 }
 
 const std::vector<Variable*> bci::State::searchVars(const std::vector<Tag> tags) const

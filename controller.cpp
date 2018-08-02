@@ -27,6 +27,7 @@ void Controller::slotStart()
 {
 	try
 	{
+		(bci::State::program.getVars())[(size_t)Vars::TIME]->data() = 0;
 		DEBUG_PRINTLN("clear");
 		m_bci->start();
 		m_running = true;
@@ -61,52 +62,19 @@ void Controller::slotDataReady()
 {
 	m_bci->getData(store);
 
-	//
+	
 
 	auto start = (size_t)Vars::CH1;
 	auto stop = (size_t)Vars::CH16;
 
 	bci::State::program.loadVars();
 
-	for (auto i = start; i < stop; ++i)
+	bci::State::program[Vars::TIME] += 1.0 / 125.0; // Assume 125 Hz
+
+	for (auto i = start; i <= stop; ++i)
 	{
 		bci::State::program[i] = store[i];
 	}
 
 	bci::State::program.updateVars();
-
-	/*
-	dft_data.resize(m_bci->channels.size());
-	for (auto& ch : dft_data)
-	{
-	ch.resize(DFT_SIZE);
-	}
-	*/
-	//size_t dft_counter = 0;
-
-	// fill in data structure
-	/*
-	for (size_t i=0; i<dft_data.size(); ++i)
-	{
-	dft_data[i][dft_counter] = m_bci->channels[i].value;
-	}
-	++dft_counter;
-
-	std::vector<double> mags;
-	// if we have enough data, run DTF alg for all channels
-	if (dft_counter >= DFT_SIZE)
-	{
-	dft_counter = 0;
-	mags = std::move(bci::DFT(dft_data[0]));
-
-	// the sample rate is 250 Hz, so this is the max freq
-	double freq_res = 250.0 / DFT_SIZE;
-
-	size_t index = (size_t)map(50.0, 0.0, 250.0, 0.0, (double)mags.size());
-	//Input::Vars[Input::MU] = units::V.getRaw(1000000*mags[index], VAR[Input::MU].SIZE_IN_BYTES);
-
-	index = (size_t)map(40.0, 0.0, 250.0, 0.0, (double)mags.size());
-	//Input::Vars[Input::BETA] = units::V.getRaw(1000000 * mags[index], VAR[Input::BETA].SIZE_IN_BYTES);
-	}
-	*/
 }

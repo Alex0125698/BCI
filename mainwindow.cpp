@@ -18,6 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	// ===== SETUP MAINWINDOW =====
 	ui->setupUi(this);
 	m_core = new Core(this);
+
 	//QWinTaskbarButton *button = new QWinTaskbarButton(this);
 	//button->setWindow(this->windowHandle());
 	//button->setOverlayIcon(QIcon(":/icons/icons/cool arrow effect.jpg"));
@@ -50,7 +51,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	// ===== SET UP GRAPHS =====
 
 	ui->plot_freq->init("Frequency Bands", "Time (s)", -20, +20, "");
-	ui->plot_time->init("Time-Domain", "Time (s)", 0, 1, "");
+	ui->plot_time->init("Time-Domain", "Time (s)", -0.187, 0.187, "");
 
 	ui->plot_time->addVariables(chVars, true);
 	ui->plot_freq->addVariables(fbandVars, true);

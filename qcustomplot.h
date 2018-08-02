@@ -22,9 +22,11 @@
 **             Date: 04.09.17                                             **
 **          Version: 2.0.0                                                **
 ****************************************************************************/
+#define QCUSTOMPLOT_USE_OPENGL
 
 #ifndef QCUSTOMPLOT_H
 #define QCUSTOMPLOT_H
+
 
 #include <QtCore/qglobal.h>
 

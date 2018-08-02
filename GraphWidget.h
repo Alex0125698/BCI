@@ -16,7 +16,7 @@ class GraphWidget : public QWidget
 public:
 	GraphWidget(QWidget* parent);
 	// add titles ; setup dialog
-	void init(const QString title, const QString x_title, const int yBottom, const int yTop, const QString y_title_left, const QString y_title_right = "");
+	void init(const QString title, const QString x_title, const double yBottom, const double yTop, const QString y_title_left, const QString y_title_right = "");
 	// add variable to plot
 	void addVariable(Variable* const var, const bool visible);
 	void addVariables(std::vector<Variable*>& vars, const bool visible);
@@ -25,7 +25,7 @@ public:
 
 public slots:
 	// grab data from StateVariables (but don't plot)
-	void addData();
+	void addData(double time);
 	void setVisiblePlots();
 	void slotRefreshNames();
 	// clear data and reset time to 0
@@ -44,12 +44,11 @@ private:
 	std::vector<bool> m_display;
 	// store the checkboxes
 	std::vector<QCheckBox*> m_checkboxes;
-	// time for points
-	Timer m_timer;
 	// time format for axis
 	QSharedPointer<QCPAxisTickerTime> m_timeticker;
 	// dialog to select display graphs
 	QDialog* m_dialog_select{ nullptr };
 	// layout to store check boxes
 	QGridLayout* m_dialogLayout{ 0 };
+	double m_latest_time{ 0 };
 };

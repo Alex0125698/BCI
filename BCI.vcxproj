@@ -110,7 +110,7 @@
       <InputFile>%(FullPath)</InputFile>
       <OutputFile>.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</OutputFile>
       <IncludePath>.\GeneratedFiles\$(ConfigurationName);.\GeneratedFiles;C:/QT/5.10.1/MSVC2015/mkspecs/$(Platform)-msvc;.;C:/QT/5.10.1/MSVC2015/include;C:/QT/5.10.1/MSVC2015/include/QtPrintSupport;C:/QT/5.10.1/MSVC2015/include/QtWidgets;C:/QT/5.10.1/MSVC2015/include/QtWinExtras;C:/QT/5.10.1/MSVC2015/include/QtGui;C:/QT/5.10.1/MSVC2015/include/QtANGLE;C:/QT/5.10.1/MSVC2015/include/QtSerialPort;C:/QT/5.10.1/MSVC2015/include/QtCore;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE;C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\ucrt;C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um;C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\shared;C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um;C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\winrt</IncludePath>
-      <Define>UNICODE;_UNICODE;$(Platform);QT_DEPRECATED_WARNINGS;QT_NO_DEBUG;QT_PRINTSUPPORT_LIB;QT_WIDGETS_LIB;QT_WINEXTRAS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB</Define>
+      <Define>UNICODE;_UNICODE;$(Platform);QT_DEPRECATED_WARNINGS;QCUSTOMPLOT_USE_OPENGL;QT_NO_DEBUG;QT_PRINTSUPPORT_LIB;QT_WIDGETS_LIB;QT_WINEXTRAS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB</Define>
       <CompilerFlavor>msvc</CompilerFlavor>
       <Include>$(Configuration)/moc_predefs.h</Include>
       <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
@@ -177,7 +177,7 @@
       <InputFile>%(FullPath)</InputFile>
       <OutputFile>.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</OutputFile>
       <IncludePath>.\GeneratedFiles\$(ConfigurationName);.\GeneratedFiles;C:/QT/5.10.1/MSVC2015/mkspecs/$(Platform)-msvc;.;C:/QT/5.10.1/MSVC2015/include;C:/QT/5.10.1/MSVC2015/include/QtPrintSupport;C:/QT/5.10.1/MSVC2015/include/QtWidgets;C:/QT/5.10.1/MSVC2015/include/QtWinExtras;C:/QT/5.10.1/MSVC2015/include/QtGui;C:/QT/5.10.1/MSVC2015/include/QtANGLE;C:/QT/5.10.1/MSVC2015/include/QtSerialPort;C:/QT/5.10.1/MSVC2015/include/QtCore;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE;C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\ucrt;C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um;C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\shared;C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um;C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\winrt</IncludePath>
-      <Define>UNICODE;_UNICODE;$(Platform);QT_DEPRECATED_WARNINGS;QT_PRINTSUPPORT_LIB;QT_WIDGETS_LIB;QT_WINEXTRAS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB</Define>
+      <Define>UNICODE;_UNICODE;$(Platform);QT_DEPRECATED_WARNINGS;QCUSTOMPLOT_USE_OPENGL;QT_PRINTSUPPORT_LIB;QT_WIDGETS_LIB;QT_WINEXTRAS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB</Define>
       <CompilerFlavor>msvc</CompilerFlavor>
       <Include>$(Configuration)/moc_predefs.h</Include>
       <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
@@ -210,7 +210,6 @@
     <ClCompile Include="mainwindow.cpp" />
     <ClCompile Include="offline.cpp" />
     <ClCompile Include="qcustomplot.cpp" />
-    <ClCompile Include="serialio.cpp" />
     <ClCompile Include="spatial_filter.cpp" />
     <ClCompile Include="state.cpp" />
     <ClCompile Include="variable.cpp" />
@@ -297,7 +296,6 @@
       <Define Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">_WINDOWS;UNICODE;_UNICODE;WIN32;QT_DEPRECATED_WARNINGS;QT_NO_DEBUG;QT_PRINTSUPPORT_LIB;QT_WIDGETS_LIB;QT_WINEXTRAS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB;NDEBUG</Define>
     </QtMoc>
     <ClInclude Include="resources.h" />
-    <ClInclude Include="serialio.h" />
     <ClInclude Include="spatial_filter.h" />
     <QtMoc Include="state.h">
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;.\..\..\..\..\QT\5.10.1\MSVC2015\include;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtPrintSupport;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtWidgets;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtWinExtras;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtGui;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtANGLE;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtSerialPort;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtCore;.\debug;\include;.\..\..\..\..\QT\5.10.1\MSVC2015\mkspecs\win32-msvc</IncludePath>

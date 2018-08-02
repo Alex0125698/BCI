@@ -86,10 +86,16 @@ void bci::CytonInterface::decode()
 		return int32_t((uint32_t((int8_t)m_pkt_raw[i]) << 16u) | (m_pkt_raw[i + 1] << 8u) | m_pkt_raw[i + 2]);
 	};
 
+	double V_REF = 4.5; //volts
+	double MAX_RAW = 1 << 23;
+	double GAIN = 24;
+
+	double SCALE = V_REF / (MAX_RAW*GAIN);
+
 	int chByte = 1;
 	for (int i=0; i<8; ++i)
 	{
-		double tmp = get24Signed(chByte) / double(1u << 23u);
+		double tmp = SCALE*get24Signed(chByte);
 		std::lock_guard<std::mutex> lock(m_ch_mtx);
 		if (m_interleave)
 			m_channel[i] = tmp;

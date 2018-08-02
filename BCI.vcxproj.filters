@@ -77,9 +77,6 @@
     <ClCompile Include="bciinterface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="serialio.cpp">
-      <Filter>Libraries</Filter>
-    </ClCompile>
     <ClCompile Include="variable.cpp">
       <Filter>Libraries</Filter>
     </ClCompile>
@@ -191,9 +188,6 @@
     </ClInclude>
     <ClInclude Include="resources.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="serialio.h">
-      <Filter>Libraries</Filter>
     </ClInclude>
     <ClInclude Include="timer.h">
       <Filter>Libraries</Filter>

@@ -30,7 +30,7 @@ GraphWidget::GraphWidget(QWidget* parent)
 	m_plot = new QCustomPlot(this);
 }
 
-void GraphWidget::init(const QString title, const QString x_title, const int yBottom, const int yTop, const QString y_title_left, const QString y_title_right)
+void GraphWidget::init(const QString title, const QString x_title, const double yBottom, const double yTop, const QString y_title_left, const QString y_title_right)
 {
 	// ===== ADD TITLES =====
 	m_plot->plotLayout()->insertRow(0);
@@ -139,15 +139,15 @@ void GraphWidget::addVariables(std::vector<Variable*>& vars, const bool visible)
 	for (auto& var : vars) addVariable(var, visible);
 }
 
-void GraphWidget::addData()
+void GraphWidget::addData(double time)
 {
-	double key = m_timer.getDuration();
+	m_latest_time = time;
 	size_t index = 0;
 	for (size_t i=0; i<m_vars.size(); ++i)
 	{
 		if (m_display[i])
 		{
-			m_plot->graph(index)->addData(key, m_vars[i]->getValue());
+			m_plot->graph(index)->addData(time, m_vars[i]->getValue());
 			++index;
 		}
 	}
@@ -159,15 +159,14 @@ void GraphWidget::replot()
 
 	if (m_autoscroll)
 	{
-		double key = m_timer.getDuration();
-
+		double key = m_latest_time;
 		m_plot->xAxis->setRange(std::clamp(key-20,0.0,key), key);
 	}
 }
 
 void GraphWidget::clear()
 {
-	m_timer.restart();
+	m_latest_time = 0;
 
 	for (int i = 0; i< m_plot->graphCount(); ++i)
 		m_plot->graph(i)->setData(QVector<double>(), QVector<double>());
