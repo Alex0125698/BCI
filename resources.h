@@ -31,7 +31,7 @@
 //#include <forward_list>
 //#include <list>
 //#include <map>
-//#include <queue>
+#include <queue>
 //#include <set>
 //#include <stack>
 //#include <unordered_map>
@@ -83,7 +83,8 @@
 //#include <valarray>
 
 // === Boost ===
-//#include <filesystem>
+#include <boost/circular_buffer.hpp>
+//#include <boost/filesystem.hpp>
 
 //#include <boost/interprocess/shared_memory_object.hpp>
 //#include <boost/circular_buffer.hpp>
@@ -93,6 +94,7 @@
 
 #include <QObject>
 #include <QString>
+#include <QDebug>
 
 // === My Stuff ===
 

@@ -25,7 +25,10 @@ public slots:
 	void slotDataReady();
 
 protected:
+	Timer m_run_timer;
+	Timer m_used_time;
 	std::unique_ptr<bci::Interface> m_bci;
 	std::atomic<bool> m_running{ false };
+	boost::circular_buffer<std::vector<double>> m_data_buff;
 };
 

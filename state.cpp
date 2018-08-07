@@ -7,7 +7,7 @@ void bci::State::init()
 	assert(bci::State::program.m_vars.size() == 0);
 	bci::State::program.m_vars =
 	{
-		new Variable("TIME", Dimension::VOLTAGE,{ Tag::DATA_CHANNEL }),
+		new Variable("TIME", Dimension::VOLTAGE,{ Tag::STATUS_BAR }),
 		new Variable("CH1", Dimension::VOLTAGE,{ Tag::MCU_INPUT, Tag::DATA_CHANNEL }),
 		new Variable("CH2", Dimension::VOLTAGE,{ Tag::MCU_INPUT, Tag::DATA_CHANNEL }),
 		new Variable("CH3", Dimension::VOLTAGE,{ Tag::MCU_INPUT, Tag::DATA_CHANNEL }),
@@ -69,7 +69,10 @@ void bci::State::updateVars()
 			if (update) m_vars[i]->refresh();
 		}
 	}
+	static int c = 0;
 
+	qDebug() << c << ' ' << m_vars[1]->getValue();
+	++c;
 	if (m_reset)
 	{
 		m_reset = false;

@@ -1,4 +1,4 @@
-#include "spatial_filter.h"
+#include "sigprocessing.h"
 #include "bciinterface.h"
 
 const static double TWO_PI = 2 * 3.1415926535897932;

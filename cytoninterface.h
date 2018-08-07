@@ -15,12 +15,10 @@ class CytonInterface : public bci::Interface
 	Q_OBJECT
 
 public:
-	CytonInterface();
+	CytonInterface() = default;
 	virtual ~CytonInterface();
-	// acquire resources + connect to device + start stream
+	virtual const size_t maxChannels() override { return 16; }
 	virtual void start_helper() override;
-	
-	// free resources + disconnect
 	virtual void stop_helper() override;
 
 protected:
@@ -63,6 +61,7 @@ private:
 	// block using the serial port
 	bool m_error_state{ false };
 	bool m_interleave{ false };
+	std::array<double, 16> m_tmp_buff{ {0} };
 };
 
 }

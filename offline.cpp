@@ -26,7 +26,6 @@ void bci::Offline::start()
 
 		++num_cols;
 	}
-	m_channel.resize(num_cols);
 	// TODO: fill in positions
 	m_connected = true;
 }

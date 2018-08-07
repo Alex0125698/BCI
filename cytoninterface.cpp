@@ -2,11 +2,6 @@
 #include <QTimer>
 #include <QSerialPort>
 
-bci::CytonInterface::CytonInterface()
-{
-
-}
-
 bci::CytonInterface::~CytonInterface()
 {
 	stop();
@@ -93,14 +88,17 @@ void bci::CytonInterface::decode()
 	double SCALE = V_REF / (MAX_RAW*GAIN);
 
 	int chByte = 1;
+
 	for (int i=0; i<8; ++i)
 	{
 		double tmp = SCALE*get24Signed(chByte);
-		std::lock_guard<std::mutex> lock(m_ch_mtx);
-		if (m_interleave)
-			m_channel[i] = tmp;
-		else
-			m_channel[i+8] = tmp;
+		{
+			if (m_interleave)
+				m_tmp_buff[i] = tmp;
+			else
+				m_tmp_buff[i + 8] = tmp;
+		}
+
 		chByte += 3;
 	}
 
@@ -137,7 +135,6 @@ void bci::CytonInterface::stop_helper()
 
 void bci::CytonInterface::init()
 {
-	m_channel.resize(16,0.0);
 	m_serialPort = new QSerialPort();
 	m_serialPort->setBaudRate(QSerialPort::Baud115200);
 
@@ -221,7 +218,17 @@ void bci::CytonInterface::slotReadyRead()
 				m_info = "";
 			}
 			decode();
-			if (m_interleave) emit sigDataReady();
+			if (m_interleave)
+			{
+				{
+					std::lock_guard<std::mutex> lock(m_ch_mtx);
+					if (m_channel.size() >= 32)
+						emit sigError("Controller failed to keep up with BCI");
+					m_channel.emplace(m_tmp_buff.begin(), m_tmp_buff.end());
+				}
+				
+				emit sigDataReady();
+			}
 
 			//ui->textReceive->appendPlainText(s);
 			//ui->textReceive->appendPlainText(plain);

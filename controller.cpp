@@ -3,9 +3,9 @@
 #include "bciinterface.h"
 #include "cytoninterface.h"
 #include "offline.h"
-#include "spatial_filter.h"
+#include "sigprocessing.h"
 #include "state.h"
-
+#include <QTimer>
 
 template<typename T>
 T map(T val, T val_min, T val_max, T min, T max)
@@ -18,9 +18,12 @@ Controller::Controller()
 	// : m_bci{ new bci::Offline("right_smr_1.csv") }
 	: m_bci{ new bci::CytonInterface }
 {
+	m_data_buff.resize(1024);
+	for (auto& ch : m_data_buff)
+		ch.resize(16,0.0);
+
 	connect(m_bci.get(), &bci::CytonInterface::sigDataReady, this, &Controller::slotDataReady, Qt::QueuedConnection);
 	connect(m_bci.get(), &bci::CytonInterface::sigCallStopHelper, this, &Controller::slotStop, Qt::QueuedConnection);
-	//connect()
 }
 
 void Controller::slotStart()
@@ -28,6 +31,7 @@ void Controller::slotStart()
 	try
 	{
 		(bci::State::program.getVars())[(size_t)Vars::TIME]->data() = 0;
+		m_run_timer.restart();
 		DEBUG_PRINTLN("clear");
 		m_bci->start();
 		m_running = true;
@@ -56,24 +60,22 @@ void Controller::slotStop()
 		m_bci->stop();
 }
 
-std::vector<double> store(16);
-
 void Controller::slotDataReady()
 {
-	m_bci->getData(store);
-
-	
+	m_data_buff.push_back(std::vector(16, 0.0));
+	m_bci->getData(m_data_buff[m_data_buff.size()-1]);
 
 	auto start = (size_t)Vars::CH1;
 	auto stop = (size_t)Vars::CH16;
 
 	bci::State::program.loadVars();
 
+	bci::State::program[Vars::RUN_TIME] = m_run_timer.getDuration();
 	bci::State::program[Vars::TIME] += 1.0 / 125.0; // Assume 125 Hz
 
 	for (auto i = start; i <= stop; ++i)
 	{
-		bci::State::program[i] = store[i];
+		bci::State::program[i] = m_data_buff[m_data_buff.size()-1][i-start];
 	}
 
 	bci::State::program.updateVars();
