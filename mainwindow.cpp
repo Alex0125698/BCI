@@ -46,15 +46,15 @@ MainWindow::MainWindow(QWidget *parent) :
 	fbandVars.push_back(fbandVars[0]);
 	auto freqViews = bci::State::program.generateViews(fbandVars, View::Type::TABLE);
 
-	ui->group_freqs->setup("", {}, freqViews);
+	//ui->group_freqs->setup("", {}, freqViews);
 
 	// ===== SET UP GRAPHS =====
 
-	//ui->plot_freq->init("Frequency Bands", "Time (s)", -20, +20, "");
+	ui->plot_freq->init("Frequency Bands", "Time (s)", -1, +1, "");
 	ui->plot_time->init("Time-Domain", "Time (s)", -0.187, 0.187, "");
 
 	ui->plot_time->addVariables(chVars, true);
-	//ui->plot_freq->addVariables(fbandVars, true);
+	ui->plot_freq->addVariables(fbandVars, true);
 
 	// ===== set up status bar =====
 
@@ -127,7 +127,7 @@ void MainWindow::slotDebugMessage(QString msg, QString file, int line, int type)
 void MainWindow::slotViewUpdate()
 {
 	ui->plot_time->replot();
-	//ui->plot_freq->replot();
+	ui->plot_freq->replot();
 }
 
 void MainWindow::slotRunStateChanged(bool running)

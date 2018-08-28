@@ -1,23 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Release|Win32">
+    <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
-      <Platform>Win32</Platform>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug|Win32">
+    <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
-      <Platform>Win32</Platform>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{75B07D42-1E74-3A3D-88FF-523FD05444A6}</ProjectGuid>
     <RootNamespace>BCI</RootNamespace>
     <Keyword>Qt4VSv1.0</Keyword>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <PlatformToolset>v141</PlatformToolset>
     <OutputDirectory>release\</OutputDirectory>
     <ATLMinimizesCRunTimeLibraryUsage>false</ATLMinimizesCRunTimeLibraryUsage>
@@ -26,7 +26,7 @@
     <IntermediateDirectory>release\</IntermediateDirectory>
     <PrimaryOutput>BCI</PrimaryOutput>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <PlatformToolset>v141</PlatformToolset>
     <OutputDirectory>debug\</OutputDirectory>
     <ATLMinimizesCRunTimeLibraryUsage>false</ATLMinimizesCRunTimeLibraryUsage>
@@ -46,28 +46,36 @@
     <Import Project="$(QtMsBuild)\qt.props" />
   </ImportGroup>
   <ImportGroup Label="ExtensionSettings" />
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">release\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\</IntDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">BCI</TargetName>
-    <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</IgnoreImportLibrary>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">debug\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\</IntDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">BCI</TargetName>
-    <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</IgnoreImportLibrary>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">BCI</TargetName>
+    <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</IgnoreImportLibrary>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">BCI</TargetName>
+    <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</IgnoreImportLibrary>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <CodeAnalysisRuleSet>NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <CodeAnalysisRuleSet>NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>.\GeneratedFiles\$(ConfigurationName);.\GeneratedFiles;.;..\..\..\..\QT\5.10.1\MSVC2015\include;..\..\..\..\QT\5.10.1\MSVC2015\include\QtPrintSupport;..\..\..\..\QT\5.10.1\MSVC2015\include\QtWidgets;..\..\..\..\QT\5.10.1\MSVC2015\include\QtWinExtras;..\..\..\..\QT\5.10.1\MSVC2015\include\QtGui;..\..\..\..\QT\5.10.1\MSVC2015\include\QtANGLE;..\..\..\..\QT\5.10.1\MSVC2015\include\QtSerialPort;..\..\..\..\QT\5.10.1\MSVC2015\include\QtCore;C:\libraries\boost\1.67.0;release;\include;..\..\..\..\QT\5.10.1\MSVC2015\mkspecs\win32-msvc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalOptions>-Zc:rvalueCast -Zc:inline -Zc:strictStrings -Zc:throwingNew -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>.\GeneratedFiles\$(ConfigurationName);.\GeneratedFiles;.;..\..\..\..\QT\5.10.0\MSVC2017_64\include;..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtOpenGL;..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtPrintSupport;..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtWidgets;..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtWinExtras;..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtGui;..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtANGLE;..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtSerialPort;..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtCore;release;\include;..\..\..\..\QT\5.10.0\MSVC2017_64\mkspecs\win32-msvc;%(AdditionalIncludeDirectories);C:\libraries\boost\1.67.0;C:\libraries\glm\0.9.9.0;C:\libraries\stb\2.19</AdditionalIncludeDirectories>
+      <AdditionalOptions>-Zc:rvalueCast -Zc:inline -Zc:strictStrings -Zc:throwingNew -Zc:referenceBinding -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 %(AdditionalOptions)</AdditionalOptions>
       <AssemblerListingLocation>release\</AssemblerListingLocation>
       <BrowseInformation>false</BrowseInformation>
       <DebugInformationFormat>None</DebugInformationFormat>
@@ -75,7 +83,7 @@
       <ExceptionHandling>Sync</ExceptionHandling>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <Optimization>MaxSpeed</Optimization>
-      <PreprocessorDefinitions>_WINDOWS;UNICODE;_UNICODE;WIN32;QT_DEPRECATED_WARNINGS;QT_NO_DEBUG;QT_PRINTSUPPORT_LIB;QT_WIDGETS_LIB;QT_WINEXTRAS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINDOWS;UNICODE;_UNICODE;WIN32;WIN64;QT_DEPRECATED_WARNINGS;QCUSTOMPLOT_USE_OPENGL;QT_NO_DEBUG;QT_OPENGL_LIB;QT_PRINTSUPPORT_LIB;QT_WIDGETS_LIB;QT_WINEXTRAS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessToFile>false</PreprocessToFile>
       <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -83,10 +91,12 @@
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <WarningLevel>Level3</WarningLevel>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <EnablePREfast>false</EnablePREfast>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>C:\QT\5.10.1\MSVC2015\lib\qtmain.lib;shell32.lib;C:\QT\5.10.1\MSVC2015\lib\Qt5PrintSupport.lib;C:\QT\5.10.1\MSVC2015\lib\Qt5Widgets.lib;C:\QT\5.10.1\MSVC2015\lib\Qt5WinExtras.lib;C:\QT\5.10.1\MSVC2015\lib\Qt5Gui.lib;C:\QT\5.10.1\MSVC2015\lib\Qt5SerialPort.lib;C:\QT\5.10.1\MSVC2015\lib\Qt5Core.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\QT\5.10.1\MSVC2015\lib;C:\Utils\my_sql\my_sqlx86\lib;C:\Utils\postgresqlx86\pgsql\lib;C:\libraries\boost\1.67.0;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>C:\QT\5.10.0\MSVC2017_64\lib\qtmain.lib;shell32.lib;opengl32.lib;glu32.lib;C:\QT\5.10.0\MSVC2017_64\lib\Qt5OpenGL.lib;C:\QT\5.10.0\MSVC2017_64\lib\Qt5PrintSupport.lib;C:\QT\5.10.0\MSVC2017_64\lib\Qt5Widgets.lib;C:\QT\5.10.0\MSVC2017_64\lib\Qt5WinExtras.lib;C:\QT\5.10.0\MSVC2017_64\lib\Qt5Gui.lib;C:\QT\5.10.0\MSVC2017_64\lib\Qt5SerialPort.lib;C:\QT\5.10.0\MSVC2017_64\lib\Qt5Core.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\QT\5.10.0\MSVC2017_64\lib;C:\utils\my_sql\my_sql\lib;C:\utils\postgresql\pgsql\lib;$(QTDIR)\lib;C:\libraries\boost\1.67.0\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>"/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'" %(AdditionalOptions)</AdditionalOptions>
       <DataExecutionPrevention>true</DataExecutionPrevention>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -103,38 +113,38 @@
       <WarningLevel>0</WarningLevel>
     </Midl>
     <ResourceCompile>
-      <PreprocessorDefinitions>_WINDOWS;UNICODE;_UNICODE;WIN32;QT_DEPRECATED_WARNINGS;QT_NO_DEBUG;QT_PRINTSUPPORT_LIB;QT_WIDGETS_LIB;QT_WINEXTRAS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINDOWS;UNICODE;_UNICODE;WIN32;WIN64;QT_DEPRECATED_WARNINGS;QCUSTOMPLOT_USE_OPENGL;QT_NO_DEBUG;QT_OPENGL_LIB;QT_PRINTSUPPORT_LIB;QT_WIDGETS_LIB;QT_WINEXTRAS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <QtMoc>
-      <QTDIR>C:\QT\5.10.1\MSVC2015</QTDIR>
-      <InputFile>%(FullPath)</InputFile>
+      <QTDIR>C:\QT\5.10.0\MSVC2017_64</QTDIR>
       <OutputFile>.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</OutputFile>
-      <IncludePath>.\GeneratedFiles\$(ConfigurationName);.\GeneratedFiles;.;..\..\..\..\QT\5.10.1\MSVC2015\include;..\..\..\..\QT\5.10.1\MSVC2015\include\QtPrintSupport;..\..\..\..\QT\5.10.1\MSVC2015\include\QtWidgets;..\..\..\..\QT\5.10.1\MSVC2015\include\QtWinExtras;..\..\..\..\QT\5.10.1\MSVC2015\include\QtGui;..\..\..\..\QT\5.10.1\MSVC2015\include\QtANGLE;..\..\..\..\QT\5.10.1\MSVC2015\include\QtSerialPort;..\..\..\..\QT\5.10.1\MSVC2015\include\QtCore;C:\libraries\boost\1.67.0;release;\include;..\..\..\..\QT\5.10.1\MSVC2015\mkspecs\win32-msvc;%(AdditionalIncludeDirectories)</IncludePath>
-      <Define>UNICODE;_UNICODE;$(Platform);QT_DEPRECATED_WARNINGS;QCUSTOMPLOT_USE_OPENGL;QT_NO_DEBUG;QT_PRINTSUPPORT_LIB;QT_WIDGETS_LIB;QT_WINEXTRAS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB</Define>
+      <Define>_WINDOWS;UNICODE;_UNICODE;WIN32;WIN64;QT_DEPRECATED_WARNINGS;QCUSTOMPLOT_USE_OPENGL;QT_NO_DEBUG;QT_OPENGL_LIB;QT_PRINTSUPPORT_LIB;QT_WIDGETS_LIB;QT_WINEXTRAS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB;NDEBUG</Define>
       <CompilerFlavor>msvc</CompilerFlavor>
       <Include>$(Configuration)/moc_predefs.h</Include>
       <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
+      <InputFile>%(FullPath)</InputFile>
       <DynamicSource>output</DynamicSource>
+      <IncludePath>.\GeneratedFiles\$(ConfigurationName);.\GeneratedFiles;.;..\..\..\..\QT\5.10.0\MSVC2017_64\include;..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtOpenGL;..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtPrintSupport;..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtWidgets;..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtWinExtras;..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtGui;..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtANGLE;..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtSerialPort;..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtCore;release;\include;..\..\..\..\QT\5.10.0\MSVC2017_64\mkspecs\win32-msvc;%(AdditionalIncludeDirectories);C:\libraries\boost\1.67.0;C:\libraries\glm\0.9.9.0;C:\libraries\stb\2.19</IncludePath>
     </QtMoc>
     <QtRcc>
-      <QTDIR>C:\QT\5.10.1\MSVC2015</QTDIR>
-      <InputFile>%(FullPath)</InputFile>
-      <OutputFile>.\GeneratedFiles\qrc_%(Filename).cpp</OutputFile>
       <InitFuncName>resources</InitFuncName>
-      <Compression>default</Compression>
+      <OutputFile>.\GeneratedFiles\qrc_%(Filename).cpp</OutputFile>
+      <QTDIR>C:\QT\5.10.0\MSVC2017_64</QTDIR>
       <ExecutionDescription>Rcc'ing %(Identity)...</ExecutionDescription>
+      <Compression>default</Compression>
+      <InputFile>%(FullPath)</InputFile>
     </QtRcc>
     <QtUic>
-      <QTDIR>C:\QT\5.10.1\MSVC2015</QTDIR>
-      <InputFile>%(FullPath)</InputFile>
       <OutputFile>.\GeneratedFiles\ui_%(Filename).h</OutputFile>
+      <InputFile>%(FullPath)</InputFile>
+      <QTDIR>C:\QT\5.10.0\MSVC2017_64</QTDIR>
       <ExecutionDescription>Uic'ing %(Identity)...</ExecutionDescription>
     </QtUic>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>.\GeneratedFiles\$(ConfigurationName);.\GeneratedFiles;.;..\..\..\..\QT\5.10.1\MSVC2015\include;..\..\..\..\QT\5.10.1\MSVC2015\include\QtPrintSupport;..\..\..\..\QT\5.10.1\MSVC2015\include\QtWidgets;..\..\..\..\QT\5.10.1\MSVC2015\include\QtWinExtras;..\..\..\..\QT\5.10.1\MSVC2015\include\QtGui;..\..\..\..\QT\5.10.1\MSVC2015\include\QtANGLE;..\..\..\..\QT\5.10.1\MSVC2015\include\QtSerialPort;..\..\..\..\QT\5.10.1\MSVC2015\include\QtCore;C:\libraries\boost\1.67.0;debug;\include;..\..\..\..\QT\5.10.1\MSVC2015\mkspecs\win32-msvc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalOptions>-Zc:rvalueCast -Zc:inline -Zc:strictStrings -Zc:throwingNew -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>.\GeneratedFiles\$(ConfigurationName);.\GeneratedFiles;.;..\..\..\..\QT\5.10.0\MSVC2017_64\include;..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtOpenGL;..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtPrintSupport;..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtWidgets;..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtWinExtras;..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtGui;..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtANGLE;..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtSerialPort;..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtCore;debug;\include;..\..\..\..\QT\5.10.0\MSVC2017_64\mkspecs\win32-msvc;%(AdditionalIncludeDirectories);C:\libraries\boost\1.67.0;C:\libraries\glm\0.9.9.0;C:\libraries\stb\2.19</AdditionalIncludeDirectories>
+      <AdditionalOptions>-Zc:rvalueCast -Zc:inline -Zc:strictStrings -Zc:throwingNew -Zc:referenceBinding -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 %(AdditionalOptions)</AdditionalOptions>
       <AssemblerListingLocation>debug\</AssemblerListingLocation>
       <BrowseInformation>false</BrowseInformation>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -142,7 +152,7 @@
       <ExceptionHandling>Sync</ExceptionHandling>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_WINDOWS;UNICODE;_UNICODE;WIN32;QT_DEPRECATED_WARNINGS;QT_PRINTSUPPORT_LIB;QT_WIDGETS_LIB;QT_WINEXTRAS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINDOWS;UNICODE;_UNICODE;WIN32;WIN64;QT_DEPRECATED_WARNINGS;QCUSTOMPLOT_USE_OPENGL;QT_OPENGL_LIB;QT_PRINTSUPPORT_LIB;QT_WIDGETS_LIB;QT_WINEXTRAS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessToFile>false</PreprocessToFile>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -151,10 +161,11 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <EnablePREfast>false</EnablePREfast>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>C:\QT\5.10.1\MSVC2015\lib\qtmaind.lib;shell32.lib;C:\QT\5.10.1\MSVC2015\lib\Qt5PrintSupportd.lib;C:\QT\5.10.1\MSVC2015\lib\Qt5Widgetsd.lib;C:\QT\5.10.1\MSVC2015\lib\Qt5WinExtrasd.lib;C:\QT\5.10.1\MSVC2015\lib\Qt5Guid.lib;C:\QT\5.10.1\MSVC2015\lib\Qt5SerialPortd.lib;C:\QT\5.10.1\MSVC2015\lib\Qt5Cored.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\QT\5.10.1\MSVC2015\lib;C:\Utils\my_sql\my_sqlx86\lib;C:\Utils\postgresqlx86\pgsql\lib;C:\libraries\boost\1.67.0;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>C:\QT\5.10.0\MSVC2017_64\lib\qtmaind.lib;shell32.lib;opengl32.lib;glu32.lib;C:\QT\5.10.0\MSVC2017_64\lib\Qt5OpenGLd.lib;C:\QT\5.10.0\MSVC2017_64\lib\Qt5PrintSupportd.lib;C:\QT\5.10.0\MSVC2017_64\lib\Qt5Widgetsd.lib;C:\QT\5.10.0\MSVC2017_64\lib\Qt5WinExtrasd.lib;C:\QT\5.10.0\MSVC2017_64\lib\Qt5Guid.lib;C:\QT\5.10.0\MSVC2017_64\lib\Qt5SerialPortd.lib;C:\QT\5.10.0\MSVC2017_64\lib\Qt5Cored.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\QT\5.10.0\MSVC2017_64\lib;C:\utils\my_sql\my_sql\lib;C:\utils\postgresql\pgsql\lib;$(QTDIR)\lib;C:\libraries\boost\1.67.0\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>"/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'" %(AdditionalOptions)</AdditionalOptions>
       <DataExecutionPrevention>true</DataExecutionPrevention>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -170,34 +181,112 @@
       <WarningLevel>0</WarningLevel>
     </Midl>
     <ResourceCompile>
-      <PreprocessorDefinitions>_WINDOWS;UNICODE;_UNICODE;WIN32;QT_DEPRECATED_WARNINGS;QT_PRINTSUPPORT_LIB;QT_WIDGETS_LIB;QT_WINEXTRAS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINDOWS;UNICODE;_UNICODE;WIN32;WIN64;QT_DEPRECATED_WARNINGS;QCUSTOMPLOT_USE_OPENGL;QT_OPENGL_LIB;QT_PRINTSUPPORT_LIB;QT_WIDGETS_LIB;QT_WINEXTRAS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
-    <QtMoc>
-      <QTDIR>C:\QT\5.10.1\MSVC2015</QTDIR>
+    <QtRcc>
+      <QTDIR>C:\QT\5.10.0\MSVC2017_64</QTDIR>
+      <ExecutionDescription>Rcc'ing %(Identity)...</ExecutionDescription>
+      <Compression>default</Compression>
+      <InitFuncName>resources</InitFuncName>
+      <OutputFile>.\GeneratedFiles\qrc_%(Filename).cpp</OutputFile>
       <InputFile>%(FullPath)</InputFile>
+    </QtRcc>
+    <QtMoc>
+      <QTDIR>C:\QT\5.10.0\MSVC2017_64</QTDIR>
       <OutputFile>.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</OutputFile>
-      <IncludePath>.\GeneratedFiles\$(ConfigurationName);.\GeneratedFiles;.;..\..\..\..\QT\5.10.1\MSVC2015\include;..\..\..\..\QT\5.10.1\MSVC2015\include\QtPrintSupport;..\..\..\..\QT\5.10.1\MSVC2015\include\QtWidgets;..\..\..\..\QT\5.10.1\MSVC2015\include\QtWinExtras;..\..\..\..\QT\5.10.1\MSVC2015\include\QtGui;..\..\..\..\QT\5.10.1\MSVC2015\include\QtANGLE;..\..\..\..\QT\5.10.1\MSVC2015\include\QtSerialPort;..\..\..\..\QT\5.10.1\MSVC2015\include\QtCore;C:\libraries\boost\1.67.0;debug;\include;..\..\..\..\QT\5.10.1\MSVC2015\mkspecs\win32-msvc;%(AdditionalIncludeDirectories)</IncludePath>
-      <Define>UNICODE;_UNICODE;$(Platform);QT_DEPRECATED_WARNINGS;QCUSTOMPLOT_USE_OPENGL;QT_PRINTSUPPORT_LIB;QT_WIDGETS_LIB;QT_WINEXTRAS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB</Define>
+      <Define>_WINDOWS;UNICODE;_UNICODE;WIN32;WIN64;QT_DEPRECATED_WARNINGS;QCUSTOMPLOT_USE_OPENGL;QT_OPENGL_LIB;QT_PRINTSUPPORT_LIB;QT_WIDGETS_LIB;QT_WINEXTRAS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB</Define>
       <CompilerFlavor>msvc</CompilerFlavor>
       <Include>$(Configuration)/moc_predefs.h</Include>
       <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
+      <InputFile>%(FullPath)</InputFile>
       <DynamicSource>output</DynamicSource>
+      <IncludePath>.\GeneratedFiles\$(ConfigurationName);.\GeneratedFiles;.;..\..\..\..\QT\5.10.0\MSVC2017_64\include;..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtOpenGL;..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtPrintSupport;..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtWidgets;..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtWinExtras;..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtGui;..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtANGLE;..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtSerialPort;..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtCore;debug;\include;..\..\..\..\QT\5.10.0\MSVC2017_64\mkspecs\win32-msvc;%(AdditionalIncludeDirectories);C:\libraries\boost\1.67.0;C:\libraries\glm\0.9.9.0;C:\libraries\stb\2.19</IncludePath>
     </QtMoc>
-    <QtRcc>
-      <QTDIR>C:\QT\5.10.1\MSVC2015</QTDIR>
-      <InputFile>%(FullPath)</InputFile>
-      <OutputFile>.\GeneratedFiles\qrc_%(Filename).cpp</OutputFile>
-      <InitFuncName>resources</InitFuncName>
-      <Compression>default</Compression>
-      <ExecutionDescription>Rcc'ing %(Identity)...</ExecutionDescription>
-    </QtRcc>
     <QtUic>
-      <QTDIR>C:\QT\5.10.1\MSVC2015</QTDIR>
-      <InputFile>%(FullPath)</InputFile>
       <OutputFile>.\GeneratedFiles\ui_%(Filename).h</OutputFile>
+      <InputFile>%(FullPath)</InputFile>
+      <QTDIR>C:\QT\5.10.0\MSVC2017_64</QTDIR>
       <ExecutionDescription>Uic'ing %(Identity)...</ExecutionDescription>
     </QtUic>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <QtMoc Include="view.h" />
+    <QtMoc Include="variable.h" />
+    <CustomBuild Include="debug\moc_predefs.h.cbt">
+      <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\..\..\QT\5.10.0\MSVC2017_64\mkspecs\features\data\dummy.cpp;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">cl -Bx"$(QTDIR)\bin\qmake.exe" -nologo -Zc:wchar_t -FS -Zc:rvalueCast -Zc:inline -Zc:strictStrings -Zc:throwingNew -Zc:referenceBinding -Zi -MDd -W3 -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 -wd4577 -wd4467 -E ..\..\..\..\QT\5.10.0\MSVC2017_64\mkspecs\features\data\dummy.cpp 2&gt;NUL &gt;debug\moc_predefs.h</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Generate moc_predefs.h</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">debug\moc_predefs.h;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="release\moc_predefs.h.cbt">
+      <FileType>Document</FileType>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\..\..\QT\5.10.0\MSVC2017_64\mkspecs\features\data\dummy.cpp;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">cl -Bx"$(QTDIR)\bin\qmake.exe" -nologo -Zc:wchar_t -FS -Zc:rvalueCast -Zc:inline -Zc:strictStrings -Zc:throwingNew -Zc:referenceBinding -O2 -MD -W3 -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 -wd4577 -wd4467 -E ..\..\..\..\QT\5.10.0\MSVC2017_64\mkspecs\features\data\dummy.cpp 2&gt;NUL &gt;release\moc_predefs.h</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Generate moc_predefs.h</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">release\moc_predefs.h;%(Outputs)</Outputs>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <QtMoc Include="bciinterface.h" />
+    <QtMoc Include="controller.h" />
+    <QtMoc Include="core.h" />
+    <ClInclude Include="csvio.h" />
+    <QtMoc Include="cytoninterface.h" />
+    <QtMoc Include="error.h" />
+    <QtMoc Include="graphwidget.h" />
+    <QtMoc Include="mainwindow.h" />
+    <QtMoc Include="game.h">
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtOpenGL;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtPrintSupport;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtWidgets;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtWinExtras;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtGui;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtANGLE;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtSerialPort;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtCore;.\debug;\include;.\..\..\..\..\QT\5.10.0\MSVC2017_64\mkspecs\win32-msvc;$(INHERIT)\.;C:\libraries\boost\1.67.0;C:\libraries\glm\0.9.9.0;C:\libraries\stb\2.19</IncludePath>
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtOpenGL;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtPrintSupport;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtWidgets;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtWinExtras;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtGui;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtANGLE;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtSerialPort;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtCore;.\release;\include;.\..\..\..\..\QT\5.10.0\MSVC2017_64\mkspecs\win32-msvc;$(INHERIT)\.;C:\libraries\boost\1.67.0;C:\libraries\glm\0.9.9.0;C:\libraries\stb\2.19</IncludePath>
+    </QtMoc>
+    <ClInclude Include="offline.h" />
+    <QtMoc Include="qcustomplot.h" />
+    <ClInclude Include="openglresources.h" />
+    <QtMoc Include="pixplotter.h">
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtOpenGL;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtPrintSupport;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtWidgets;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtWinExtras;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtGui;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtANGLE;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtSerialPort;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtCore;.\debug;\include;.\..\..\..\..\QT\5.10.0\MSVC2017_64\mkspecs\win32-msvc;$(INHERIT)\.;C:\libraries\boost\1.67.0;C:\libraries\glm\0.9.9.0;C:\libraries\stb\2.19</IncludePath>
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtOpenGL;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtPrintSupport;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtWidgets;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtWinExtras;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtGui;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtANGLE;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtSerialPort;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtCore;.\release;\include;.\..\..\..\..\QT\5.10.0\MSVC2017_64\mkspecs\win32-msvc;$(INHERIT)\.;C:\libraries\boost\1.67.0;C:\libraries\glm\0.9.9.0;C:\libraries\stb\2.19</IncludePath>
+    </QtMoc>
+    <ClInclude Include="profiler.h" />
+    <ClInclude Include="resources.h" />
+    <ClInclude Include="shader.h" />
+    <ClInclude Include="sigprocessing.h" />
+    <QtMoc Include="state.h" />
+    <ClInclude Include="texture.h" />
+    <ClInclude Include="timer.h" />
+    <ClInclude Include="translation.h" />
+    <ClInclude Include="ui_mainwindow.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="mainwindow.ui">
+    </QtUic>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Emotiv.png" />
+    <None Include="icons\Save.JPG" />
+    <None Include="icons\Settings.png" />
+    <None Include="icons\Stop_32.jpg" />
+    <None Include="images\UoA_Logo.png" />
+    <None Include="icons\arrow_green.jpg" />
+    <None Include="icons\arrow_orange.jpg" />
+    <None Include="arrow" />
+    <None Include="images\background-dark.png" />
+    <None Include="icons\cool" />
+    <None Include="icons\debug.png" />
+    <None Include="effect.jpg" />
+    <None Include="shaders\FS_math.glsl" />
+    <None Include="shaders\FS_pixplotter.glsl" />
+    <None Include="shaders\VS_math.glsl" />
+    <None Include="shaders\VS_pixplotter.glsl" />
+    <QtRcc Include="resources.qrc">
+    </QtRcc>
+    <None Include="icons\spanner.png" />
+    <None Include="images\tmp2.png" />
+    <None Include="icons\usb.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include=".\BCI_resource.rc" />
+  </ItemGroup>
   <ItemGroup>
     <ClCompile Include="bciinterface.cpp" />
     <ClCompile Include="controller.cpp" />
@@ -205,124 +294,26 @@
     <ClCompile Include="csvio.cpp" />
     <ClCompile Include="cytoninterface.cpp" />
     <ClCompile Include="error.cpp" />
+    <ClCompile Include="game.cpp" />
     <ClCompile Include="graphwidget.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mainwindow.cpp" />
     <ClCompile Include="offline.cpp" />
+    <ClCompile Include="pixplotter.cpp" />
+    <ClCompile Include="profiler.cpp" />
     <ClCompile Include="qcustomplot.cpp" />
+    <ClCompile Include="shader.cpp" />
     <ClCompile Include="sigprocessing.cpp" />
     <ClCompile Include="state.cpp" />
+    <ClCompile Include="stb_image.c" />
+    <ClCompile Include="texture.cpp" />
     <ClCompile Include="variable.cpp" />
     <ClCompile Include="view.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="view.h">
-      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;.\..\..\..\..\QT\5.10.1\MSVC2015\include;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtPrintSupport;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtWidgets;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtWinExtras;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtGui;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtANGLE;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtSerialPort;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtCore;.\debug;\include;.\..\..\..\..\QT\5.10.1\MSVC2015\mkspecs\win32-msvc</IncludePath>
-      <Define Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">_WINDOWS;UNICODE;_UNICODE;WIN32;QT_DEPRECATED_WARNINGS;QT_PRINTSUPPORT_LIB;QT_WIDGETS_LIB;QT_WINEXTRAS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB</Define>
-      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;.\..\..\..\..\QT\5.10.1\MSVC2015\include;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtPrintSupport;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtWidgets;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtWinExtras;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtGui;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtANGLE;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtSerialPort;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtCore;.\release;\include;.\..\..\..\..\QT\5.10.1\MSVC2015\mkspecs\win32-msvc</IncludePath>
-      <Define Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">_WINDOWS;UNICODE;_UNICODE;WIN32;QT_DEPRECATED_WARNINGS;QT_NO_DEBUG;QT_PRINTSUPPORT_LIB;QT_WIDGETS_LIB;QT_WINEXTRAS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB;NDEBUG</Define>
-    </QtMoc>
-    <QtMoc Include="variable.h">
-      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;.\..\..\..\..\QT\5.10.1\MSVC2015\include;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtPrintSupport;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtWidgets;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtWinExtras;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtGui;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtANGLE;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtSerialPort;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtCore;.\debug;\include;.\..\..\..\..\QT\5.10.1\MSVC2015\mkspecs\win32-msvc</IncludePath>
-      <Define Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">_WINDOWS;UNICODE;_UNICODE;WIN32;QT_DEPRECATED_WARNINGS;QT_PRINTSUPPORT_LIB;QT_WIDGETS_LIB;QT_WINEXTRAS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB</Define>
-      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;.\..\..\..\..\QT\5.10.1\MSVC2015\include;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtPrintSupport;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtWidgets;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtWinExtras;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtGui;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtANGLE;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtSerialPort;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtCore;.\release;\include;.\..\..\..\..\QT\5.10.1\MSVC2015\mkspecs\win32-msvc</IncludePath>
-      <Define Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">_WINDOWS;UNICODE;_UNICODE;WIN32;QT_DEPRECATED_WARNINGS;QT_NO_DEBUG;QT_PRINTSUPPORT_LIB;QT_WIDGETS_LIB;QT_WINEXTRAS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB;NDEBUG</Define>
-    </QtMoc>
-    <CustomBuild Include="debug\moc_predefs.h.cbt">
-      <FileType>Document</FileType>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\..\..\QT\5.10.1\MSVC2015\mkspecs\features\data\dummy.cpp;%(AdditionalInputs)</AdditionalInputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">cl -Bx"$(QTDIR)\bin\qmake.exe" -nologo -Zc:wchar_t -FS -Zc:rvalueCast -Zc:inline -Zc:strictStrings -Zc:throwingNew -Zi -MDd -W3 -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 -wd4577 -wd4467 -E ..\..\..\..\QT\5.10.1\MSVC2015\mkspecs\features\data\dummy.cpp 2&gt;NUL &gt;debug\moc_predefs.h</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Generate moc_predefs.h</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">debug\moc_predefs.h;%(Outputs)</Outputs>
-    </CustomBuild>
-    <CustomBuild Include="release\moc_predefs.h.cbt">
-      <FileType>Document</FileType>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\..\..\QT\5.10.1\MSVC2015\mkspecs\features\data\dummy.cpp;%(AdditionalInputs)</AdditionalInputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">cl -Bx"$(QTDIR)\bin\qmake.exe" -nologo -Zc:wchar_t -FS -Zc:rvalueCast -Zc:inline -Zc:strictStrings -Zc:throwingNew -O2 -MD -W3 -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 -wd4577 -wd4467 -E ..\..\..\..\QT\5.10.1\MSVC2015\mkspecs\features\data\dummy.cpp 2&gt;NUL &gt;release\moc_predefs.h</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Generate moc_predefs.h</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">release\moc_predefs.h;%(Outputs)</Outputs>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </CustomBuild>
-    <QtMoc Include="bciinterface.h">
-      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;.\..\..\..\..\QT\5.10.1\MSVC2015\include;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtPrintSupport;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtWidgets;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtWinExtras;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtGui;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtANGLE;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtSerialPort;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtCore;.\debug;\include;.\..\..\..\..\QT\5.10.1\MSVC2015\mkspecs\win32-msvc</IncludePath>
-      <Define Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">_WINDOWS;UNICODE;_UNICODE;WIN32;QT_DEPRECATED_WARNINGS;QT_PRINTSUPPORT_LIB;QT_WIDGETS_LIB;QT_WINEXTRAS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB</Define>
-      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;.\..\..\..\..\QT\5.10.1\MSVC2015\include;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtPrintSupport;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtWidgets;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtWinExtras;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtGui;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtANGLE;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtSerialPort;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtCore;.\release;\include;.\..\..\..\..\QT\5.10.1\MSVC2015\mkspecs\win32-msvc</IncludePath>
-      <Define Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">_WINDOWS;UNICODE;_UNICODE;WIN32;QT_DEPRECATED_WARNINGS;QT_NO_DEBUG;QT_PRINTSUPPORT_LIB;QT_WIDGETS_LIB;QT_WINEXTRAS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB;NDEBUG</Define>
-    </QtMoc>
-    <QtMoc Include="controller.h">
-      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;.\..\..\..\..\QT\5.10.1\MSVC2015\include;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtPrintSupport;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtWidgets;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtWinExtras;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtGui;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtANGLE;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtSerialPort;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtCore;.\debug;\include;.\..\..\..\..\QT\5.10.1\MSVC2015\mkspecs\win32-msvc</IncludePath>
-      <Define Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">_WINDOWS;UNICODE;_UNICODE;WIN32;QT_DEPRECATED_WARNINGS;QT_PRINTSUPPORT_LIB;QT_WIDGETS_LIB;QT_WINEXTRAS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB</Define>
-      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;.\..\..\..\..\QT\5.10.1\MSVC2015\include;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtPrintSupport;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtWidgets;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtWinExtras;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtGui;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtANGLE;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtSerialPort;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtCore;.\release;\include;.\..\..\..\..\QT\5.10.1\MSVC2015\mkspecs\win32-msvc</IncludePath>
-      <Define Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">_WINDOWS;UNICODE;_UNICODE;WIN32;QT_DEPRECATED_WARNINGS;QT_NO_DEBUG;QT_PRINTSUPPORT_LIB;QT_WIDGETS_LIB;QT_WINEXTRAS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB;NDEBUG</Define>
-    </QtMoc>
-    <QtMoc Include="core.h">
-      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;.\..\..\..\..\QT\5.10.1\MSVC2015\include;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtPrintSupport;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtWidgets;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtWinExtras;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtGui;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtANGLE;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtSerialPort;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtCore;.\debug;\include;.\..\..\..\..\QT\5.10.1\MSVC2015\mkspecs\win32-msvc</IncludePath>
-      <Define Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">_WINDOWS;UNICODE;_UNICODE;WIN32;QT_DEPRECATED_WARNINGS;QT_PRINTSUPPORT_LIB;QT_WIDGETS_LIB;QT_WINEXTRAS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB</Define>
-      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;.\..\..\..\..\QT\5.10.1\MSVC2015\include;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtPrintSupport;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtWidgets;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtWinExtras;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtGui;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtANGLE;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtSerialPort;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtCore;.\release;\include;.\..\..\..\..\QT\5.10.1\MSVC2015\mkspecs\win32-msvc</IncludePath>
-      <Define Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">_WINDOWS;UNICODE;_UNICODE;WIN32;QT_DEPRECATED_WARNINGS;QT_NO_DEBUG;QT_PRINTSUPPORT_LIB;QT_WIDGETS_LIB;QT_WINEXTRAS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB;NDEBUG</Define>
-    </QtMoc>
-    <QtMoc Include="cytoninterface.h">
-      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;.\..\..\..\..\QT\5.10.1\MSVC2015\include;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtPrintSupport;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtWidgets;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtWinExtras;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtGui;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtANGLE;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtSerialPort;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtCore;.\debug;\include;.\..\..\..\..\QT\5.10.1\MSVC2015\mkspecs\win32-msvc</IncludePath>
-      <Define Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">_WINDOWS;UNICODE;_UNICODE;WIN32;QT_DEPRECATED_WARNINGS;QT_PRINTSUPPORT_LIB;QT_WIDGETS_LIB;QT_WINEXTRAS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB</Define>
-      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;.\..\..\..\..\QT\5.10.1\MSVC2015\include;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtPrintSupport;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtWidgets;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtWinExtras;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtGui;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtANGLE;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtSerialPort;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtCore;.\release;\include;.\..\..\..\..\QT\5.10.1\MSVC2015\mkspecs\win32-msvc</IncludePath>
-      <Define Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">_WINDOWS;UNICODE;_UNICODE;WIN32;QT_DEPRECATED_WARNINGS;QT_NO_DEBUG;QT_PRINTSUPPORT_LIB;QT_WIDGETS_LIB;QT_WINEXTRAS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB;NDEBUG</Define>
-    </QtMoc>
-    <QtMoc Include="mainwindow.h">
-      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;.\..\..\..\..\QT\5.10.1\MSVC2015\include;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtPrintSupport;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtWidgets;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtWinExtras;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtGui;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtANGLE;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtSerialPort;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtCore;.\debug;\include;.\..\..\..\..\QT\5.10.1\MSVC2015\mkspecs\win32-msvc</IncludePath>
-      <Define Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">_WINDOWS;UNICODE;_UNICODE;WIN32;QT_DEPRECATED_WARNINGS;QT_PRINTSUPPORT_LIB;QT_WIDGETS_LIB;QT_WINEXTRAS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB</Define>
-      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;.\..\..\..\..\QT\5.10.1\MSVC2015\include;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtPrintSupport;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtWidgets;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtWinExtras;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtGui;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtANGLE;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtSerialPort;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtCore;.\release;\include;.\..\..\..\..\QT\5.10.1\MSVC2015\mkspecs\win32-msvc</IncludePath>
-      <Define Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">_WINDOWS;UNICODE;_UNICODE;WIN32;QT_DEPRECATED_WARNINGS;QT_NO_DEBUG;QT_PRINTSUPPORT_LIB;QT_WIDGETS_LIB;QT_WINEXTRAS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB;NDEBUG</Define>
-    </QtMoc>
-    <ClInclude Include="csvio.h" />
-    <QtMoc Include="error.h">
-      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;.\..\..\..\..\QT\5.10.1\MSVC2015\include;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtPrintSupport;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtWidgets;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtWinExtras;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtGui;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtANGLE;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtSerialPort;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtCore;.\debug;\include;.\..\..\..\..\QT\5.10.1\MSVC2015\mkspecs\win32-msvc</IncludePath>
-      <Define Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">_WINDOWS;UNICODE;_UNICODE;WIN32;QT_DEPRECATED_WARNINGS;QT_PRINTSUPPORT_LIB;QT_WIDGETS_LIB;QT_WINEXTRAS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB</Define>
-      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;.\..\..\..\..\QT\5.10.1\MSVC2015\include;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtPrintSupport;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtWidgets;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtWinExtras;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtGui;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtANGLE;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtSerialPort;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtCore;.\release;\include;.\..\..\..\..\QT\5.10.1\MSVC2015\mkspecs\win32-msvc</IncludePath>
-      <Define Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">_WINDOWS;UNICODE;_UNICODE;WIN32;QT_DEPRECATED_WARNINGS;QT_NO_DEBUG;QT_PRINTSUPPORT_LIB;QT_WIDGETS_LIB;QT_WINEXTRAS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB;NDEBUG</Define>
-    </QtMoc>
-    <ClInclude Include="GeneratedFiles\ui_mainwindow.h" />
-    <QtMoc Include="graphwidget.h">
-      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;.\..\..\..\..\QT\5.10.1\MSVC2015\include;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtPrintSupport;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtWidgets;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtWinExtras;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtGui;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtANGLE;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtSerialPort;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtCore;.\debug;\include;.\..\..\..\..\QT\5.10.1\MSVC2015\mkspecs\win32-msvc</IncludePath>
-      <Define Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">_WINDOWS;UNICODE;_UNICODE;WIN32;QT_DEPRECATED_WARNINGS;QT_PRINTSUPPORT_LIB;QT_WIDGETS_LIB;QT_WINEXTRAS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB</Define>
-      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;.\..\..\..\..\QT\5.10.1\MSVC2015\include;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtPrintSupport;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtWidgets;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtWinExtras;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtGui;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtANGLE;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtSerialPort;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtCore;.\release;\include;.\..\..\..\..\QT\5.10.1\MSVC2015\mkspecs\win32-msvc</IncludePath>
-      <Define Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">_WINDOWS;UNICODE;_UNICODE;WIN32;QT_DEPRECATED_WARNINGS;QT_NO_DEBUG;QT_PRINTSUPPORT_LIB;QT_WIDGETS_LIB;QT_WINEXTRAS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB;NDEBUG</Define>
-    </QtMoc>
-    <ClInclude Include="offline.h" />
-    <QtMoc Include="qcustomplot.h">
-      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;.\..\..\..\..\QT\5.10.1\MSVC2015\include;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtPrintSupport;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtWidgets;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtWinExtras;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtGui;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtANGLE;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtSerialPort;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtCore;.\debug;\include;.\..\..\..\..\QT\5.10.1\MSVC2015\mkspecs\win32-msvc</IncludePath>
-      <Define Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">_WINDOWS;UNICODE;_UNICODE;WIN32;QT_DEPRECATED_WARNINGS;QT_PRINTSUPPORT_LIB;QT_WIDGETS_LIB;QT_WINEXTRAS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB</Define>
-      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;.\..\..\..\..\QT\5.10.1\MSVC2015\include;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtPrintSupport;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtWidgets;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtWinExtras;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtGui;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtANGLE;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtSerialPort;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtCore;.\release;\include;.\..\..\..\..\QT\5.10.1\MSVC2015\mkspecs\win32-msvc</IncludePath>
-      <Define Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">_WINDOWS;UNICODE;_UNICODE;WIN32;QT_DEPRECATED_WARNINGS;QT_NO_DEBUG;QT_PRINTSUPPORT_LIB;QT_WIDGETS_LIB;QT_WINEXTRAS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB;NDEBUG</Define>
-    </QtMoc>
-    <ClInclude Include="resources.h" />
-    <ClInclude Include="sigprocessing.h" />
-    <QtMoc Include="state.h">
-      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;.\..\..\..\..\QT\5.10.1\MSVC2015\include;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtPrintSupport;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtWidgets;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtWinExtras;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtGui;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtANGLE;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtSerialPort;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtCore;.\debug;\include;.\..\..\..\..\QT\5.10.1\MSVC2015\mkspecs\win32-msvc</IncludePath>
-      <Define Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">_WINDOWS;UNICODE;_UNICODE;WIN32;QT_DEPRECATED_WARNINGS;QT_PRINTSUPPORT_LIB;QT_WIDGETS_LIB;QT_WINEXTRAS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB</Define>
-      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;.\..\..\..\..\QT\5.10.1\MSVC2015\include;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtPrintSupport;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtWidgets;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtWinExtras;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtGui;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtANGLE;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtSerialPort;.\..\..\..\..\QT\5.10.1\MSVC2015\include\QtCore;.\release;\include;.\..\..\..\..\QT\5.10.1\MSVC2015\mkspecs\win32-msvc</IncludePath>
-      <Define Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">_WINDOWS;UNICODE;_UNICODE;WIN32;QT_DEPRECATED_WARNINGS;QT_NO_DEBUG;QT_PRINTSUPPORT_LIB;QT_WIDGETS_LIB;QT_WINEXTRAS_LIB;QT_GUI_LIB;QT_SERIALPORT_LIB;QT_CORE_LIB;NDEBUG</Define>
-    </QtMoc>
-    <ClInclude Include="timer.h" />
-    <ClInclude Include="translation.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <QtUic Include="mainwindow.ui">
-    </QtUic>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="icons\arrow_green.jpg" />
-    <None Include="icons\arrow_orange.jpg" />
-    <None Include="arrow" />
-    <None Include="icons\cool" />
-    <None Include="icons\debug.png" />
-    <None Include="effect.jpg" />
-    <QtRcc Include="resources.qrc">
-    </QtRcc>
-    <None Include="images\tmp2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include=".\BCI_resource.rc" />
+    <Image Include="textures\awesomeface.png" />
+    <Image Include="textures\container.jpg" />
+    <Image Include="textures\wall.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
@@ -331,7 +322,7 @@
   <ImportGroup Label="ExtensionTargets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties UicDir=".\GeneratedFiles" RccDir=".\GeneratedFiles" Qt5Version_x0020_Win32="msvc2015" />
+      <UserProperties UicDir=".\GeneratedFiles" RccDir=".\GeneratedFiles" Qt5Version_x0020_x64="msvc2017_64" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

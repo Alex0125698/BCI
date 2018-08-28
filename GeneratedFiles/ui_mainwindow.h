@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created by: Qt User Interface Compiler version 5.10.1
+** Created by: Qt User Interface Compiler version 5.10.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -29,7 +29,9 @@
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 #include <view.h>
+#include "game.h"
 #include "graphwidget.h"
+#include "pixplotter.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -106,6 +108,11 @@ public:
     StateGroup *group_freqs;
     QWidget *widget_4;
     QWidget *tab_activity;
+    QVBoxLayout *verticalLayout_11;
+    PixPlotter *openGLWidget;
+    QWidget *tab_stft;
+    QVBoxLayout *verticalLayout_12;
+    Game *openGLWidget_2;
     QStatusBar *statusbar;
 
     void setupUi(QMainWindow *MainWindow)
@@ -500,7 +507,24 @@ public:
         tabWidget->addTab(tab_freq, QString());
         tab_activity = new QWidget();
         tab_activity->setObjectName(QStringLiteral("tab_activity"));
+        verticalLayout_11 = new QVBoxLayout(tab_activity);
+        verticalLayout_11->setObjectName(QStringLiteral("verticalLayout_11"));
+        openGLWidget = new PixPlotter(tab_activity);
+        openGLWidget->setObjectName(QStringLiteral("openGLWidget"));
+
+        verticalLayout_11->addWidget(openGLWidget);
+
         tabWidget->addTab(tab_activity, QString());
+        tab_stft = new QWidget();
+        tab_stft->setObjectName(QStringLiteral("tab_stft"));
+        verticalLayout_12 = new QVBoxLayout(tab_stft);
+        verticalLayout_12->setObjectName(QStringLiteral("verticalLayout_12"));
+        openGLWidget_2 = new Game(tab_stft);
+        openGLWidget_2->setObjectName(QStringLiteral("openGLWidget_2"));
+
+        verticalLayout_12->addWidget(openGLWidget_2);
+
+        tabWidget->addTab(tab_stft, QString());
 
         verticalLayout_4->addWidget(tabWidget);
 
@@ -511,7 +535,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(0);
+        tabWidget->setCurrentIndex(5);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -548,6 +572,7 @@ public:
         tabWidget->setTabText(tabWidget->indexOf(tab_time), QApplication::translate("MainWindow", "Time Analysis", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_freq), QApplication::translate("MainWindow", "Freq Analysis", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_activity), QApplication::translate("MainWindow", "Brain Activity", nullptr));
+        tabWidget->setTabText(tabWidget->indexOf(tab_stft), QApplication::translate("MainWindow", "STFT Plot", nullptr));
     } // retranslateUi
 
 };

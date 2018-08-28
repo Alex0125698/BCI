@@ -141,9 +141,9 @@ void GraphWidget::addVariables(std::vector<Variable*>& vars, const bool visible)
 
 void GraphWidget::addData(double time)
 {
-	m_latest_time = bci::State::program.getVars()[size_t(Vars::TIME)]->data();
+	//m_latest_time = bci::State::program.getVars()[size_t(Vars::TIME)]->data();
 	//qDebug() << time;
-	qDebug() <<  "g " << m_vars[0]->getValue();
+	//qDebug() <<  "g " << m_vars[0]->getValue();
 	size_t index = 0;
 	for (size_t i=0; i<m_vars.size(); ++i)
 	{

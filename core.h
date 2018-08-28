@@ -1,3 +1,14 @@
+/**
+* Core class - This class sets up the Controller and provides a 
+* communication channel between the controller and mainwindow.
+* 
+* Error Handling - no errors
+*
+* Author:  A.S. Woodcock
+* Project: BCI Controller for Biomedical Applications
+* Last Modified: 
+*/
+
 #pragma once
 
 #include "resources.h"

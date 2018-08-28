@@ -1,3 +1,27 @@
+/**
+* enum Dimension - this lists many standard dimensions. The appropriate conversions to SI units
+*     done in variable.cpp.
+*
+* Unit class - this stores a unit name and conversion info (to and from SI units)
+*
+* enum Tag - these indicate properties about variables
+* 
+* Taggable class - abtract class representing a class that has a list of tags
+*
+* Error Handling - must connect to sigError and print out error messages. must stop controller
+* if there is an error
+*
+*
+* TODO:
+*** add more standars units (14/AUG/18)
+*** support for custom conversions (14/AUG/18)
+*** should tags be strings??? (14/AUG/18)
+*
+* Author:  A.S. Woodcock
+* Project: BCI Controller for Biomedical Applications
+* Last Modified: 14/AUG/18 by A.S. Woodcock
+*/
+
 #pragma once
 
 #include "resources.h"
@@ -6,7 +30,6 @@
  * They are assumed to be in SI units. Variables have a dimension
  * They have a Units array which will be filled with units of the appropriate dimension
  * They also may have a raw unit which represents the raw data from the sensor device */
-
 
 enum class Dimension
 {
@@ -34,8 +57,6 @@ enum class Dimension
 	END_OF_DATA
 };
 
-// TODO: support for custom conversions
-// TODO: templated???
 class Unit
 {
 public:
@@ -103,7 +124,6 @@ private:
 };
 
 // TODO: support for changing name
-// TODO: template custom tags + data type
 class Variable : public Taggable
 {
 	Q_OBJECT
@@ -115,13 +135,22 @@ public:
 	Variable(const std::string&& name, const std::vector<Tag>&& tags);
 
 public:
-	void changeUnit()
+	void setUnit()
 	{
 		m_current_unit = m_tmp_current_unit.load();
 	}
-	// access the plain SI base data
-	auto& data()
-	{ return m_data_si; };
+	auto getData(size_t index) const
+	{
+		//return m_data_si;
+	}
+	// get the plain SI base data at index location
+	auto getSIData(size_t index) const 
+	{
+
+	}
+
+public:
+
 	// get the value in the current unit
 	double getValue() const
 	{ return m_units[m_current_unit]->convertToUnit(m_data_si); }
@@ -195,6 +224,10 @@ private:
 	void load_default_units();
 
 private:
+	std::array<double, 512> m_data_queue;
+	std::atomic<size_t> m_start_index;
+
+
 	// this is where the actual data is stored
 	std::atomic<double> m_data_si{ 0.0 };
 	// the variable name - must be given

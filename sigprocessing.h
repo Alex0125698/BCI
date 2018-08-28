@@ -4,6 +4,7 @@
 
 namespace bci
 {
+	void FreqTransform(boost::circular_buffer<std::vector<double>>& in_data, double fd, std::vector<double>& out_data);
 	std::vector<double> DFT(std::vector<double>& data);
 
 
@@ -24,4 +25,9 @@ namespace bci
 	}
 }
 
+template<typename T>
+T map(T val, T val_min, T val_max, T min, T max)
+{
+	return (max - min)*(val - val_min) / (val_max - val_min) + min;
+}
 

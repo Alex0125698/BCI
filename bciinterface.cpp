@@ -7,7 +7,7 @@
 	 std::lock_guard<std::mutex> lock(m_ch_mtx);
 
 	 if (m_channel.empty())
-		 emit sigError("getData() attempted but queue is empty");
+		 emit SIGERROR("getData() attempted but queue is empty");
 	 else
 	 {
 		 std::copy(m_channel.front().begin(), m_channel.front().end(), rx.begin());
@@ -21,7 +21,7 @@
 	 std::lock_guard<std::mutex> lock(m_gyro_mtx);
 
 	 if (m_gyro.empty())
-		 emit sigError("getGyroXYZ() attempted but queue is empty");
+		 emit SIGERROR("getGyroXYZ() attempted but queue is empty");
 	 else
 	 {
 		 assert(m_gyro.front().size() == 3);
@@ -38,7 +38,7 @@
 	 std::lock_guard<std::mutex> lock(m_imp_mtx);
 
 	 if (m_elec_imp.empty())
-		 emit sigError("getElecImpedance() attempted but queue is empty");
+		 emit SIGERROR("getElecImpedance() attempted but queue is empty");
 	 else
 	 {
 		 std::copy(m_elec_imp.front().begin(), m_elec_imp.front().end(), rx.begin());

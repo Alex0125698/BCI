@@ -100,3 +100,4 @@
 
 #include "error.h"
 #include "timer.h"
+#include "profiler.h"

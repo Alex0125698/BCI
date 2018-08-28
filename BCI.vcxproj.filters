@@ -46,90 +46,17 @@
       <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
     <Filter Include="Libraries">
-      <UniqueIdentifier>{c07add00-c4f6-40d7-9fd2-2dac73e8a16f}</UniqueIdentifier>
+      <UniqueIdentifier>{5c056b14-c313-40c3-8531-045c6cbc1ee0}</UniqueIdentifier>
     </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="controller.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="core.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="mainwindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="state.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="offline.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="cytoninterface.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="bciinterface.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="variable.cpp">
-      <Filter>Libraries</Filter>
-    </ClCompile>
-    <ClCompile Include="view.cpp">
-      <Filter>Libraries</Filter>
-    </ClCompile>
-    <ClCompile Include="csvio.cpp">
-      <Filter>Libraries</Filter>
-    </ClCompile>
-    <ClCompile Include="error.cpp">
-      <Filter>Libraries</Filter>
-    </ClCompile>
-    <ClCompile Include="graphwidget.cpp">
-      <Filter>Libraries</Filter>
-    </ClCompile>
-    <ClCompile Include="qcustomplot.cpp">
-      <Filter>Libraries</Filter>
-    </ClCompile>
-    <ClCompile Include="sigprocessing.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <QtMoc Include="controller.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="core.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="mainwindow.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="state.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="bciinterface.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="cytoninterface.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="graphwidget.h">
-      <Filter>Libraries</Filter>
-    </QtMoc>
-    <QtMoc Include="variable.h">
-      <Filter>Libraries</Filter>
-    </QtMoc>
-    <QtMoc Include="view.h">
-      <Filter>Libraries</Filter>
-    </QtMoc>
-    <QtMoc Include="error.h">
-      <Filter>Libraries</Filter>
-    </QtMoc>
-    <QtMoc Include="qcustomplot.h">
-      <Filter>Libraries</Filter>
-    </QtMoc>
+    <Filter Include="OpenGL">
+      <UniqueIdentifier>{b03271f8-f561-4102-9e00-ea8b3085dde6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{a3159d06-f017-4f37-8ce4-9cc0fd77bae7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Textures">
+      <UniqueIdentifier>{9e6d6107-7da3-419f-b800-0a12a628414e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="debug\moc_predefs.h.cbt">
@@ -138,6 +65,9 @@
     <CustomBuild Include="release\moc_predefs.h.cbt">
       <Filter>Generated Files</Filter>
     </CustomBuild>
+    <ClInclude Include="ui_mainwindow.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="mainwindow.ui">
@@ -145,6 +75,21 @@
     </QtUic>
   </ItemGroup>
   <ItemGroup>
+    <None Include="images\Emotiv.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icons\Save.JPG">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icons\Settings.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icons\Stop_32.jpg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="images\UoA_Logo.png">
+      <Filter>Resource Files</Filter>
+    </None>
     <None Include="icons\arrow_green.jpg">
       <Filter>Resource Files</Filter>
     </None>
@@ -152,6 +97,9 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="arrow">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="images\background-dark.png">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="icons\cool">
@@ -166,24 +114,148 @@
     <QtRcc Include="resources.qrc">
       <Filter>Resource Files</Filter>
     </QtRcc>
+    <None Include="icons\spanner.png">
+      <Filter>Resource Files</Filter>
+    </None>
     <None Include="images\tmp2.png">
       <Filter>Resource Files</Filter>
+    </None>
+    <None Include="icons\usb.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\VS_math.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\FS_math.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\FS_pixplotter.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\VS_pixplotter.glsl">
+      <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include=".\BCI_resource.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="translation.h">
+    <ClCompile Include="main.cpp">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GeneratedFiles\ui_mainwindow.h">
-      <Filter>Generated Files</Filter>
-    </ClInclude>
+    </ClCompile>
+    <ClCompile Include="view.cpp">
+      <Filter>Libraries</Filter>
+    </ClCompile>
+    <ClCompile Include="variable.cpp">
+      <Filter>Libraries</Filter>
+    </ClCompile>
+    <ClCompile Include="csvio.cpp">
+      <Filter>Libraries</Filter>
+    </ClCompile>
+    <ClCompile Include="error.cpp">
+      <Filter>Libraries</Filter>
+    </ClCompile>
+    <ClCompile Include="graphwidget.cpp">
+      <Filter>Libraries</Filter>
+    </ClCompile>
+    <ClCompile Include="qcustomplot.cpp">
+      <Filter>Libraries</Filter>
+    </ClCompile>
+    <ClCompile Include="bciinterface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="controller.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="core.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cytoninterface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="offline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sigprocessing.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="state.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="stb_image.c">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="game.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="shader.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="texture.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="profiler.cpp">
+      <Filter>Libraries</Filter>
+    </ClCompile>
+    <ClCompile Include="pixplotter.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="bciinterface.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="controller.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="core.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="cytoninterface.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="mainwindow.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="state.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="view.h">
+      <Filter>Libraries</Filter>
+    </QtMoc>
+    <QtMoc Include="variable.h">
+      <Filter>Libraries</Filter>
+    </QtMoc>
+    <QtMoc Include="error.h">
+      <Filter>Libraries</Filter>
+    </QtMoc>
+    <QtMoc Include="graphwidget.h">
+      <Filter>Libraries</Filter>
+    </QtMoc>
+    <QtMoc Include="qcustomplot.h">
+      <Filter>Libraries</Filter>
+    </QtMoc>
+    <QtMoc Include="game.h">
+      <Filter>OpenGL</Filter>
+    </QtMoc>
+    <QtMoc Include="pixplotter.h">
+      <Filter>OpenGL</Filter>
+    </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
     <ClInclude Include="offline.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="resources.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sigprocessing.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="translation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="timer.h">
@@ -192,8 +264,28 @@
     <ClInclude Include="csvio.h">
       <Filter>Libraries</Filter>
     </ClInclude>
-    <ClInclude Include="sigprocessing.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="shader.h">
+      <Filter>OpenGL</Filter>
     </ClInclude>
+    <ClInclude Include="texture.h">
+      <Filter>OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="profiler.h">
+      <Filter>Libraries</Filter>
+    </ClInclude>
+    <ClInclude Include="openglresources.h">
+      <Filter>OpenGL</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="textures\container.jpg">
+      <Filter>Textures</Filter>
+    </Image>
+    <Image Include="textures\wall.jpg">
+      <Filter>Textures</Filter>
+    </Image>
+    <Image Include="textures\awesomeface.png">
+      <Filter>Textures</Filter>
+    </Image>
   </ItemGroup>
 </Project>

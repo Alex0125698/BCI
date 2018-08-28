@@ -31,7 +31,7 @@ void bci::CytonInterface::start_helper()
 	else
 	{
 		m_error_state = true;
-		DEBUG_PRINTLNY(QString("Failed to open serial port, error: %1").arg(m_serialPort->errorString()), MSG_TYPE::DEXCEP);
+		emit SIGERROR(QString("Failed to open serial port, error: %1").arg(m_serialPort->errorString()));
 		stop();
 	}
 }
@@ -59,8 +59,11 @@ void bci::CytonInterface::processByte(quint8 byte)
 	}
 	else if (m_pkt_byte_num == 32)
 	{
-		assert(uint8_t(byte & 0xF0u) == (uint8_t)0xC0u);
-		//DEBUG_PRINTLN(QString::number(byte,16));
+		if (uint8_t(byte & 0xF0u) != (uint8_t)0xC0u)
+		{
+			emit SIGERROR(QString("incorrect end of packet byte: %1").arg(byte & 0xF0u));
+			stop();
+		}
 		m_pkt_rdy = true;
 		m_type = byte & 0xF0;
 		m_pkt_byte_num = 0;
@@ -147,7 +150,7 @@ void bci::CytonInterface::slotTimeout()
 {
 	m_error_state = true;
 	stop();
-	DEBUG_PRINTLNY(QString("CytonInterface write timeout on Serial port %1; possible error: %2").arg(m_serialPort->portName()).arg(m_serialPort->errorString()), MSG_TYPE::DEXCEP);
+	emit SIGERROR(QString("CytonInterface write timeout on Serial port %1; possible error: %2").arg(m_serialPort->portName()).arg(m_serialPort->errorString()));
 }
 
 void bci::CytonInterface::slotBytesWritten(qint64 bytes)
@@ -163,7 +166,7 @@ void bci::CytonInterface::slotBytesWritten(qint64 bytes)
 void bci::CytonInterface::slotCOMerror()
 {
 	if (!m_error_state)
-		DEBUG_PRINTLNY(QString("An I/O error occurred while writing the data to port %1, error: %2").arg(m_serialPort->portName()).arg(m_serialPort->errorString()),MSG_TYPE::DEXCEP);
+		emit SIGERROR(QString("An I/O error occurred while writing the data to port %1, error: %2").arg(m_serialPort->portName()).arg(m_serialPort->errorString()));
 	m_error_state = true;
 	stop();
 	m_serialPort->clearError();
@@ -178,14 +181,14 @@ void bci::CytonInterface::write(QString&& msg)
 	{
 		m_error_state = true;
 		stop();
-		DEBUG_PRINTLNY(QString("Failed to write the data to port %1, error: %2").arg(m_serialPort->portName()).arg(m_serialPort->errorString()),MSG_TYPE::DEXCEP);
+		emit SIGERROR(QString("Failed to write the data to port %1, error: %2").arg(m_serialPort->portName()).arg(m_serialPort->errorString()));
 		return;
 	} 
 	else if (bytesWritten != msg.size())
 	{
 		m_error_state = true;
 		stop();
-		DEBUG_PRINTLNY(QString("Failed to write all the data to port %1, error: %2").arg(m_serialPort->portName()).arg(m_serialPort->errorString()), MSG_TYPE::DEXCEP);
+		emit SIGERROR(QString("Failed to write all the data to port %1, error: %2").arg(m_serialPort->portName()).arg(m_serialPort->errorString()));
 		return;
 	}
 
@@ -222,8 +225,11 @@ void bci::CytonInterface::slotReadyRead()
 			{
 				{
 					std::lock_guard<std::mutex> lock(m_ch_mtx);
-					if (m_channel.size() >= 32)
-						emit sigError("Controller failed to keep up with BCI");
+					if (m_channel.size() >= 64)
+					{
+						stop();
+						emit SIGERROR("Controller failed to keep up with BCI");
+					}
 					m_channel.emplace(m_tmp_buff.begin(), m_tmp_buff.end());
 				}
 				

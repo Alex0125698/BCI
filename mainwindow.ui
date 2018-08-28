@@ -38,7 +38,7 @@ background-color: rgb(200, 200, 200);
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>5</number>
       </property>
       <widget class="QWidget" name="tab_home">
        <property name="styleSheet">
@@ -674,6 +674,21 @@ background-color: rgba(150,150,170, 130);
        <attribute name="title">
         <string>Brain Activity</string>
        </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_11">
+        <item>
+         <widget class="PixPlotter" name="openGLWidget"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_stft">
+       <attribute name="title">
+        <string>STFT Plot</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_12">
+        <item>
+         <widget class="Game" name="openGLWidget_2"/>
+        </item>
+       </layout>
       </widget>
      </widget>
     </item>
@@ -693,6 +708,16 @@ background-color: rgba(150,150,170, 130);
    <extends>QWidget</extends>
    <header location="global">view.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>PixPlotter</class>
+   <extends>QOpenGLWidget</extends>
+   <header>pixplotter.h</header>
+  </customwidget>
+  <customwidget>
+   <class>Game</class>
+   <extends>QOpenGLWidget</extends>
+   <header>game.h</header>
   </customwidget>
  </customwidgets>
  <resources>

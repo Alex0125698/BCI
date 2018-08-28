@@ -21,6 +21,32 @@ std::pair<std::vector<double>,std::vector<double>> generateSinusoid(double fd, s
 	return std::pair<std::vector<double>,std::vector<double>>(std::move(wav_odd), std::move(wav_even));
 }
 
+// find freq magnitude for single freq only (for all channels)
+// time<channels> ; channel freq mag
+void bci::FreqTransform(boost::circular_buffer<std::vector<double>>& in_data, double fd, std::vector<double>& out_data)
+{
+	const size_t N = in_data.size(); // num time points
+	auto wavelet = generateSinusoid(fd, N);
+
+	// for each channel
+	for (size_t i = 0; i < in_data[0].size(); ++i)
+	{
+		// single freq DFT
+		double odd = 0, even = 0;
+		// for each time point
+		for (size_t j = 0; j < N; ++j)
+		{
+			odd += wavelet.first[j] * (in_data[j])[i];
+			even += wavelet.second[j] * (in_data[j])[i];
+		}
+		odd /= double(N);
+		even /= double(N);
+		out_data[i] = std::sqrt(odd*odd + even*even);
+	}
+
+}
+
+
 
 std::vector<double> bci::DFT(std::vector<double>& data)
 {
@@ -48,8 +74,6 @@ std::vector<double> bci::DFT(std::vector<double>& data)
 
 	return std::move(y_odd);
 }
-
-
 
 /*
 bci::BCI_Packet& bci::spatial_filter::CAR(bci::BCI_Packet& data)

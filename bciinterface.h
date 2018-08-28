@@ -1,17 +1,21 @@
-/*****************************************************************************************
-*    File: BCI_Interface.h                                                               *
-*                                                                                        *
-*    DetailedException class - Used for handling errors and recording where the error    *
-*    occurred. Should only catch problems which happen infrequently, otherwise it will   *
-*    cause large performance issues                                                      *
-*                                                                                        *
-*    Author: A.S. Woodcock                                                               *
-*****************************************************************************************/
+/**
+ * bci::Interface calss - this class provdes a generic interface for all BCIs or  
+ * simulator. It gives access to channel data, channel positions, gyro data, accelerometer
+ * data and channel impedance (if avaliable).
+ *
+ * Error Handling - must connect to sigError and print out error messages. the bci::interface
+ * will stop if there is an error, so the controller should update its state appropriately
+ *
+ * Author:  A.S. Woodcock
+ * Project: BCI Controller for Biomedical Applications
+ */
 
 #pragma once
 
 #include "resources.h"
 #include <ostream>
+
+#define SIGERROR(x) sigError(x,__FILE__, __LINE__)
 
 class QThread;
 
@@ -41,7 +45,7 @@ signals:
 	// emitted when data avaliable - need to keep up
 	void sigDataReady();
 	// must connect to this and stop when there is an error
-	void sigError(QString msg);
+	void sigError(QString msg, QString file, int line);
 	// boilerplate code to call functions in the BCI Thread
 	void sigCallInit();
 	void sigCallStartHelper();

@@ -24,19 +24,27 @@ void bci::State::init()
 		new Variable("CH14", Dimension::VOLTAGE,{ Tag::MCU_INPUT, Tag::DATA_CHANNEL }),
 		new Variable("CH15", Dimension::VOLTAGE,{ Tag::MCU_INPUT, Tag::DATA_CHANNEL }),
 		new Variable("CH16", Dimension::VOLTAGE,{ Tag::MCU_INPUT, Tag::DATA_CHANNEL }),
-		new Variable("FREQ2", Dimension::VOLTAGE,{ Tag::FREQ_BAND }),
-		new Variable("FREQ4", Dimension::VOLTAGE,{ Tag::FREQ_BAND }),
-		new Variable("FREQ6", Dimension::VOLTAGE,{ Tag::FREQ_BAND }),
-		new Variable("FREQ8", Dimension::VOLTAGE,{ Tag::FREQ_BAND }),
-		new Variable("FREQ10", Dimension::VOLTAGE,{ Tag::FREQ_BAND }),
-		new Variable("FREQ12", Dimension::VOLTAGE,{ Tag::FREQ_BAND }),
-		new Variable("FREQ14", Dimension::VOLTAGE,{ Tag::FREQ_BAND }),
-		new Variable("FREQ16", Dimension::VOLTAGE,{ Tag::FREQ_BAND }),
-		new Variable("FREQ18", Dimension::VOLTAGE,{ Tag::FREQ_BAND }),
+		new Variable("MU1", Dimension::VOLTAGE,{ Tag::MCU_INPUT, Tag::FREQ_BAND }),
+		new Variable("MU2", Dimension::VOLTAGE,{ Tag::MCU_INPUT, Tag::FREQ_BAND }),
+		new Variable("MU3", Dimension::VOLTAGE,{ Tag::MCU_INPUT, Tag::FREQ_BAND }),
+		new Variable("MU4", Dimension::VOLTAGE,{ Tag::MCU_INPUT, Tag::FREQ_BAND }),
+		new Variable("MU5", Dimension::VOLTAGE,{ Tag::MCU_INPUT, Tag::FREQ_BAND }),
+		new Variable("MU6", Dimension::VOLTAGE,{ Tag::MCU_INPUT, Tag::FREQ_BAND }),
+		new Variable("MU7", Dimension::VOLTAGE,{ Tag::MCU_INPUT, Tag::FREQ_BAND }),
+		new Variable("MU8", Dimension::VOLTAGE,{ Tag::MCU_INPUT, Tag::FREQ_BAND }),
+		new Variable("MU9", Dimension::VOLTAGE,{ Tag::MCU_INPUT, Tag::FREQ_BAND }),
+		new Variable("MU10", Dimension::VOLTAGE,{ Tag::MCU_INPUT, Tag::FREQ_BAND }),
+		new Variable("MU11", Dimension::VOLTAGE,{ Tag::MCU_INPUT, Tag::FREQ_BAND }),
+		new Variable("MU12", Dimension::VOLTAGE,{ Tag::MCU_INPUT, Tag::FREQ_BAND }),
+		new Variable("MU13", Dimension::VOLTAGE,{ Tag::MCU_INPUT, Tag::FREQ_BAND }),
+		new Variable("MU14", Dimension::VOLTAGE,{ Tag::MCU_INPUT, Tag::FREQ_BAND }),
+		new Variable("MU15", Dimension::VOLTAGE,{ Tag::MCU_INPUT, Tag::FREQ_BAND }),
+		new Variable("MU16", Dimension::VOLTAGE,{ Tag::MCU_INPUT, Tag::FREQ_BAND }),
 		new Variable("Battery Level", Dimension::NONE,{ Tag::MCU_INPUT }),
 		new Variable("Run TIme", Dimension::TIME,{ Tag::STATUS_BAR }),
 		new Variable("IO Freq", Dimension::FREQUENCY,{ Tag::STATUS_BAR }),
-		new Variable("Refresh Freq", Dimension::FREQUENCY,{ Tag::STATUS_BAR, Tag::EDITABLE, Tag::USER_INPUT })
+		new Variable("Refresh Freq", Dimension::FREQUENCY,{ Tag::STATUS_BAR }),
+		new Variable("Used Time %", Dimension::NONE,{ Tag::STATUS_BAR })
 	};
 	assert(bci::State::program.m_vars.size() == size_t(Vars::END_OF_DATA));
 	State::program.m_fast_var_buffer.resize(State::program.m_vars.size(), 0.0);
@@ -46,7 +54,7 @@ void bci::State::loadVars()
 {
 	for (size_t i = 0; i<m_fast_var_buffer.size(); ++i)
 	{
-		m_fast_var_buffer[i] = m_vars[i]->data();
+		//m_fast_var_buffer[i] = m_vars[i]->data();
 	}
 }
 
@@ -55,7 +63,7 @@ void bci::State::updateVars()
 	bool update = false;
 	if (updateTimer.getDuration() > 0.08)
 	{
-		//State::program[Vars::REFRESH_RATE] = 1.0 / updateTimer.getDuration();
+		State::program[Vars::REFRESH_FREQ] = 1.0 / updateTimer.getDuration();
 		update = true;
 		updateTimer.restart();
 	}
@@ -65,13 +73,13 @@ void bci::State::updateVars()
 		// synchronised data copy
 		if (!m_vars[i]->checkTag(Tag::USER_INPUT))
 		{
-			m_vars[i]->data() = m_fast_var_buffer[i];
+			//m_vars[i]->data() = m_fast_var_buffer[i];
 			if (update) m_vars[i]->refresh();
 		}
 	}
 	static int c = 0;
 
-	qDebug() << c << ' ' << m_vars[1]->getValue();
+	//qDebug() << c << ' ' << m_vars[1]->getValue();
 	++c;
 	if (m_reset)
 	{
@@ -115,7 +123,7 @@ void bci::State::updateVars()
 	
 
 	if (update) emit sigViewUpdate();
-	emit sigVarUpdate(m_vars[(size_t)Vars::TIME]->data().load());
+	//emit sigVarUpdate(m_vars[(size_t)Vars::TIME]->data().load());
 }
 
 const std::vector<Variable*> bci::State::searchVars(const std::vector<Tag> tags) const

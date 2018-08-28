@@ -1,3 +1,19 @@
+/**
+* bci::CytonInterface - This class is an implementation of bci::interface that is designed to 
+* communicate with the cyton with daisy BCI via a serial port (COM). The serial port exists
+* when the bluetooth dongle is plugged in (which acts as a communication channel between the 
+* PC and BCI). This class will decode each serial packet and store the channel voltages which 
+* can be retrived via getData(std::vector<double>& rx).
+*
+* Error Handling - inherits from bci::interface
+*
+* TODO: support for channel impedances
+*       support for gyro data
+*
+* Author:  A.S. Woodcock
+* Project: BCI Controller for Biomedical Applications
+*/
+
 #pragma once
 
 #include "resources.h"

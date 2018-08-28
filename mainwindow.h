@@ -1,3 +1,15 @@
+/**
+* mainwindow class - this class provides slot for all button state changes and 
+* updates the graphs + labels. This does not draw most of the GUI elements. This
+* is done in a ui file.
+*
+* Error Handling - not done
+*
+*
+* Author:  A.S. Woodcock
+* Project: BCI Controller for Biomedical Applications
+*/
+
 #pragma once
 
 #include "resources.h"
