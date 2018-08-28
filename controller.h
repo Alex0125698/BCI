@@ -27,11 +27,16 @@ public:
 signals:
 	void sigRunStateChanged(bool running);
 	void sigSaveStateChanged(bool saving);
+	void sigDTFTdata();
 
 public slots:
 	void slotStart();
-	void slotStop();;
+	void slotStop();
 	void slotDataReady();
+	void slotDTFTready()
+	{
+
+	}
 
 protected:
 	Timer m_run_timer;

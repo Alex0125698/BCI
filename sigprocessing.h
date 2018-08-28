@@ -5,7 +5,7 @@
 namespace bci
 {
 	void FreqTransform(boost::circular_buffer<std::vector<double>>& in_data, double fd, std::vector<double>& out_data);
-	std::vector<double> DFT(std::vector<double>& data);
+	void DFT(std::vector<double>& data_in, std::vector<double>& data_out);
 
 
 	namespace spatial_filter

@@ -114,7 +114,16 @@ namespace bci
 		// used to reset state to default OR reset setpoints to inputs
 		bool m_reset = true;
 	};
-
 }
+
+struct sdtft
+{
+	std::vector<double> data;
+	double timePoints{ 60 };
+	double freqPoints{ 30 };
+	std::mutex mtx;
+};
+
+extern sdtft DTFT_Shared_Data;
 
 typedef bci::State::Vars Vars;

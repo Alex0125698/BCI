@@ -29,6 +29,7 @@
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 #include <view.h>
+#include "brainmap.h"
 #include "game.h"
 #include "graphwidget.h"
 #include "pixplotter.h"
@@ -109,10 +110,13 @@ public:
     QWidget *widget_4;
     QWidget *tab_activity;
     QVBoxLayout *verticalLayout_11;
-    PixPlotter *openGLWidget;
+    BrainMap *openGLWidget;
     QWidget *tab_stft;
     QVBoxLayout *verticalLayout_12;
-    Game *openGLWidget_2;
+    PixPlotter *openGLWidget_2;
+    QWidget *tab_test;
+    QVBoxLayout *verticalLayout_13;
+    Game *openGLWidget_3;
     QStatusBar *statusbar;
 
     void setupUi(QMainWindow *MainWindow)
@@ -509,7 +513,7 @@ public:
         tab_activity->setObjectName(QStringLiteral("tab_activity"));
         verticalLayout_11 = new QVBoxLayout(tab_activity);
         verticalLayout_11->setObjectName(QStringLiteral("verticalLayout_11"));
-        openGLWidget = new PixPlotter(tab_activity);
+        openGLWidget = new BrainMap(tab_activity);
         openGLWidget->setObjectName(QStringLiteral("openGLWidget"));
 
         verticalLayout_11->addWidget(openGLWidget);
@@ -519,12 +523,22 @@ public:
         tab_stft->setObjectName(QStringLiteral("tab_stft"));
         verticalLayout_12 = new QVBoxLayout(tab_stft);
         verticalLayout_12->setObjectName(QStringLiteral("verticalLayout_12"));
-        openGLWidget_2 = new Game(tab_stft);
+        openGLWidget_2 = new PixPlotter(tab_stft);
         openGLWidget_2->setObjectName(QStringLiteral("openGLWidget_2"));
 
         verticalLayout_12->addWidget(openGLWidget_2);
 
         tabWidget->addTab(tab_stft, QString());
+        tab_test = new QWidget();
+        tab_test->setObjectName(QStringLiteral("tab_test"));
+        verticalLayout_13 = new QVBoxLayout(tab_test);
+        verticalLayout_13->setObjectName(QStringLiteral("verticalLayout_13"));
+        openGLWidget_3 = new Game(tab_test);
+        openGLWidget_3->setObjectName(QStringLiteral("openGLWidget_3"));
+
+        verticalLayout_13->addWidget(openGLWidget_3);
+
+        tabWidget->addTab(tab_test, QString());
 
         verticalLayout_4->addWidget(tabWidget);
 
@@ -535,7 +549,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(5);
+        tabWidget->setCurrentIndex(4);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -573,6 +587,7 @@ public:
         tabWidget->setTabText(tabWidget->indexOf(tab_freq), QApplication::translate("MainWindow", "Freq Analysis", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_activity), QApplication::translate("MainWindow", "Brain Activity", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_stft), QApplication::translate("MainWindow", "STFT Plot", nullptr));
+        tabWidget->setTabText(tabWidget->indexOf(tab_test), QApplication::translate("MainWindow", "OpenGL Test", nullptr));
     } // retranslateUi
 
 };

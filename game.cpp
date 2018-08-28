@@ -1,7 +1,9 @@
 #include "game.h"
 #include "shader.h"
 #include "texture.h"
+#include <QMouseEvent>
 
+static float xpos = 0, ypos = 0;
 
 struct cubeStuff
 {
@@ -102,23 +104,27 @@ void Game::initializeGL()
 	}
 	ctx->glBindVertexArray(0);
 
-	img1 = new glw::Texture(ctx, "textures/wall.jpg");
-	img2 = new glw::Texture(ctx, "textures/container.jpg");
-	img3 = new glw::Texture(ctx, "textures/awesomeface.png");
+	img1 = new glw::Texture(ctx, "textures/container.jpg");
+	img2 = new glw::Texture(ctx, "textures/awesomeface.png");
+	img3 = new glw::Texture(ctx,100,100);
 
 	sprogram->setTextureLocation("ourTexture1", *img1);
 	sprogram->setTextureLocation("ourTexture2", *img2);
 	sprogram->setTextureLocation("ourTexture3", *img3);
 
+	timer = new QTimer(this);
+	connect(timer, SIGNAL(timeout()), this, SLOT(update()));
+	timer->start(33);
 }
 
 void Game::resizeGL(int width, int height)
 {
+	//
 }
 
 void Game::paintGL()
 {
-	static Timer timer;
+	static Timer timer2;
 
 	GLuint transformLoc = ctx->glGetUniformLocation(sprogram->m_program_id, "view");
 
@@ -133,7 +139,7 @@ void Game::paintGL()
 		for (size_t x = 0; x < img3->width(); ++x)
 		{// G B R A
 			//auto tmp = glw::rgba(uint8_t(128 - mouse.y() * 127) + std::rand(), uint8_t(mouse.y() * 127 - 128), uint8_t(mouse.x() * 255), 0);
-			tmp2[x + y * img3->width()] += glw::rgba(255, 128, 20, 10);
+			tmp2[x + y * img3->width()] = glw::rgba(255*xpos, 128 + 128*ypos, 128 * ypos - 128, 0);
 
 
 		}
@@ -210,8 +216,8 @@ void Game::paintGL()
 		m.pushMatrix();
 		m.translate({ 0.1*cube.posX[i], 0.1*cube.posY[i], 0.1*cube.posZ[i] });
 		m.scale(cube.scale[i]);
-		m.rotateX(cube.rotX[i] + std::sin(timer.getDuration()));
-		m.rotateY(cube.rotY[i] + std::cos(timer.getDuration()));
+		m.rotateX(cube.rotX[i] + std::sin(timer2.getDuration()));
+		m.rotateY(cube.rotY[i] + std::cos(timer2.getDuration()));
 		m.rotateZ(cube.rotZ[i]);
 		m.translate({ cube.posX[i], cube.posY[i], cube.posZ[i] });
 
@@ -236,8 +242,10 @@ void Game::mousePressEvent(QMouseEvent * event)
 {
 }
 
-void Game::mouseMoveEvent(QMouseEvent * event)
+void Game::mouseMoveEvent(QMouseEvent* event)
 {
+	xpos = event->x() / float(this->width());
+	ypos = event->y() / float(this->height());
 }
 
 void Game::mouseDoubleClickEvent(QMouseEvent * event)

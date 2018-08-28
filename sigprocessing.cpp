@@ -46,34 +46,41 @@ void bci::FreqTransform(boost::circular_buffer<std::vector<double>>& in_data, do
 
 }
 
+std::vector<double> y_odd;
+std::vector<double> y_even;
 
-
-std::vector<double> bci::DFT(std::vector<double>& data)
+void bci::DFT(std::vector<double>& data_in, std::vector<double>& data_out)
 {
+	if (data_out.size() != data_in.size()) data_out.resize(data_in.size());
 	// the dft size, N, is the same as the number of time points
 	// we also use N freq points
-	size_t N = data.size();
-	std::vector<double> y_odd(N,0);
-	std::vector<double> y_even(N,0);
+	size_t N = data_in.size();
+
+	y_odd.resize(N);
+	y_even.resize(N);
 
 	for (size_t i = 0; i < N; ++i)
 	{
 		// DFT for single freq slice
-		auto wavelet = generateSinusoid(i/double(N),N);
+		double fd = i / double(N);
+		auto wavelet = generateSinusoid(fd, N);
+
+		y_odd[i] = 0;
+		y_even[i] = 0;
 
 		for (size_t j = 0; j < N; ++j)
 		{
-			y_odd[i] += wavelet.first[j] * data[j];
-			y_even[i] += wavelet.second[j] * data[j];
+			y_odd[i] += wavelet.first[j] * data_in[j];
+			y_even[i] += wavelet.second[j] * data_in[j];
 		}
+
 		y_odd[i] /= double(N);
 		y_even[i] /= double(N);
-		// put mag in y_odd
-		y_odd[i] = std::sqrt(y_odd[i] * y_odd[i] + y_even[i] * y_even[i]);
-	}
 
-	return std::move(y_odd);
+		data_out[i] = std::sqrt(y_odd[i]*y_odd[i] + y_even[i]*y_even[i]);
+	}
 }
+
 
 /*
 bci::BCI_Packet& bci::spatial_filter::CAR(bci::BCI_Packet& data)

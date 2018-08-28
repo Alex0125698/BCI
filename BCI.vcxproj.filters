@@ -135,6 +135,12 @@
     <None Include="shaders\VS_pixplotter.glsl">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="shaders\VS_brainmap.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\FS_brainmap.glsl">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include=".\BCI_resource.rc" />
@@ -203,6 +209,9 @@
     <ClCompile Include="pixplotter.cpp">
       <Filter>OpenGL</Filter>
     </ClCompile>
+    <ClCompile Include="brainmap.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="bciinterface.h">
@@ -242,6 +251,9 @@
       <Filter>OpenGL</Filter>
     </QtMoc>
     <QtMoc Include="pixplotter.h">
+      <Filter>OpenGL</Filter>
+    </QtMoc>
+    <QtMoc Include="brainmap.h">
       <Filter>OpenGL</Filter>
     </QtMoc>
   </ItemGroup>
@@ -285,6 +297,9 @@
       <Filter>Textures</Filter>
     </Image>
     <Image Include="textures\awesomeface.png">
+      <Filter>Textures</Filter>
+    </Image>
+    <Image Include="textures\test.png">
       <Filter>Textures</Filter>
     </Image>
   </ItemGroup>

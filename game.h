@@ -3,6 +3,7 @@
 #include "resources.h"
 #include "openglresources.h"
 #include <stack>
+#include <QTimer>
 
 class MatrixSystem
 {
@@ -83,8 +84,15 @@ public:
 	void mouseMoveEvent(QMouseEvent *event) override;
 	void mouseDoubleClickEvent(QMouseEvent *event) override;
 
+public slots:
+	void slotUpdate()
+	{
+		paintGL();
+	}
+
 private:
 	MatrixSystem m;
 	QOpenGLFunctions_3_3_Core* ctx;
+	QTimer* timer;
 };
 

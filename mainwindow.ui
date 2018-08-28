@@ -38,7 +38,7 @@ background-color: rgb(200, 200, 200);
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>5</number>
+       <number>4</number>
       </property>
       <widget class="QWidget" name="tab_home">
        <property name="styleSheet">
@@ -676,7 +676,7 @@ background-color: rgba(150,150,170, 130);
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_11">
         <item>
-         <widget class="PixPlotter" name="openGLWidget"/>
+         <widget class="BrainMap" name="openGLWidget"/>
         </item>
        </layout>
       </widget>
@@ -686,7 +686,17 @@ background-color: rgba(150,150,170, 130);
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_12">
         <item>
-         <widget class="Game" name="openGLWidget_2"/>
+         <widget class="PixPlotter" name="openGLWidget_2"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_test">
+       <attribute name="title">
+        <string>OpenGL Test</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_13">
+        <item>
+         <widget class="Game" name="openGLWidget_3"/>
         </item>
        </layout>
       </widget>
@@ -718,6 +728,11 @@ background-color: rgba(150,150,170, 130);
    <class>Game</class>
    <extends>QOpenGLWidget</extends>
    <header>game.h</header>
+  </customwidget>
+  <customwidget>
+   <class>BrainMap</class>
+   <extends>QOpenGLWidget</extends>
+   <header>brainmap.h</header>
   </customwidget>
  </customwidgets>
  <resources>

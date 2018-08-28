@@ -92,4 +92,15 @@ void Controller::slotDataReady()
 
 	bci::State::program[Vars::USED_TIME] = m_calc_time.getDuration() / (1.0 / 125.0);
 	bci::State::program.updateVars();
+
+	std::vector<double> chData(m_data_buff.size());
+	for (int i = 0; i < chData.size(); ++i)
+		chData[i] = m_data_buff[i][0];
+
+	{
+		std::lock_guard<std::mutex> guard(DTFT_Shared_Data.mtx);
+		bci::DFT(chData, DTFT_Shared_Data.data);
+		DTFT_Shared_Data.timePoints = 100;
+		DTFT_Shared_Data.freqPoints = DTFT_Shared_Data.data.size();
+	}
 }

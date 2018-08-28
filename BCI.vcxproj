@@ -231,6 +231,10 @@
     <QtMoc Include="bciinterface.h" />
     <QtMoc Include="controller.h" />
     <QtMoc Include="core.h" />
+    <QtMoc Include="brainmap.h">
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtOpenGL;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtPrintSupport;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtWidgets;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtWinExtras;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtGui;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtANGLE;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtSerialPort;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtCore;.\debug;\include;.\..\..\..\..\QT\5.10.0\MSVC2017_64\mkspecs\win32-msvc;$(INHERIT)\.;C:\libraries\boost\1.67.0;C:\libraries\glm\0.9.9.0;C:\libraries\stb\2.19</IncludePath>
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtOpenGL;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtPrintSupport;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtWidgets;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtWinExtras;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtGui;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtANGLE;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtSerialPort;.\..\..\..\..\QT\5.10.0\MSVC2017_64\include\QtCore;.\release;\include;.\..\..\..\..\QT\5.10.0\MSVC2017_64\mkspecs\win32-msvc;$(INHERIT)\.;C:\libraries\boost\1.67.0;C:\libraries\glm\0.9.9.0;C:\libraries\stb\2.19</IncludePath>
+    </QtMoc>
     <ClInclude Include="csvio.h" />
     <QtMoc Include="cytoninterface.h" />
     <QtMoc Include="error.h" />
@@ -274,8 +278,10 @@
     <None Include="icons\cool" />
     <None Include="icons\debug.png" />
     <None Include="effect.jpg" />
+    <None Include="shaders\FS_brainmap.glsl" />
     <None Include="shaders\FS_math.glsl" />
     <None Include="shaders\FS_pixplotter.glsl" />
+    <None Include="shaders\VS_brainmap.glsl" />
     <None Include="shaders\VS_math.glsl" />
     <None Include="shaders\VS_pixplotter.glsl" />
     <QtRcc Include="resources.qrc">
@@ -289,6 +295,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="bciinterface.cpp" />
+    <ClCompile Include="brainmap.cpp" />
     <ClCompile Include="controller.cpp" />
     <ClCompile Include="core.cpp" />
     <ClCompile Include="csvio.cpp" />
@@ -313,6 +320,7 @@
   <ItemGroup>
     <Image Include="textures\awesomeface.png" />
     <Image Include="textures\container.jpg" />
+    <Image Include="textures\test.png" />
     <Image Include="textures\wall.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

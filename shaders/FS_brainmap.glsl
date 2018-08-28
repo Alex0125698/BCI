@@ -7,9 +7,8 @@ out vec4 color; // RGBA 0.0f to 1.0f
 
 uniform sampler2D ourTexture1;
 uniform sampler2D ourTexture2;
-uniform sampler2D ourTexture3;
 
 void main()
 {
-    color = (0.44*texture(ourTexture1, TexCoord) + 0.22*texture(ourTexture2, TexCoord) + 0.33*texture(ourTexture3, TexCoord));
+    color = texture(ourTexture1, TexCoord)*texture(ourTexture2, TexCoord);
 }
