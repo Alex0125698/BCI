@@ -141,12 +141,13 @@ public:
 	}
 	auto getData(size_t index) const
 	{
+		index;
 		//return m_data_si;
 	}
 	// get the plain SI base data at index location
 	auto getSIData(size_t index) const 
 	{
-
+		index;
 	}
 
 public:

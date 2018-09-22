@@ -1,15 +1,42 @@
 #include "bciinterface.h"
 #include <QThread>
 
- void bci::Interface::getData(std::vector<double>& rx)
+// automatically add line & file macros
+#define SIGERROR(x) sigError(x,__FILE__,__LINE__)
+
+bci::Interface::~Interface()
+{
+	if (m_bci_thread)
+	{
+		// TODO: is this done right ???
+		m_bci_thread->deleteLater();
+		m_bci_thread->quit();
+		auto finished = m_bci_thread->wait(40);
+		if (!finished)
+		{
+			m_bci_thread->terminate();
+			DEBUG_PRINTLNY("BCI Thread terminated", MSG_TYPE::WARNING);
+		}
+		else
+		{
+			DEBUG_PRINTLN("BCI Thread finished");
+		}
+		
+		m_bci_thread = nullptr;
+	}
+}
+
+void bci::Interface::getData(std::vector<double>& rx)
  {
-	 assert(rx.size() == maxChannels());
+	 assert(rx.size() == numChannels());
+	 // lock guard will always unlock the mutex when we are done
 	 std::lock_guard<std::mutex> lock(m_ch_mtx);
 
 	 if (m_channel.empty())
 		 emit SIGERROR("getData() attempted but queue is empty");
 	 else
 	 {
+		 // fill in rx with least-recent data packet
 		 std::copy(m_channel.front().begin(), m_channel.front().end(), rx.begin());
 		 m_channel.pop();
 	 }
@@ -17,7 +44,7 @@
 
  void bci::Interface::getGyroXYZ(double& gX, double& gY, double& gZ)
  {
-	 //TODO: assert(rx.size() <= maxChannels());
+	 //TODO: assert(rx.size() <= numChannels());
 	 std::lock_guard<std::mutex> lock(m_gyro_mtx);
 
 	 if (m_gyro.empty())
@@ -34,9 +61,9 @@
 
  void bci::Interface::getElecImpedance(std::vector<double>& rx)
  {
-	 assert(rx.size() == maxChannels());
 	 std::lock_guard<std::mutex> lock(m_imp_mtx);
-
+	 assert(rx.size() == m_elec_imp.size());
+	 
 	 if (m_elec_imp.empty())
 		 emit SIGERROR("getElecImpedance() attempted but queue is empty");
 	 else
@@ -53,6 +80,7 @@
 	 m_bci_thread->setObjectName("BCI Thread");
 	 m_bci_thread->start(QThread::HighestPriority);
 
+	 // TODO: use QMetaObject::invokeMethod instead
 	 // Boilerplate code to create resources in BCI Thread
 	 connect(this, &bci::Interface::sigCallInit, this, &bci::Interface::init, Qt::QueuedConnection);
 	 connect(this, &bci::Interface::sigCallStartHelper, this, &bci::Interface::start_helper, Qt::QueuedConnection);

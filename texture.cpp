@@ -5,10 +5,8 @@
 #include "stb_image.h"
 #pragma warning(pop)
 
-glw::id glw::Texture::m_textureCount{ 0 };
-GLint glw::Texture::m_maxTexUnits{ 0 };
-glw::id glw::Texture::m_curr_active_unit{ (glw::id)-1 };
-glw::id glw::Texture::m_curr_bound_tex{ (glw::id)-1 };
+glw::id glw::basic::Texture::m_textureCount{ 0 };
+GLint glw::basic::Texture::m_maxTexUnits{ 0 };
 
 void glw::Texture::loadImage(std::string&& fileName)
 {
@@ -33,13 +31,9 @@ void glw::Texture::loadImage(std::string&& fileName)
 	else
 		throw DETAILEDEXCEPTION(QString::fromStdString("Unsupported number of channels: " + std::to_string(nrChannels)));
 
-	glwActiveTexture();
-	glwBindTexture();
+	basic.glwActiveTexture();
+	basic.glwBindTexture();
 
 	stbi_image_free(data);
 }
 
-const uint32_t glw::rgba(const uint8_t r, const uint8_t g, const uint8_t b, const uint8_t a)
-{
-	return (a << 24u) | (r << 16u) | (g << 8u) | b;
-}

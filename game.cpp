@@ -132,25 +132,18 @@ void Game::paintGL()
 	Profiler::get().resetTimer("Set Pixels");
 
 
-	uint32_t* tmp2 = &img3->rawPixels()[0];
+	//uint32_t* tmp2 = &img3->rawPixels()[0];
 
 	for (size_t y = 0; y < img3->height(); ++y)
 	{
 		for (size_t x = 0; x < img3->width(); ++x)
 		{// G B R A
 			//auto tmp = glw::rgba(uint8_t(128 - mouse.y() * 127) + std::rand(), uint8_t(mouse.y() * 127 - 128), uint8_t(mouse.x() * 255), 0);
-			tmp2[x + y * img3->width()] = glw::rgba(255*xpos, 128 + 128*ypos, 128 * ypos - 128, 0);
+			//tmp2[x + y * img3->width()] = glw::color(255*xpos, 128 + 128*ypos, 128 * ypos - 128, 0);
 
 
 		}
 	}
-
-	img1->glwActiveTexture();
-	img1->glwBindTexture();
-	img2->glwActiveTexture();
-	img2->glwBindTexture();
-	img3->glwActiveTexture();
-	img3->glwBindTexture();
 
 	img3->sendToGPU();
 
@@ -208,7 +201,7 @@ void Game::paintGL()
 	};
 
 	m.pushMatrix();
-	m.scale(0.2);
+	m.scale(0.2f);
 	//m.rotateX(mouse.x() * 3);
 	//m.rotateY(mouse.y() * 3);
 	for (int i = 0; i < cube.scale.size(); ++i)

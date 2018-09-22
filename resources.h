@@ -27,7 +27,7 @@
 
 // === Containers ===
 #include <array>
-//#include <deque>
+#include <deque>
 //#include <forward_list>
 //#include <list>
 //#include <map>

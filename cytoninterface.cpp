@@ -2,13 +2,19 @@
 #include <QTimer>
 #include <QSerialPort>
 
+// automatically add line & file macros
+#define SIGERROR(x) sigError(x,__FILE__,__LINE__)
+
 bci::CytonInterface::~CytonInterface()
 {
 	stop();
+	while (m_connected)
+		std::this_thread::sleep_for(std::chrono::milliseconds(20));
 }
 
 void bci::CytonInterface::start_helper()
 {
+	m_stats_avaliable = true;
 	if (m_serialPort->isOpen())
 	{
 		if (!m_error_state)
@@ -21,11 +27,11 @@ void bci::CytonInterface::start_helper()
 
 	if (open)
 	{
-		m_connected = true;
 		connect(m_serialPort, &QSerialPort::readyRead, this, &CytonInterface::slotReadyRead, Qt::QueuedConnection);
 		connect(m_serialPort, &QSerialPort::bytesWritten, this, &CytonInterface::slotBytesWritten, Qt::QueuedConnection);
 		connect(m_serialPort, &QSerialPort::errorOccurred, this, &CytonInterface::slotCOMerror, Qt::QueuedConnection);
-		std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+		std::this_thread::sleep_for(std::chrono::milliseconds(2600));
+		m_connected = true;
 		write("b");
 	}
 	else
@@ -119,7 +125,6 @@ void bci::CytonInterface::decode()
 
 void bci::CytonInterface::stop_helper()
 {
-	m_connected = false;
 	m_pkt_rdy = false;
 	m_counting = false;
 	m_pkt_byte_num = 0;
@@ -134,6 +139,7 @@ void bci::CytonInterface::stop_helper()
 		disconnect(m_serialPort, 0, 0, 0);
 	}
 	m_error_state = false;
+	m_connected = false;
 }
 
 void bci::CytonInterface::init()
@@ -225,7 +231,7 @@ void bci::CytonInterface::slotReadyRead()
 			{
 				{
 					std::lock_guard<std::mutex> lock(m_ch_mtx);
-					if (m_channel.size() >= 64)
+					if (m_channel.size() >= 256)
 					{
 						stop();
 						emit SIGERROR("Controller failed to keep up with BCI");

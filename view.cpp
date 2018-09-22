@@ -185,7 +185,7 @@ ButtonsView::ButtonsView(const std::vector<Variable*>& vars, const std::vector<Q
 		auto tmp = new QRadioButton;
 		tmp->setText(titles[i]);
 		tmp->setChecked(i==var->getValue());
-		buttonsLayout->addWidget(tmp, i / 3, i % 3);
+		buttonsLayout->addWidget(tmp, (int)i / 3, i % 3);
 		// TODO: set value
 		connect(tmp, &QRadioButton::toggled, [tmp, var, i]() {if (tmp->isChecked()) var->setValue(i); });
 		// TODO: reset val ??

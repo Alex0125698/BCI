@@ -116,14 +116,4 @@ namespace bci
 	};
 }
 
-struct sdtft
-{
-	std::vector<double> data;
-	double timePoints{ 60 };
-	double freqPoints{ 30 };
-	std::mutex mtx;
-};
-
-extern sdtft DTFT_Shared_Data;
-
 typedef bci::State::Vars Vars;

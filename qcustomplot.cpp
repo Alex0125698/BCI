@@ -6307,7 +6307,7 @@ double QCPAxisTickerTime::getTickStep(const QCPRange &range)
     result = pickClosest(result, availableSteps);
   } else // more than a day, go back to normal clean mantissa algorithm but in units of days
   {
-    const double secondsPerDay = 3600*24;
+    const double secondsPerDay = 3600.0*24.0;
     result = cleanMantissa(result/secondsPerDay)*secondsPerDay;
   }
   return result;

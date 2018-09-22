@@ -26,5 +26,9 @@ private:
 	glw::Texture* m_head{ nullptr };
 	GLuint VBO, VAO, EBO;
 	float xpos = 0, ypos = 0;
+
+private:
+	static float vertices[];
+	static unsigned int indices[];
 };
 

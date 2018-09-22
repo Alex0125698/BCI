@@ -126,7 +126,7 @@ void GraphWidget::addVariable(Variable* const var, const bool visible)
 	}
 
 	m_checkboxes[m_checkboxes.size() - 1]->setChecked(visible);
-	m_dialogLayout->addWidget(m_checkboxes[m_checkboxes.size() - size_t(1)], m_checkboxes.size() - size_t(1), 0);
+	m_dialogLayout->addWidget(m_checkboxes[m_checkboxes.size() - size_t(1)], int(m_checkboxes.size() - size_t(1)), 0);
 
 	connect(var, &Variable::sigUnitsChanged, this, &GraphWidget::slotRefreshNames, Qt::QueuedConnection);
 	connect(var, &Variable::sigNameChanged, this, &GraphWidget::slotRefreshNames, Qt::QueuedConnection);
@@ -149,7 +149,7 @@ void GraphWidget::addData(double time)
 	{
 		if (m_display[i])
 		{
-			m_plot->graph(index)->addData(time, m_vars[i]->getValue());
+			m_plot->graph((int)index)->addData(time, m_vars[i]->getValue());
 			++index;
 		}
 	}
@@ -183,7 +183,7 @@ void GraphWidget::slotRefreshNames()
 		if (m_display[i])
 		{
 			var_name = QString::fromStdString(m_vars[i]->getName() + " (" + m_vars[i]->getActiveUnitName() + ')');
-			m_plot->graph(j)->setName(var_name);
+			m_plot->graph((int)j)->setName(var_name);
 			++j;
 		}
 	}

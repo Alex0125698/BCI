@@ -1,6 +1,6 @@
 #include "state.h"
 
-sdtft DTFT_Shared_Data;
+//sdtft DTFT_Shared_Data;
 
 bci::State bci::State::program;
 

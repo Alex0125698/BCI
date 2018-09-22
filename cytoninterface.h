@@ -33,7 +33,8 @@ class CytonInterface : public bci::Interface
 public:
 	CytonInterface() = default;
 	virtual ~CytonInterface();
-	virtual const size_t maxChannels() override { return 16; }
+	virtual const size_t numChannels() override { return 16; }
+	virtual const double freq() override { return 125.0;  }
 	virtual void start_helper() override;
 	virtual void stop_helper() override;
 
@@ -53,6 +54,8 @@ private:
 	void decode();
 
 private:
+	// private data is for BCI thread only
+	// this is used to communicate with the Bluetooth dongle
 	QSerialPort* m_serialPort{ nullptr };
 	// used to ensure data sent on time
 	std::unique_ptr<QTimer> m_timer;

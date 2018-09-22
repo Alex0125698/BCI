@@ -21,8 +21,11 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QMainWindow>
+#include <QtWidgets/QOpenGLWidget>
 #include <QtWidgets/QProgressBar>
+#include <QtWidgets/QSlider>
 #include <QtWidgets/QSpacerItem>
+#include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTabWidget>
 #include <QtWidgets/QToolButton>
@@ -61,8 +64,29 @@ public:
     QHBoxLayout *horizontalLayout_3;
     QSpacerItem *horizontalSpacer_4;
     QGroupBox *groupBox;
+    QVBoxLayout *verticalLayout_19;
+    QHBoxLayout *horizontalLayout_18;
+    QLabel *label_15;
+    QComboBox *box_source;
+    QHBoxLayout *horizontalLayout_19;
+    QSpacerItem *horizontalSpacer_13;
+    QToolButton *btn_connect;
     QSpacerItem *horizontalSpacer_5;
     QGroupBox *groupBox_2;
+    QVBoxLayout *verticalLayout_20;
+    QWidget *widget_offline;
+    QVBoxLayout *verticalLayout_21;
+    QHBoxLayout *horizontalLayout_21;
+    QLabel *label_17;
+    QLineEdit *line_data_in;
+    QToolButton *btn_data_in;
+    QHBoxLayout *horizontalLayout_17;
+    QLabel *label_18;
+    QSpinBox *box_freq;
+    QSpacerItem *horizontalSpacer_14;
+    QHBoxLayout *horizontalLayout_24;
+    QSpacerItem *horizontalSpacer_17;
+    QToolButton *btn_debug_window;
     QSpacerItem *horizontalSpacer_6;
     QGroupBox *groupBox_3;
     QVBoxLayout *verticalLayout;
@@ -79,26 +103,35 @@ public:
     QSpacerItem *verticalSpacer_2;
     QSpacerItem *horizontalSpacer_7;
     QWidget *tab_data;
-    QHBoxLayout *horizontalLayout_8;
-    QVBoxLayout *verticalLayout_8;
-    QGroupBox *groupBox_4;
+    QVBoxLayout *verticalLayout_22;
+    QHBoxLayout *horizontalLayout_23;
+    QGroupBox *groupBox_5;
     QVBoxLayout *verticalLayout_5;
-    QComboBox *box_source;
-    QToolButton *btn_connect;
-    QSpacerItem *verticalSpacer_5;
-    QGroupBox *groupBox_6;
-    QVBoxLayout *verticalLayout_7;
-    QHBoxLayout *horizontalLayout_7;
+    QHBoxLayout *horizontalLayout_6;
     QLabel *label_9;
     QSpacerItem *horizontalSpacer_9;
-    QSpacerItem *verticalSpacer_4;
-    QGroupBox *groupBox_5;
+    QWidget *widget;
+    QVBoxLayout *verticalLayout_8;
+    QGroupBox *groupBox_6;
     QVBoxLayout *verticalLayout_6;
-    QHBoxLayout *horizontalLayout_6;
-    QLabel *label_8;
-    QProgressBar *progressBar;
-    QSpacerItem *verticalSpacer_3;
+    QHBoxLayout *horizontalLayout_7;
+    QLabel *label_19;
     QSpacerItem *horizontalSpacer_10;
+    QToolButton *toolButton_3;
+    QOpenGLWidget *openGLWidget_4;
+    QGroupBox *groupBox_7;
+    QVBoxLayout *verticalLayout_7;
+    QHBoxLayout *horizontalLayout_22;
+    QLabel *label_21;
+    QSpacerItem *horizontalSpacer_16;
+    QToolButton *toolButton_4;
+    QOpenGLWidget *openGLWidget_5;
+    QSpacerItem *verticalSpacer_3;
+    QHBoxLayout *horizontalLayout_20;
+    QHBoxLayout *horizontalLayout_8;
+    QLabel *label_20;
+    QProgressBar *progressBar;
+    QSpacerItem *horizontalSpacer_15;
     QWidget *tab_time;
     QVBoxLayout *verticalLayout_9;
     GraphWidget *plot_time;
@@ -108,33 +141,106 @@ public:
     QHBoxLayout *horizontalLayout_9;
     StateGroup *group_freqs;
     QWidget *widget_4;
+    QWidget *tab_stft;
+    QVBoxLayout *verticalLayout_18;
+    PixPlotter *openGLWidget_2;
+    QToolButton *btn_stft_larger;
+    QGroupBox *groupBox_stft_controls;
+    QVBoxLayout *verticalLayout_17;
+    QVBoxLayout *verticalLayout_23;
+    QHBoxLayout *horizontalLayout_29;
+    QLabel *label;
+    QSpacerItem *horizontalSpacer_19;
+    QFrame *line_3;
+    QHBoxLayout *horizontalLayout_30;
+    QVBoxLayout *verticalLayout_12;
+    QHBoxLayout *horizontalLayout_10;
+    QLabel *label_10;
+    QSpinBox *box_wnd_size;
+    QHBoxLayout *horizontalLayout_11;
+    QLabel *label_11;
+    QSpinBox *box_wnd_overlap;
+    QHBoxLayout *horizontalLayout_25;
+    QLabel *label_22;
+    QSpinBox *box_time_span;
+    QSpacerItem *horizontalSpacer_12;
+    QVBoxLayout *verticalLayout_14;
+    QHBoxLayout *horizontalLayout_31;
+    QLabel *label_25;
+    QSlider *slider_max_freq;
+    QHBoxLayout *horizontalLayout_32;
+    QLabel *label_26;
+    QSlider *slider_brightness;
+    QHBoxLayout *horizontalLayout_33;
+    QLabel *label_27;
+    QSlider *slider_dark_boost;
+    QHBoxLayout *horizontalLayout_26;
+    QLabel *label_24;
+    QSlider *slider_hard_limit;
+    QSpacerItem *horizontalSpacer_11;
+    QVBoxLayout *verticalLayout_15;
+    QHBoxLayout *horizontalLayout_14;
+    QLabel *label_14;
+    QSlider *slider_blur_size;
+    QHBoxLayout *horizontalLayout_15;
+    QLabel *lab;
+    QSlider *slider_blur_amount;
+    QHBoxLayout *horizontalLayout_12;
+    QLabel *label_12;
+    QSlider *slider_sharpen_size;
+    QHBoxLayout *horizontalLayout_13;
+    QLabel *label_13;
+    QSlider *slider_sharpen_amount;
+    QSpacerItem *horizontalSpacer_8;
+    QVBoxLayout *verticalLayout_16;
+    QHBoxLayout *horizontalLayout_16;
+    QLabel *label_16;
+    QComboBox *box_wnd_type;
+    QHBoxLayout *horizontalLayout_27;
+    QLabel *label_23;
+    QComboBox *box_spatial_type;
+    QHBoxLayout *horizontalLayout_34;
+    QLabel *label_28;
+    QComboBox *box_channel_source;
+    QHBoxLayout *horizontalLayout_28;
+    QSpacerItem *horizontalSpacer_18;
+    QToolButton *btn_stft_enabled;
     QWidget *tab_activity;
     QVBoxLayout *verticalLayout_11;
     BrainMap *openGLWidget;
-    QWidget *tab_stft;
-    QVBoxLayout *verticalLayout_12;
-    PixPlotter *openGLWidget_2;
     QWidget *tab_test;
     QVBoxLayout *verticalLayout_13;
     Game *openGLWidget_3;
+    QWidget *tab_translation;
     QStatusBar *statusbar;
 
     void setupUi(QMainWindow *MainWindow)
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(863, 577);
+        MainWindow->resize(861, 577);
         MainWindow->setContextMenuPolicy(Qt::DefaultContextMenu);
+        MainWindow->setStyleSheet(QLatin1String("QMainWindow#MainWindow{\n"
+"background-color: rgb(220,220,220);\n"
+"}"));
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QStringLiteral("centralwidget"));
         centralwidget->setStyleSheet(QLatin1String("QWidget#centralwidget{\n"
-"background-color: rgb(200, 200, 200);\n"
+"background-color: rgb(20,20,30);\n"
 "}"));
         verticalLayout_4 = new QVBoxLayout(centralwidget);
         verticalLayout_4->setObjectName(QStringLiteral("verticalLayout_4"));
-        verticalLayout_4->setContentsMargins(0, 0, 0, 6);
+        verticalLayout_4->setContentsMargins(0, 0, 0, 0);
         tabWidget = new QTabWidget(centralwidget);
         tabWidget->setObjectName(QStringLiteral("tabWidget"));
+        tabWidget->setStyleSheet(QLatin1String("QWidget#tab_stft{\n"
+"background-image: url(:/images/images/background-dark.png);\n"
+"}"));
+        tabWidget->setTabShape(QTabWidget::Rounded);
+        tabWidget->setElideMode(Qt::ElideNone);
+        tabWidget->setUsesScrollButtons(true);
+        tabWidget->setMovable(true);
+        tabWidget->setTabBarAutoHide(false);
         tab_home = new QWidget();
         tab_home->setObjectName(QStringLiteral("tab_home"));
         tab_home->setStyleSheet(QLatin1String("QWidget#tab_home{\n"
@@ -254,6 +360,48 @@ public:
         groupBox->setStyleSheet(QLatin1String("QWidget#groupBox{\n"
 "background-color: rgba(150,150,170, 130);\n"
 "}"));
+        verticalLayout_19 = new QVBoxLayout(groupBox);
+        verticalLayout_19->setObjectName(QStringLiteral("verticalLayout_19"));
+        horizontalLayout_18 = new QHBoxLayout();
+        horizontalLayout_18->setObjectName(QStringLiteral("horizontalLayout_18"));
+        label_15 = new QLabel(groupBox);
+        label_15->setObjectName(QStringLiteral("label_15"));
+        label_15->setMaximumSize(QSize(50, 16777215));
+
+        horizontalLayout_18->addWidget(label_15);
+
+        box_source = new QComboBox(groupBox);
+        box_source->addItem(QString());
+        box_source->addItem(QString());
+        box_source->addItem(QString());
+        box_source->setObjectName(QStringLiteral("box_source"));
+
+        horizontalLayout_18->addWidget(box_source);
+
+
+        verticalLayout_19->addLayout(horizontalLayout_18);
+
+        horizontalLayout_19 = new QHBoxLayout();
+        horizontalLayout_19->setObjectName(QStringLiteral("horizontalLayout_19"));
+        horizontalSpacer_13 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_19->addItem(horizontalSpacer_13);
+
+        btn_connect = new QToolButton(groupBox);
+        btn_connect->setObjectName(QStringLiteral("btn_connect"));
+        QIcon icon1;
+        icon1.addFile(QStringLiteral(":/icons/icons/arrow_green.jpg"), QSize(), QIcon::Normal, QIcon::Off);
+        btn_connect->setIcon(icon1);
+        btn_connect->setIconSize(QSize(32, 32));
+        btn_connect->setCheckable(true);
+        btn_connect->setChecked(false);
+        btn_connect->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+
+        horizontalLayout_19->addWidget(btn_connect);
+
+
+        verticalLayout_19->addLayout(horizontalLayout_19);
+
 
         horizontalLayout_3->addWidget(groupBox);
 
@@ -267,6 +415,78 @@ public:
         groupBox_2->setStyleSheet(QLatin1String("QWidget#groupBox_2{\n"
 "background-color: rgba(150,150,170, 130);\n"
 "}"));
+        verticalLayout_20 = new QVBoxLayout(groupBox_2);
+        verticalLayout_20->setObjectName(QStringLiteral("verticalLayout_20"));
+        widget_offline = new QWidget(groupBox_2);
+        widget_offline->setObjectName(QStringLiteral("widget_offline"));
+        verticalLayout_21 = new QVBoxLayout(widget_offline);
+        verticalLayout_21->setObjectName(QStringLiteral("verticalLayout_21"));
+        horizontalLayout_21 = new QHBoxLayout();
+        horizontalLayout_21->setObjectName(QStringLiteral("horizontalLayout_21"));
+        label_17 = new QLabel(widget_offline);
+        label_17->setObjectName(QStringLiteral("label_17"));
+
+        horizontalLayout_21->addWidget(label_17);
+
+        line_data_in = new QLineEdit(widget_offline);
+        line_data_in->setObjectName(QStringLiteral("line_data_in"));
+
+        horizontalLayout_21->addWidget(line_data_in);
+
+        btn_data_in = new QToolButton(widget_offline);
+        btn_data_in->setObjectName(QStringLiteral("btn_data_in"));
+
+        horizontalLayout_21->addWidget(btn_data_in);
+
+
+        verticalLayout_21->addLayout(horizontalLayout_21);
+
+        horizontalLayout_17 = new QHBoxLayout();
+        horizontalLayout_17->setObjectName(QStringLiteral("horizontalLayout_17"));
+        label_18 = new QLabel(widget_offline);
+        label_18->setObjectName(QStringLiteral("label_18"));
+
+        horizontalLayout_17->addWidget(label_18);
+
+        box_freq = new QSpinBox(widget_offline);
+        box_freq->setObjectName(QStringLiteral("box_freq"));
+        box_freq->setMinimum(1);
+        box_freq->setMaximum(2048);
+        box_freq->setValue(250);
+
+        horizontalLayout_17->addWidget(box_freq);
+
+        horizontalSpacer_14 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_17->addItem(horizontalSpacer_14);
+
+
+        verticalLayout_21->addLayout(horizontalLayout_17);
+
+
+        verticalLayout_20->addWidget(widget_offline);
+
+        horizontalLayout_24 = new QHBoxLayout();
+        horizontalLayout_24->setObjectName(QStringLiteral("horizontalLayout_24"));
+        horizontalSpacer_17 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_24->addItem(horizontalSpacer_17);
+
+        btn_debug_window = new QToolButton(groupBox_2);
+        btn_debug_window->setObjectName(QStringLiteral("btn_debug_window"));
+        QIcon icon2;
+        icon2.addFile(QStringLiteral(":/icons/icons/debug.png"), QSize(), QIcon::Normal, QIcon::Off);
+        btn_debug_window->setIcon(icon2);
+        btn_debug_window->setCheckable(true);
+        btn_debug_window->setChecked(true);
+        btn_debug_window->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+        btn_debug_window->setAutoRaise(false);
+
+        horizontalLayout_24->addWidget(btn_debug_window);
+
+
+        verticalLayout_20->addLayout(horizontalLayout_24);
+
 
         horizontalLayout_3->addWidget(groupBox_2);
 
@@ -312,9 +532,9 @@ public:
         btn_save_options = new QToolButton(groupBox_3);
         btn_save_options->setObjectName(QStringLiteral("btn_save_options"));
         btn_save_options->setMinimumSize(QSize(0, 0));
-        QIcon icon1;
-        icon1.addFile(QStringLiteral(":/icons/icons/Settings.png"), QSize(), QIcon::Normal, QIcon::Off);
-        btn_save_options->setIcon(icon1);
+        QIcon icon3;
+        icon3.addFile(QStringLiteral(":/icons/icons/Settings.png"), QSize(), QIcon::Normal, QIcon::Off);
+        btn_save_options->setIcon(icon3);
         btn_save_options->setIconSize(QSize(24, 24));
 
         horizontalLayout_4->addWidget(btn_save_options);
@@ -326,19 +546,20 @@ public:
         btn_save_start = new QToolButton(groupBox_3);
         btn_save_start->setObjectName(QStringLiteral("btn_save_start"));
         btn_save_start->setMinimumSize(QSize(0, 0));
-        QIcon icon2;
-        icon2.addFile(QStringLiteral(":/icons/icons/Save.JPG"), QSize(), QIcon::Normal, QIcon::Off);
-        btn_save_start->setIcon(icon2);
+        QIcon icon4;
+        icon4.addFile(QStringLiteral(":/icons/icons/Save.JPG"), QSize(), QIcon::Normal, QIcon::Off);
+        btn_save_start->setIcon(icon4);
         btn_save_start->setIconSize(QSize(24, 24));
 
         horizontalLayout_4->addWidget(btn_save_start);
 
         btn_save_stop = new QToolButton(groupBox_3);
         btn_save_stop->setObjectName(QStringLiteral("btn_save_stop"));
+        btn_save_stop->setEnabled(false);
         btn_save_stop->setMinimumSize(QSize(0, 0));
-        QIcon icon3;
-        icon3.addFile(QStringLiteral(":/icons/icons/Stop_32.jpg"), QSize(), QIcon::Normal, QIcon::Off);
-        btn_save_stop->setIcon(icon3);
+        QIcon icon5;
+        icon5.addFile(QStringLiteral(":/icons/icons/Stop_32.jpg"), QSize(), QIcon::Normal, QIcon::Off);
+        btn_save_stop->setIcon(icon5);
         btn_save_stop->setIconSize(QSize(24, 24));
 
         horizontalLayout_4->addWidget(btn_save_stop);
@@ -374,101 +595,182 @@ public:
         tabWidget->addTab(tab_home, QString());
         tab_data = new QWidget();
         tab_data->setObjectName(QStringLiteral("tab_data"));
-        horizontalLayout_8 = new QHBoxLayout(tab_data);
-        horizontalLayout_8->setObjectName(QStringLiteral("horizontalLayout_8"));
-        verticalLayout_8 = new QVBoxLayout();
-        verticalLayout_8->setObjectName(QStringLiteral("verticalLayout_8"));
-        groupBox_4 = new QGroupBox(tab_data);
-        groupBox_4->setObjectName(QStringLiteral("groupBox_4"));
-        verticalLayout_5 = new QVBoxLayout(groupBox_4);
+        tab_data->setStyleSheet(QLatin1String("QWidget#tab_data{\n"
+"background-image: url(:/images/images/background-dark.png);\n"
+"}"));
+        verticalLayout_22 = new QVBoxLayout(tab_data);
+        verticalLayout_22->setObjectName(QStringLiteral("verticalLayout_22"));
+        horizontalLayout_23 = new QHBoxLayout();
+        horizontalLayout_23->setObjectName(QStringLiteral("horizontalLayout_23"));
+        groupBox_5 = new QGroupBox(tab_data);
+        groupBox_5->setObjectName(QStringLiteral("groupBox_5"));
+        groupBox_5->setStyleSheet(QLatin1String("QWidget#groupBox_5{\n"
+"background-color: rgba(150,150,170, 130);\n"
+"}"));
+        verticalLayout_5 = new QVBoxLayout(groupBox_5);
         verticalLayout_5->setObjectName(QStringLiteral("verticalLayout_5"));
-        box_source = new QComboBox(groupBox_4);
-        box_source->addItem(QString());
-        box_source->addItem(QString());
-        box_source->setObjectName(QStringLiteral("box_source"));
-
-        verticalLayout_5->addWidget(box_source);
-
-        btn_connect = new QToolButton(groupBox_4);
-        btn_connect->setObjectName(QStringLiteral("btn_connect"));
-        QIcon icon4;
-        icon4.addFile(QStringLiteral(":/icons/icons/arrow_green.jpg"), QSize(), QIcon::Normal, QIcon::Off);
-        btn_connect->setIcon(icon4);
-        btn_connect->setIconSize(QSize(32, 32));
-        btn_connect->setCheckable(true);
-        btn_connect->setChecked(false);
-        btn_connect->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-
-        verticalLayout_5->addWidget(btn_connect);
-
-
-        verticalLayout_8->addWidget(groupBox_4);
-
-        verticalSpacer_5 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
-
-        verticalLayout_8->addItem(verticalSpacer_5);
-
-        groupBox_6 = new QGroupBox(tab_data);
-        groupBox_6->setObjectName(QStringLiteral("groupBox_6"));
-        verticalLayout_7 = new QVBoxLayout(groupBox_6);
-        verticalLayout_7->setObjectName(QStringLiteral("verticalLayout_7"));
-        horizontalLayout_7 = new QHBoxLayout();
-        horizontalLayout_7->setObjectName(QStringLiteral("horizontalLayout_7"));
-        label_9 = new QLabel(groupBox_6);
+        horizontalLayout_6 = new QHBoxLayout();
+        horizontalLayout_6->setObjectName(QStringLiteral("horizontalLayout_6"));
+        label_9 = new QLabel(groupBox_5);
         label_9->setObjectName(QStringLiteral("label_9"));
+        QFont font2;
+        font2.setFamily(QStringLiteral("Cooper Std Black"));
+        font2.setBold(true);
+        font2.setItalic(false);
+        font2.setWeight(75);
+        label_9->setFont(font2);
 
-        horizontalLayout_7->addWidget(label_9);
+        horizontalLayout_6->addWidget(label_9);
 
         horizontalSpacer_9 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-        horizontalLayout_7->addItem(horizontalSpacer_9);
+        horizontalLayout_6->addItem(horizontalSpacer_9);
 
 
-        verticalLayout_7->addLayout(horizontalLayout_7);
+        verticalLayout_5->addLayout(horizontalLayout_6);
 
-        verticalSpacer_4 = new QSpacerItem(20, 77, QSizePolicy::Minimum, QSizePolicy::Expanding);
+        widget = new QWidget(groupBox_5);
+        widget->setObjectName(QStringLiteral("widget"));
+        widget->setMinimumSize(QSize(0, 100));
 
-        verticalLayout_7->addItem(verticalSpacer_4);
+        verticalLayout_5->addWidget(widget);
 
+        verticalLayout_5->setStretch(1, 1);
+
+        horizontalLayout_23->addWidget(groupBox_5);
+
+        verticalLayout_8 = new QVBoxLayout();
+        verticalLayout_8->setObjectName(QStringLiteral("verticalLayout_8"));
+        groupBox_6 = new QGroupBox(tab_data);
+        groupBox_6->setObjectName(QStringLiteral("groupBox_6"));
+        groupBox_6->setStyleSheet(QLatin1String("QWidget#groupBox_6{\n"
+"background-color: rgba(150,150,170, 130);\n"
+"}"));
+        verticalLayout_6 = new QVBoxLayout(groupBox_6);
+        verticalLayout_6->setObjectName(QStringLiteral("verticalLayout_6"));
+        horizontalLayout_7 = new QHBoxLayout();
+        horizontalLayout_7->setObjectName(QStringLiteral("horizontalLayout_7"));
+        label_19 = new QLabel(groupBox_6);
+        label_19->setObjectName(QStringLiteral("label_19"));
+        label_19->setFont(font2);
+
+        horizontalLayout_7->addWidget(label_19);
+
+        horizontalSpacer_10 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_7->addItem(horizontalSpacer_10);
+
+        toolButton_3 = new QToolButton(groupBox_6);
+        toolButton_3->setObjectName(QStringLiteral("toolButton_3"));
+        QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(toolButton_3->sizePolicy().hasHeightForWidth());
+        toolButton_3->setSizePolicy(sizePolicy);
+        toolButton_3->setIcon(icon1);
+        toolButton_3->setCheckable(true);
+        toolButton_3->setChecked(true);
+        toolButton_3->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+        toolButton_3->setAutoRaise(false);
+
+        horizontalLayout_7->addWidget(toolButton_3);
+
+
+        verticalLayout_6->addLayout(horizontalLayout_7);
+
+        openGLWidget_4 = new QOpenGLWidget(groupBox_6);
+        openGLWidget_4->setObjectName(QStringLiteral("openGLWidget_4"));
+        openGLWidget_4->setMinimumSize(QSize(0, 100));
+
+        verticalLayout_6->addWidget(openGLWidget_4);
+
+        verticalLayout_6->setStretch(1, 1);
 
         verticalLayout_8->addWidget(groupBox_6);
 
-        groupBox_5 = new QGroupBox(tab_data);
-        groupBox_5->setObjectName(QStringLiteral("groupBox_5"));
-        verticalLayout_6 = new QVBoxLayout(groupBox_5);
-        verticalLayout_6->setObjectName(QStringLiteral("verticalLayout_6"));
-        horizontalLayout_6 = new QHBoxLayout();
-        horizontalLayout_6->setObjectName(QStringLiteral("horizontalLayout_6"));
-        label_8 = new QLabel(groupBox_5);
-        label_8->setObjectName(QStringLiteral("label_8"));
+        groupBox_7 = new QGroupBox(tab_data);
+        groupBox_7->setObjectName(QStringLiteral("groupBox_7"));
+        groupBox_7->setStyleSheet(QLatin1String("QWidget#groupBox_7{\n"
+"background-color: rgba(150,150,170, 130);\n"
+"}"));
+        verticalLayout_7 = new QVBoxLayout(groupBox_7);
+        verticalLayout_7->setObjectName(QStringLiteral("verticalLayout_7"));
+        horizontalLayout_22 = new QHBoxLayout();
+        horizontalLayout_22->setObjectName(QStringLiteral("horizontalLayout_22"));
+        label_21 = new QLabel(groupBox_7);
+        label_21->setObjectName(QStringLiteral("label_21"));
+        label_21->setFont(font2);
 
-        horizontalLayout_6->addWidget(label_8);
+        horizontalLayout_22->addWidget(label_21);
 
-        progressBar = new QProgressBar(groupBox_5);
+        horizontalSpacer_16 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_22->addItem(horizontalSpacer_16);
+
+        toolButton_4 = new QToolButton(groupBox_7);
+        toolButton_4->setObjectName(QStringLiteral("toolButton_4"));
+        sizePolicy.setHeightForWidth(toolButton_4->sizePolicy().hasHeightForWidth());
+        toolButton_4->setSizePolicy(sizePolicy);
+        toolButton_4->setIcon(icon1);
+        toolButton_4->setCheckable(true);
+        toolButton_4->setChecked(true);
+        toolButton_4->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+        toolButton_4->setAutoRaise(false);
+
+        horizontalLayout_22->addWidget(toolButton_4);
+
+
+        verticalLayout_7->addLayout(horizontalLayout_22);
+
+        openGLWidget_5 = new QOpenGLWidget(groupBox_7);
+        openGLWidget_5->setObjectName(QStringLiteral("openGLWidget_5"));
+        openGLWidget_5->setMinimumSize(QSize(0, 100));
+
+        verticalLayout_7->addWidget(openGLWidget_5);
+
+        verticalLayout_7->setStretch(1, 1);
+
+        verticalLayout_8->addWidget(groupBox_7);
+
+
+        horizontalLayout_23->addLayout(verticalLayout_8);
+
+
+        verticalLayout_22->addLayout(horizontalLayout_23);
+
+        verticalSpacer_3 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        verticalLayout_22->addItem(verticalSpacer_3);
+
+        horizontalLayout_20 = new QHBoxLayout();
+        horizontalLayout_20->setObjectName(QStringLiteral("horizontalLayout_20"));
+        horizontalLayout_8 = new QHBoxLayout();
+        horizontalLayout_8->setObjectName(QStringLiteral("horizontalLayout_8"));
+        label_20 = new QLabel(tab_data);
+        label_20->setObjectName(QStringLiteral("label_20"));
+        label_20->setFont(font2);
+
+        horizontalLayout_8->addWidget(label_20);
+
+        progressBar = new QProgressBar(tab_data);
         progressBar->setObjectName(QStringLiteral("progressBar"));
-        progressBar->setValue(24);
+        progressBar->setValue(90);
+        progressBar->setTextVisible(false);
 
-        horizontalLayout_6->addWidget(progressBar);
-
-
-        verticalLayout_6->addLayout(horizontalLayout_6);
-
-        verticalSpacer_3 = new QSpacerItem(20, 75, QSizePolicy::Minimum, QSizePolicy::Expanding);
-
-        verticalLayout_6->addItem(verticalSpacer_3);
+        horizontalLayout_8->addWidget(progressBar);
 
 
-        verticalLayout_8->addWidget(groupBox_5);
+        horizontalLayout_20->addLayout(horizontalLayout_8);
+
+        horizontalSpacer_15 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_20->addItem(horizontalSpacer_15);
 
 
-        horizontalLayout_8->addLayout(verticalLayout_8);
+        verticalLayout_22->addLayout(horizontalLayout_20);
 
-        horizontalSpacer_10 = new QSpacerItem(552, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-        horizontalLayout_8->addItem(horizontalSpacer_10);
-
-        horizontalLayout_8->setStretch(0, 1);
-        horizontalLayout_8->setStretch(1, 2);
+        verticalLayout_22->setStretch(0, 10);
+        verticalLayout_22->setStretch(1, 1);
         tabWidget->addTab(tab_data, QString());
         tab_time = new QWidget();
         tab_time->setObjectName(QStringLiteral("tab_time"));
@@ -509,6 +811,431 @@ public:
         verticalLayout_10->setStretch(0, 3);
         verticalLayout_10->setStretch(1, 1);
         tabWidget->addTab(tab_freq, QString());
+        tab_stft = new QWidget();
+        tab_stft->setObjectName(QStringLiteral("tab_stft"));
+        verticalLayout_18 = new QVBoxLayout(tab_stft);
+        verticalLayout_18->setSpacing(0);
+        verticalLayout_18->setObjectName(QStringLiteral("verticalLayout_18"));
+        openGLWidget_2 = new PixPlotter(tab_stft);
+        openGLWidget_2->setObjectName(QStringLiteral("openGLWidget_2"));
+
+        verticalLayout_18->addWidget(openGLWidget_2);
+
+        btn_stft_larger = new QToolButton(tab_stft);
+        btn_stft_larger->setObjectName(QStringLiteral("btn_stft_larger"));
+        QSizePolicy sizePolicy1(QSizePolicy::Expanding, QSizePolicy::Fixed);
+        sizePolicy1.setHorizontalStretch(0);
+        sizePolicy1.setVerticalStretch(0);
+        sizePolicy1.setHeightForWidth(btn_stft_larger->sizePolicy().hasHeightForWidth());
+        btn_stft_larger->setSizePolicy(sizePolicy1);
+        btn_stft_larger->setMaximumSize(QSize(16777215, 14));
+        btn_stft_larger->setCheckable(true);
+        btn_stft_larger->setChecked(false);
+        btn_stft_larger->setAutoRaise(true);
+        btn_stft_larger->setArrowType(Qt::DownArrow);
+
+        verticalLayout_18->addWidget(btn_stft_larger);
+
+        groupBox_stft_controls = new QGroupBox(tab_stft);
+        groupBox_stft_controls->setObjectName(QStringLiteral("groupBox_stft_controls"));
+        groupBox_stft_controls->setStyleSheet(QLatin1String("QWidget#groupBox_stft_controls{\n"
+"background-color: rgba(150,150,170, 130);\n"
+"}"));
+        verticalLayout_17 = new QVBoxLayout(groupBox_stft_controls);
+        verticalLayout_17->setSpacing(6);
+        verticalLayout_17->setObjectName(QStringLiteral("verticalLayout_17"));
+        verticalLayout_17->setContentsMargins(-1, 6, -1, 6);
+        verticalLayout_23 = new QVBoxLayout();
+        verticalLayout_23->setSpacing(0);
+        verticalLayout_23->setObjectName(QStringLiteral("verticalLayout_23"));
+        horizontalLayout_29 = new QHBoxLayout();
+        horizontalLayout_29->setSpacing(0);
+        horizontalLayout_29->setObjectName(QStringLiteral("horizontalLayout_29"));
+        label = new QLabel(groupBox_stft_controls);
+        label->setObjectName(QStringLiteral("label"));
+        QFont font3;
+        font3.setFamily(QStringLiteral("Cooper Std Black"));
+        font3.setPointSize(12);
+        font3.setBold(true);
+        font3.setItalic(false);
+        font3.setWeight(75);
+        label->setFont(font3);
+
+        horizontalLayout_29->addWidget(label);
+
+        horizontalSpacer_19 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_29->addItem(horizontalSpacer_19);
+
+
+        verticalLayout_23->addLayout(horizontalLayout_29);
+
+        line_3 = new QFrame(groupBox_stft_controls);
+        line_3->setObjectName(QStringLiteral("line_3"));
+        line_3->setStyleSheet(QLatin1String("QFrame#line_3\n"
+"{\n"
+"color: rgb(139, 149, 157)\n"
+"}"));
+        line_3->setFrameShadow(QFrame::Plain);
+        line_3->setFrameShape(QFrame::HLine);
+
+        verticalLayout_23->addWidget(line_3);
+
+
+        verticalLayout_17->addLayout(verticalLayout_23);
+
+        horizontalLayout_30 = new QHBoxLayout();
+        horizontalLayout_30->setObjectName(QStringLiteral("horizontalLayout_30"));
+        verticalLayout_12 = new QVBoxLayout();
+        verticalLayout_12->setObjectName(QStringLiteral("verticalLayout_12"));
+        horizontalLayout_10 = new QHBoxLayout();
+        horizontalLayout_10->setObjectName(QStringLiteral("horizontalLayout_10"));
+        label_10 = new QLabel(groupBox_stft_controls);
+        label_10->setObjectName(QStringLiteral("label_10"));
+        label_10->setMinimumSize(QSize(110, 0));
+        QFont font4;
+        font4.setFamily(QStringLiteral("Levenim MT"));
+        label_10->setFont(font4);
+
+        horizontalLayout_10->addWidget(label_10);
+
+        box_wnd_size = new QSpinBox(groupBox_stft_controls);
+        box_wnd_size->setObjectName(QStringLiteral("box_wnd_size"));
+        box_wnd_size->setMaximum(4096);
+        box_wnd_size->setValue(128);
+
+        horizontalLayout_10->addWidget(box_wnd_size);
+
+
+        verticalLayout_12->addLayout(horizontalLayout_10);
+
+        horizontalLayout_11 = new QHBoxLayout();
+        horizontalLayout_11->setObjectName(QStringLiteral("horizontalLayout_11"));
+        label_11 = new QLabel(groupBox_stft_controls);
+        label_11->setObjectName(QStringLiteral("label_11"));
+        label_11->setMinimumSize(QSize(110, 0));
+        label_11->setFont(font4);
+
+        horizontalLayout_11->addWidget(label_11);
+
+        box_wnd_overlap = new QSpinBox(groupBox_stft_controls);
+        box_wnd_overlap->setObjectName(QStringLiteral("box_wnd_overlap"));
+        box_wnd_overlap->setMaximum(4096);
+        box_wnd_overlap->setValue(64);
+
+        horizontalLayout_11->addWidget(box_wnd_overlap);
+
+
+        verticalLayout_12->addLayout(horizontalLayout_11);
+
+        horizontalLayout_25 = new QHBoxLayout();
+        horizontalLayout_25->setObjectName(QStringLiteral("horizontalLayout_25"));
+        label_22 = new QLabel(groupBox_stft_controls);
+        label_22->setObjectName(QStringLiteral("label_22"));
+        label_22->setMinimumSize(QSize(110, 0));
+        label_22->setFont(font4);
+
+        horizontalLayout_25->addWidget(label_22);
+
+        box_time_span = new QSpinBox(groupBox_stft_controls);
+        box_time_span->setObjectName(QStringLiteral("box_time_span"));
+        box_time_span->setMinimum(6);
+        box_time_span->setMaximum(300);
+        box_time_span->setValue(20);
+
+        horizontalLayout_25->addWidget(box_time_span);
+
+
+        verticalLayout_12->addLayout(horizontalLayout_25);
+
+
+        horizontalLayout_30->addLayout(verticalLayout_12);
+
+        horizontalSpacer_12 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_30->addItem(horizontalSpacer_12);
+
+        verticalLayout_14 = new QVBoxLayout();
+        verticalLayout_14->setObjectName(QStringLiteral("verticalLayout_14"));
+        horizontalLayout_31 = new QHBoxLayout();
+        horizontalLayout_31->setObjectName(QStringLiteral("horizontalLayout_31"));
+        label_25 = new QLabel(groupBox_stft_controls);
+        label_25->setObjectName(QStringLiteral("label_25"));
+        label_25->setMinimumSize(QSize(66, 0));
+        label_25->setFont(font4);
+
+        horizontalLayout_31->addWidget(label_25);
+
+        slider_max_freq = new QSlider(groupBox_stft_controls);
+        slider_max_freq->setObjectName(QStringLiteral("slider_max_freq"));
+        slider_max_freq->setMinimumSize(QSize(100, 0));
+        slider_max_freq->setMaximum(1000);
+        slider_max_freq->setValue(500);
+        slider_max_freq->setOrientation(Qt::Horizontal);
+
+        horizontalLayout_31->addWidget(slider_max_freq);
+
+
+        verticalLayout_14->addLayout(horizontalLayout_31);
+
+        horizontalLayout_32 = new QHBoxLayout();
+        horizontalLayout_32->setObjectName(QStringLiteral("horizontalLayout_32"));
+        label_26 = new QLabel(groupBox_stft_controls);
+        label_26->setObjectName(QStringLiteral("label_26"));
+        label_26->setMinimumSize(QSize(66, 0));
+        label_26->setFont(font4);
+
+        horizontalLayout_32->addWidget(label_26);
+
+        slider_brightness = new QSlider(groupBox_stft_controls);
+        slider_brightness->setObjectName(QStringLiteral("slider_brightness"));
+        slider_brightness->setMinimumSize(QSize(100, 0));
+        slider_brightness->setMaximum(1000);
+        slider_brightness->setValue(500);
+        slider_brightness->setOrientation(Qt::Horizontal);
+
+        horizontalLayout_32->addWidget(slider_brightness);
+
+
+        verticalLayout_14->addLayout(horizontalLayout_32);
+
+        horizontalLayout_33 = new QHBoxLayout();
+        horizontalLayout_33->setObjectName(QStringLiteral("horizontalLayout_33"));
+        label_27 = new QLabel(groupBox_stft_controls);
+        label_27->setObjectName(QStringLiteral("label_27"));
+        label_27->setMinimumSize(QSize(66, 0));
+        label_27->setFont(font4);
+
+        horizontalLayout_33->addWidget(label_27);
+
+        slider_dark_boost = new QSlider(groupBox_stft_controls);
+        slider_dark_boost->setObjectName(QStringLiteral("slider_dark_boost"));
+        slider_dark_boost->setMinimumSize(QSize(100, 0));
+        slider_dark_boost->setMaximum(1000);
+        slider_dark_boost->setValue(0);
+        slider_dark_boost->setOrientation(Qt::Horizontal);
+
+        horizontalLayout_33->addWidget(slider_dark_boost);
+
+
+        verticalLayout_14->addLayout(horizontalLayout_33);
+
+        horizontalLayout_26 = new QHBoxLayout();
+        horizontalLayout_26->setObjectName(QStringLiteral("horizontalLayout_26"));
+        label_24 = new QLabel(groupBox_stft_controls);
+        label_24->setObjectName(QStringLiteral("label_24"));
+        label_24->setMinimumSize(QSize(66, 0));
+        label_24->setFont(font4);
+
+        horizontalLayout_26->addWidget(label_24);
+
+        slider_hard_limit = new QSlider(groupBox_stft_controls);
+        slider_hard_limit->setObjectName(QStringLiteral("slider_hard_limit"));
+        slider_hard_limit->setMinimumSize(QSize(100, 0));
+        slider_hard_limit->setMaximum(1000);
+        slider_hard_limit->setValue(0);
+        slider_hard_limit->setOrientation(Qt::Horizontal);
+
+        horizontalLayout_26->addWidget(slider_hard_limit);
+
+
+        verticalLayout_14->addLayout(horizontalLayout_26);
+
+
+        horizontalLayout_30->addLayout(verticalLayout_14);
+
+        horizontalSpacer_11 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_30->addItem(horizontalSpacer_11);
+
+        verticalLayout_15 = new QVBoxLayout();
+        verticalLayout_15->setSpacing(3);
+        verticalLayout_15->setObjectName(QStringLiteral("verticalLayout_15"));
+        horizontalLayout_14 = new QHBoxLayout();
+        horizontalLayout_14->setObjectName(QStringLiteral("horizontalLayout_14"));
+        label_14 = new QLabel(groupBox_stft_controls);
+        label_14->setObjectName(QStringLiteral("label_14"));
+        label_14->setMinimumSize(QSize(100, 0));
+        label_14->setFont(font4);
+
+        horizontalLayout_14->addWidget(label_14);
+
+        slider_blur_size = new QSlider(groupBox_stft_controls);
+        slider_blur_size->setObjectName(QStringLiteral("slider_blur_size"));
+        slider_blur_size->setMinimumSize(QSize(100, 0));
+        slider_blur_size->setMaximum(1000);
+        slider_blur_size->setValue(500);
+        slider_blur_size->setOrientation(Qt::Horizontal);
+
+        horizontalLayout_14->addWidget(slider_blur_size);
+
+
+        verticalLayout_15->addLayout(horizontalLayout_14);
+
+        horizontalLayout_15 = new QHBoxLayout();
+        horizontalLayout_15->setObjectName(QStringLiteral("horizontalLayout_15"));
+        lab = new QLabel(groupBox_stft_controls);
+        lab->setObjectName(QStringLiteral("lab"));
+        lab->setMinimumSize(QSize(100, 0));
+        lab->setFont(font4);
+
+        horizontalLayout_15->addWidget(lab);
+
+        slider_blur_amount = new QSlider(groupBox_stft_controls);
+        slider_blur_amount->setObjectName(QStringLiteral("slider_blur_amount"));
+        slider_blur_amount->setMinimumSize(QSize(100, 0));
+        slider_blur_amount->setMaximum(1000);
+        slider_blur_amount->setValue(0);
+        slider_blur_amount->setOrientation(Qt::Horizontal);
+
+        horizontalLayout_15->addWidget(slider_blur_amount);
+
+
+        verticalLayout_15->addLayout(horizontalLayout_15);
+
+        horizontalLayout_12 = new QHBoxLayout();
+        horizontalLayout_12->setObjectName(QStringLiteral("horizontalLayout_12"));
+        label_12 = new QLabel(groupBox_stft_controls);
+        label_12->setObjectName(QStringLiteral("label_12"));
+        label_12->setMinimumSize(QSize(100, 0));
+        label_12->setFont(font4);
+
+        horizontalLayout_12->addWidget(label_12);
+
+        slider_sharpen_size = new QSlider(groupBox_stft_controls);
+        slider_sharpen_size->setObjectName(QStringLiteral("slider_sharpen_size"));
+        slider_sharpen_size->setMinimumSize(QSize(100, 0));
+        slider_sharpen_size->setMaximum(1000);
+        slider_sharpen_size->setValue(500);
+        slider_sharpen_size->setOrientation(Qt::Horizontal);
+
+        horizontalLayout_12->addWidget(slider_sharpen_size);
+
+
+        verticalLayout_15->addLayout(horizontalLayout_12);
+
+        horizontalLayout_13 = new QHBoxLayout();
+        horizontalLayout_13->setObjectName(QStringLiteral("horizontalLayout_13"));
+        label_13 = new QLabel(groupBox_stft_controls);
+        label_13->setObjectName(QStringLiteral("label_13"));
+        label_13->setMinimumSize(QSize(100, 0));
+        label_13->setFont(font4);
+
+        horizontalLayout_13->addWidget(label_13);
+
+        slider_sharpen_amount = new QSlider(groupBox_stft_controls);
+        slider_sharpen_amount->setObjectName(QStringLiteral("slider_sharpen_amount"));
+        slider_sharpen_amount->setMinimumSize(QSize(100, 0));
+        slider_sharpen_amount->setMaximum(1000);
+        slider_sharpen_amount->setValue(0);
+        slider_sharpen_amount->setOrientation(Qt::Horizontal);
+
+        horizontalLayout_13->addWidget(slider_sharpen_amount);
+
+
+        verticalLayout_15->addLayout(horizontalLayout_13);
+
+
+        horizontalLayout_30->addLayout(verticalLayout_15);
+
+        horizontalSpacer_8 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_30->addItem(horizontalSpacer_8);
+
+        verticalLayout_16 = new QVBoxLayout();
+        verticalLayout_16->setObjectName(QStringLiteral("verticalLayout_16"));
+        horizontalLayout_16 = new QHBoxLayout();
+        horizontalLayout_16->setObjectName(QStringLiteral("horizontalLayout_16"));
+        label_16 = new QLabel(groupBox_stft_controls);
+        label_16->setObjectName(QStringLiteral("label_16"));
+        label_16->setFont(font4);
+
+        horizontalLayout_16->addWidget(label_16);
+
+        box_wnd_type = new QComboBox(groupBox_stft_controls);
+        box_wnd_type->addItem(QString());
+        box_wnd_type->addItem(QString());
+        box_wnd_type->setObjectName(QStringLiteral("box_wnd_type"));
+
+        horizontalLayout_16->addWidget(box_wnd_type);
+
+
+        verticalLayout_16->addLayout(horizontalLayout_16);
+
+        horizontalLayout_27 = new QHBoxLayout();
+        horizontalLayout_27->setObjectName(QStringLiteral("horizontalLayout_27"));
+        label_23 = new QLabel(groupBox_stft_controls);
+        label_23->setObjectName(QStringLiteral("label_23"));
+        label_23->setFont(font4);
+
+        horizontalLayout_27->addWidget(label_23);
+
+        box_spatial_type = new QComboBox(groupBox_stft_controls);
+        box_spatial_type->addItem(QString());
+        box_spatial_type->addItem(QString());
+        box_spatial_type->setObjectName(QStringLiteral("box_spatial_type"));
+
+        horizontalLayout_27->addWidget(box_spatial_type);
+
+
+        verticalLayout_16->addLayout(horizontalLayout_27);
+
+        horizontalLayout_34 = new QHBoxLayout();
+        horizontalLayout_34->setObjectName(QStringLiteral("horizontalLayout_34"));
+        label_28 = new QLabel(groupBox_stft_controls);
+        label_28->setObjectName(QStringLiteral("label_28"));
+        label_28->setFont(font4);
+
+        horizontalLayout_34->addWidget(label_28);
+
+        box_channel_source = new QComboBox(groupBox_stft_controls);
+        box_channel_source->addItem(QString());
+        box_channel_source->setObjectName(QStringLiteral("box_channel_source"));
+
+        horizontalLayout_34->addWidget(box_channel_source);
+
+
+        verticalLayout_16->addLayout(horizontalLayout_34);
+
+        horizontalLayout_28 = new QHBoxLayout();
+        horizontalLayout_28->setObjectName(QStringLiteral("horizontalLayout_28"));
+        horizontalSpacer_18 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_28->addItem(horizontalSpacer_18);
+
+        btn_stft_enabled = new QToolButton(groupBox_stft_controls);
+        btn_stft_enabled->setObjectName(QStringLiteral("btn_stft_enabled"));
+        sizePolicy1.setHeightForWidth(btn_stft_enabled->sizePolicy().hasHeightForWidth());
+        btn_stft_enabled->setSizePolicy(sizePolicy1);
+        btn_stft_enabled->setIcon(icon1);
+        btn_stft_enabled->setCheckable(true);
+        btn_stft_enabled->setChecked(true);
+        btn_stft_enabled->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+        btn_stft_enabled->setAutoRaise(false);
+
+        horizontalLayout_28->addWidget(btn_stft_enabled);
+
+
+        verticalLayout_16->addLayout(horizontalLayout_28);
+
+
+        horizontalLayout_30->addLayout(verticalLayout_16);
+
+        horizontalLayout_30->setStretch(0, 1);
+        horizontalLayout_30->setStretch(1, 1);
+        horizontalLayout_30->setStretch(2, 4);
+        horizontalLayout_30->setStretch(3, 1);
+        horizontalLayout_30->setStretch(4, 4);
+        horizontalLayout_30->setStretch(5, 1);
+        horizontalLayout_30->setStretch(6, 1);
+
+        verticalLayout_17->addLayout(horizontalLayout_30);
+
+
+        verticalLayout_18->addWidget(groupBox_stft_controls);
+
+        verticalLayout_18->setStretch(0, 1);
+        tabWidget->addTab(tab_stft, icon3, QString());
         tab_activity = new QWidget();
         tab_activity->setObjectName(QStringLiteral("tab_activity"));
         verticalLayout_11 = new QVBoxLayout(tab_activity);
@@ -519,16 +1246,6 @@ public:
         verticalLayout_11->addWidget(openGLWidget);
 
         tabWidget->addTab(tab_activity, QString());
-        tab_stft = new QWidget();
-        tab_stft->setObjectName(QStringLiteral("tab_stft"));
-        verticalLayout_12 = new QVBoxLayout(tab_stft);
-        verticalLayout_12->setObjectName(QStringLiteral("verticalLayout_12"));
-        openGLWidget_2 = new PixPlotter(tab_stft);
-        openGLWidget_2->setObjectName(QStringLiteral("openGLWidget_2"));
-
-        verticalLayout_12->addWidget(openGLWidget_2);
-
-        tabWidget->addTab(tab_stft, QString());
         tab_test = new QWidget();
         tab_test->setObjectName(QStringLiteral("tab_test"));
         verticalLayout_13 = new QVBoxLayout(tab_test);
@@ -539,6 +1256,9 @@ public:
         verticalLayout_13->addWidget(openGLWidget_3);
 
         tabWidget->addTab(tab_test, QString());
+        tab_translation = new QWidget();
+        tab_translation->setObjectName(QStringLiteral("tab_translation"));
+        tabWidget->addTab(tab_translation, QString());
 
         verticalLayout_4->addWidget(tabWidget);
 
@@ -549,7 +1269,9 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(4);
+        tabWidget->setCurrentIndex(0);
+        box_spatial_type->setCurrentIndex(1);
+        box_channel_source->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -564,7 +1286,17 @@ public:
         label_4->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-size:11pt; color:#a2b1c3;\">by A.S. Woodcock &amp; A. Vasilyev</span></p></body></html>", nullptr));
         label_7->setText(QString());
         groupBox->setTitle(QString());
+        label_15->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-size:10pt; color:#ccdbe7;\">Source:</span></p></body></html>", nullptr));
+        box_source->setItemText(0, QApplication::translate("MainWindow", "Offline", nullptr));
+        box_source->setItemText(1, QApplication::translate("MainWindow", "OpenBCI", nullptr));
+        box_source->setItemText(2, QApplication::translate("MainWindow", "Emotiv", nullptr));
+
+        btn_connect->setText(QApplication::translate("MainWindow", "Connect", nullptr));
         groupBox_2->setTitle(QString());
+        label_17->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-size:9pt; color:#ccdbe7;\">Data:</span></p></body></html>", nullptr));
+        btn_data_in->setText(QApplication::translate("MainWindow", "...", nullptr));
+        label_18->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" color:#ccdbe7;\">Frequency:</span></p></body></html>", nullptr));
+        btn_debug_window->setText(QApplication::translate("MainWindow", "Hide Debug Window", nullptr));
         groupBox_3->setTitle(QString());
         label_5->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-size:14pt; color:#ccdbe7;\">Save Options</span></p></body></html>", nullptr));
         label_6->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-size:10pt; color:#ffffff;\">Name:</span></p></body></html>", nullptr));
@@ -573,21 +1305,57 @@ public:
         btn_save_start->setText(QApplication::translate("MainWindow", "...", nullptr));
         btn_save_stop->setText(QApplication::translate("MainWindow", "...", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_home), QApplication::translate("MainWindow", "Home", nullptr));
-        groupBox_4->setTitle(QString());
-        box_source->setItemText(0, QApplication::translate("MainWindow", "Emotiv", nullptr));
-        box_source->setItemText(1, QApplication::translate("MainWindow", "Offline", nullptr));
-
-        btn_connect->setText(QApplication::translate("MainWindow", "Connect", nullptr));
-        groupBox_6->setTitle(QString());
-        label_9->setText(QApplication::translate("MainWindow", "Contact Quality:", nullptr));
         groupBox_5->setTitle(QString());
-        label_8->setText(QApplication::translate("MainWindow", "Battery:", nullptr));
-        tabWidget->setTabText(tabWidget->indexOf(tab_data), QApplication::translate("MainWindow", "Data Aquisition", nullptr));
+        label_9->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-size:14pt; color:#ccdbe7;\">Electrode Contact Quality</span></p></body></html>", nullptr));
+        groupBox_6->setTitle(QString());
+        label_19->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-size:14pt; color:#ccdbe7;\">Accelerometer</span></p></body></html>", nullptr));
+#ifndef QT_NO_TOOLTIP
+        toolButton_3->setToolTip(QApplication::translate("MainWindow", "Enable/Disable STFT Plot (disable to improve perfromance)", nullptr));
+#endif // QT_NO_TOOLTIP
+        toolButton_3->setText(QApplication::translate("MainWindow", " Enabled", nullptr));
+        groupBox_7->setTitle(QString());
+        label_21->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-size:14pt; color:#ccdbe7;\">Gyro</span></p></body></html>", nullptr));
+#ifndef QT_NO_TOOLTIP
+        toolButton_4->setToolTip(QApplication::translate("MainWindow", "Enable/Disable STFT Plot (disable to improve perfromance)", nullptr));
+#endif // QT_NO_TOOLTIP
+        toolButton_4->setText(QApplication::translate("MainWindow", "Enabled", nullptr));
+        label_20->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-size:14pt; color:#ccdbe7;\">Battery Level:</span></p></body></html>", nullptr));
+        tabWidget->setTabText(tabWidget->indexOf(tab_data), QApplication::translate("MainWindow", "Data", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_time), QApplication::translate("MainWindow", "Time Analysis", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_freq), QApplication::translate("MainWindow", "Freq Analysis", nullptr));
-        tabWidget->setTabText(tabWidget->indexOf(tab_activity), QApplication::translate("MainWindow", "Brain Activity", nullptr));
+        btn_stft_larger->setText(QApplication::translate("MainWindow", "...", nullptr));
+        groupBox_stft_controls->setTitle(QString());
+        label->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-size:16pt; color:#ccdbe7;\">Controls</span></p></body></html>", nullptr));
+        label_10->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-size:10pt; color:#ccdbe7;\">Window Size:</span></p></body></html>", nullptr));
+        label_11->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-size:10pt; color:#ccdbe7;\">Overlap:</span></p></body></html>", nullptr));
+        label_22->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-size:10pt; color:#ccdbe7;\">Time Span (s):</span></p></body></html>", nullptr));
+        label_25->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" color:#ccdbe7;\">Max Freq:</span></p></body></html>", nullptr));
+        label_26->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" color:#ccdbe7;\">Brightness:</span></p></body></html>", nullptr));
+        label_27->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" color:#ccdbe7;\">Dark Boost:</span></p></body></html>", nullptr));
+        label_24->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-size:9pt; color:#ccdbe7;\">Hard Limit:</span></p></body></html>", nullptr));
+        label_14->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-size:9pt; color:#ccdbe7;\">Blur Radius:</span></p></body></html>", nullptr));
+        lab->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-size:9pt; color:#ccdbe7;\">Blur Amount:</span></p></body></html>", nullptr));
+        label_12->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-size:9pt; color:#ccdbe7;\">Sharpen Radius:</span></p></body></html>", nullptr));
+        label_13->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-size:9pt; color:#ccdbe7;\">Sharpen Amount:</span></p></body></html>", nullptr));
+        label_16->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-size:9pt; color:#ccdbe7;\">Window Type:</span></p></body></html>", nullptr));
+        box_wnd_type->setItemText(0, QApplication::translate("MainWindow", "Gaussian", nullptr));
+        box_wnd_type->setItemText(1, QApplication::translate("MainWindow", "Rectangular", nullptr));
+
+        label_23->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-size:9pt; color:#ccdbe7;\">Spatial Filter:</span></p></body></html>", nullptr));
+        box_spatial_type->setItemText(0, QApplication::translate("MainWindow", "Laplacian", nullptr));
+        box_spatial_type->setItemText(1, QApplication::translate("MainWindow", "CAR", nullptr));
+
+        label_28->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-size:9pt; color:#ccdbe7;\">Channel Src:</span></p></body></html>", nullptr));
+        box_channel_source->setItemText(0, QApplication::translate("MainWindow", "Spatial", nullptr));
+
+#ifndef QT_NO_TOOLTIP
+        btn_stft_enabled->setToolTip(QApplication::translate("MainWindow", "Enable/Disable STFT Plot (disable to improve perfromance)", nullptr));
+#endif // QT_NO_TOOLTIP
+        btn_stft_enabled->setText(QApplication::translate("MainWindow", "STFT Enabled", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_stft), QApplication::translate("MainWindow", "STFT Plot", nullptr));
-        tabWidget->setTabText(tabWidget->indexOf(tab_test), QApplication::translate("MainWindow", "OpenGL Test", nullptr));
+        tabWidget->setTabText(tabWidget->indexOf(tab_activity), QApplication::translate("MainWindow", "Brain Activity", nullptr));
+        tabWidget->setTabText(tabWidget->indexOf(tab_test), QApplication::translate("MainWindow", "Ball Test", nullptr));
+        tabWidget->setTabText(tabWidget->indexOf(tab_translation), QApplication::translate("MainWindow", "Translation", nullptr));
     } // retranslateUi
 
 };

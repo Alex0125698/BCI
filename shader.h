@@ -73,7 +73,7 @@ public:
 	void setActive();
 	void setTextureLocation(const char uniformTexName[], const glw::Texture& tex)
 	{
-		ctx->glUniform1i(ctx->glGetUniformLocation(m_program_id, uniformTexName), (tex.m_unit - GL_TEXTURE0));
+		ctx->glUniform1i(ctx->glGetUniformLocation(m_program_id, uniformTexName), (tex.basic.m_unit - GL_TEXTURE0));
 	}
 	GLuint m_program_id{ 0 };
 private:

@@ -1,22 +1,20 @@
 #include "pixplotter.h"
-#include "state.h"
+#include "controllerstate.h"
+#include "mainwindowstate.h"
 #include <QTimer>
+#include <QPainter>
 
-float vertices2[] = {
+float PixPlotter::vertices[] = {
 	// positions           // texture coords
-	1.0f, 1.0f, 0.0f,        1.0f, 1.0f, // top right
-	1.0f, -1.0f, 0.0f,        1.0f, 0.0f, // bottom right
+	 1.0f,  1.0f, 0.0f,       1.0f, 1.0f, // top right
+	 1.0f, -1.0f, 0.0f,       1.0f, 0.0f, // bottom right
 	-1.0f, -1.0f, 0.0f,       0.0f, 0.0f, // bottom left
 	-1.0f,  1.0f, 1.0f,       0.0f, 1.0f  // top left 
 };
-
-unsigned int indices2[] = {
+unsigned int PixPlotter::indices[] = {
 	0, 1, 3, // first triangle
 	1, 2, 3  // second triangle
 };
-
-glw::Texture* img5;
-glw::Texture* img4;
 
 PixPlotter::PixPlotter(QWidget* parent)
 	: QOpenGLWidget(parent)
@@ -25,6 +23,10 @@ PixPlotter::PixPlotter(QWidget* parent)
 	format.setVersion(3, 3);
 	format.setProfile(QSurfaceFormat::CoreProfile);
 	this->setFormat(format);
+
+	// setup timer to provide continuous drawing
+	timer = new QTimer(this);
+	connect(timer, SIGNAL(timeout()), this, SLOT(updateTexture()));
 }
 
 void PixPlotter::initializeGL()
@@ -32,8 +34,12 @@ void PixPlotter::initializeGL()
 	ctx = new QOpenGLFunctions_3_3_Core();
 	ctx->initializeOpenGLFunctions();
 
-	ctx->glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-	ctx->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//ctx->glEnable(GL_CULL_FACE);
+	//ctx->glEnable(GL_BLEND);
+	//ctx->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	// Disable byte-alignment restriction
+	//ctx->glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
 	// create + compile shaders ; add to shader program
 	m_sprogram = new ShaderProgram(ctx);
@@ -43,93 +49,142 @@ void PixPlotter::initializeGL()
 	m_sprogram->compile();
 	m_sprogram->setActive();
 
-	//ctx->glEnable(GL_DEPTH_TEST);
+	// a buch of stuff to draw a simple rect
 	ctx->glGenVertexArrays(1, &VAO);
 	ctx->glGenBuffers(1, &VBO);
-
 	ctx->glGenBuffers(1, &EBO);
 
 	ctx->glBindVertexArray(VAO);
 	{
 		ctx->glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		ctx->glBufferData(GL_ARRAY_BUFFER, sizeof(vertices2), &vertices2[0], GL_STATIC_DRAW);
-
+		ctx->glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices[0], GL_STATIC_DRAW);
 		ctx->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-		ctx->glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices2), &indices2[0], GL_STATIC_DRAW);
-
+		ctx->glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), &indices[0], GL_STATIC_DRAW);
 		ctx->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0);
 		ctx->glEnableVertexAttribArray(0);
-
 		ctx->glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
 		ctx->glEnableVertexAttribArray(1);
 	}
 	ctx->glBindVertexArray(0);
 
-	m_pixels = new glw::Texture(ctx, "textures/awesomeface.png"); // new glw::Texture(ctx, 500, 500);
-	img4 = new glw::Texture(ctx, "textures/awesomeface.png");
+	// setup texture
+	m_pixels = new PixTextureFlip(ctx, 100, 128);
+	m_pixels->fillColor(glw::color(5,5,15));
+	m_pixels->sendToGPU();
 	m_sprogram->setTextureLocation("ourTexture1", *m_pixels);
 
-	QTimer* timer = new QTimer(this);
 	connect(timer, SIGNAL(timeout()), this, SLOT(update()));
 	timer->start(100);
 }
 
 void PixPlotter::resizeGL(int width, int height)
 {
+
+}
+
+void PixPlotter::checkState(std::vector<std::vector<double>>& data_out)
+{
+	{
+		std::lock_guard<std::mutex> lock(ControllerState::state.mtx_data);
+		data_out = std::move(ControllerState::state.finalData);
+		ControllerState::state.finalData.clear();
+		m_freq = ControllerState::state.freq;
+	}
+
+	{
+		std::lock_guard<std::mutex> lock(MainWindowState::state.mtx_data);
+		dtft = MainWindowState::state.dtft;
+	}
+
+}
+
+// todo: reset signal
+void PixPlotter::updateTexture()
+{
+	// store our old properties for comparison
+	DTFTproperties old_dtft = dtft;
+
+	// grab the shared data
+	std::vector<std::vector<double>> newData;
+	checkState(newData);
+
+	// no data means we are done
+	if (newData.size() == 0) return;
+
+	// check if freq/time dim sizes have changed
+	size_t reqTime = dtft.timeSpan << 1u;
+	size_t reqFreq = newData[0].size();
+
+	double gain = 5.0*std::pow(10.0,dtft.brightness*6.0-2.0);
+
+	// resize pixel buffer + delete old pixels
+	if (reqTime != m_numTimepoints || reqFreq != m_numFreqpoints)
+	{
+		m_pixels->resize(reqTime, reqFreq);
+		m_pixels->fillColor(glw::color(5, 5, 15));
+		m_numTimepoints = reqTime;
+		m_numFreqpoints = reqFreq;
+	}
+
+	// copy the pixels
+	for (size_t w = 0; w < newData.size(); ++w)
+	{	
+		for (size_t h = 0; h < reqFreq; ++h)
+		{
+			double col = newData[w][h] * gain - dtft.hardLimit*255.0;
+			if (col > 255.0) col = 255.0;
+			if (col < 0.0) col = 0.0;
+			m_pixels->pixel(h) = glw::color((uint8_t)col);
+		}
+		m_pixels->nextColumn();
+	}
 }
 
 void PixPlotter::paintGL()
 {
-	ctx->glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-	ctx->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	static int counter = 0;
-	++counter;
-
-	if (counter >= DTFT_Shared_Data.timePoints) counter = 0;
-
+	// send pixels to GPU
+	int rangeLoc = ctx->glGetUniformLocation(m_sprogram->m_program_id, "range");
 	m_sprogram->setActive();
-	uint32_t* tmp2 = &m_pixels->rawPixels()[0];
+	ctx->glUniform1f(rangeLoc, dtft.maxFreq);
+	m_pixels->sendToGPU();
 
-	DTFT_Shared_Data;
-
-	int xsize = m_pixels->width() / DTFT_Shared_Data.timePoints;
-	int ysize = m_pixels->height() / DTFT_Shared_Data.freqPoints; 
-
-	uint32_t col = 0;
-	for (size_t y = 0; y < m_pixels->height(); ++y)
-	{
-		
-		if (y % ysize == 0)
-		{
-			int r = std::rand() % 255;
-			col = glw::rgba(r*0.9, r, r, 0);
-		}
-		for (size_t x = counter*xsize; x < (counter+1)*xsize; ++x)
-		{
-			tmp2[x + y * m_pixels->width()] = col;
-		}
-	}
-
-	m_pixels->glwActiveTexture();
-	m_pixels->glwBindTexture();
-	img4->glwActiveTexture();
-	img4->glwBindTexture();
-	m_pixels->sendToGPU();	
-
+	// draw pixles inside of rect
 	ctx->glBindVertexArray(VAO);
 	ctx->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	ctx->glBindVertexArray(0);
+
+	drawLabels();
 }
 
-void PixPlotter::mousePressEvent(QMouseEvent* event)
+void PixPlotter::drawLabels()
 {
-}
+	int num_freqs = 2 + ((8 * this->height()) / 550) & 0xFFFFFFFE;
 
-void PixPlotter::mouseMoveEvent(QMouseEvent* event)
-{
-}
+	QPainter tmp(this);
 
-void PixPlotter::mouseDoubleClickEvent(QMouseEvent* event)
-{
+	tmp.beginNativePainting();
+	tmp.setPen(QColor(100, 130, 210));
+
+	QFont font("Times", 10, QFont::Bold);
+	font.setPixelSize(9);
+	tmp.setFont(font);
+
+	int xpos = 0.005*this->width() + 2;
+	int blockSize = this->height() / dtft.wndSize + 2;
+
+	for (int i = 0; i < num_freqs; ++i)
+	{
+		int ypos = 8.0 + int(blockSize / 2.0 + (i / double(num_freqs - 1.0)) * (this->height() - blockSize - 8.0));
+		int freq = int((dtft.maxFreq * m_freq * (num_freqs-i-1.0)) / double(num_freqs-1.0));
+
+		tmp.drawText(xpos, ypos, QString::number(freq) + " Hz");
+	}
+
+	for (int i = 0; i < 10; ++i)
+	{
+		//tmp.drawText(0.2*this->width(), 0.2*this->height(), "Test");
+	}
+
+
+	tmp.endNativePainting();
 }
