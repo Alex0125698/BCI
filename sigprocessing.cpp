@@ -1,3 +1,4 @@
+#include "resources.h"
 #include "sigprocessing.h"
 #include "bciinterface.h"
 
@@ -21,35 +22,10 @@ std::pair<std::vector<double>,std::vector<double>> generateSinusoid(double fd, s
 	return std::pair<std::vector<double>,std::vector<double>>(std::move(wav_odd), std::move(wav_even));
 }
 
-// find freq magnitude for single freq only (for all channels)
-// time<channels> ; channel freq mag
-void bci::FreqTransform(boost::circular_buffer<std::vector<double>>& in_data, double fd, std::vector<double>& out_data)
-{
-	const size_t N = in_data.size(); // num time points
-	auto wavelet = generateSinusoid(fd, N);
-
-	// for each channel
-	for (size_t i = 0; i < in_data[0].size(); ++i)
-	{
-		// single freq DFT
-		double odd = 0, even = 0;
-		// for each time point
-		for (size_t j = 0; j < N; ++j)
-		{
-			odd += wavelet.first[j] * (in_data[j])[i];
-			even += wavelet.second[j] * (in_data[j])[i];
-		}
-		odd /= double(N);
-		even /= double(N);
-		out_data[i] = std::sqrt(odd*odd + even*even);
-	}
-
-}
-
 std::vector<double> y_odd;
 std::vector<double> y_even;
 
-void bci::DFT(std::vector<double>& data_in, std::vector<double>& data_out)
+void DFT(std::vector<double>& data_in, std::vector<double>& data_out)
 {
 	if (data_out.size() != data_in.size()) data_out.resize(data_in.size());
 	// the dft size, N, is the same as the number of time points
@@ -81,58 +57,11 @@ void bci::DFT(std::vector<double>& data_in, std::vector<double>& data_out)
 	}
 }
 
-
-/*
-bci::BCI_Packet& bci::spatial_filter::CAR(bci::BCI_Packet& data)
-{
-
-	double sum = 0;
-	for (int i = 0; i < bci::BCI_Channels::END_OF_DATA; ++i)
-	{
-		sum += data[i];
-	}
-	sum /= bci::BCI_Channels::END_OF_DATA;
-
-	for (int i = 0; i < bci::BCI_Channels::END_OF_DATA; ++i)
-	{
-		data[i] -= sum;
-	}
-
-	return data;
-}
-
-bci::BCI_Packet& bci::spatial_filter::Laplacian(bci::BCI_Packet & data)
-{
-	// TODO
-	return data;
-}
-
-bci::BCI_Packet& bci::spatial_filter::ICA(bci::BCI_Packet & data)
-{
-	// no plans to complete this year
-	return data;
-}
-
-bci::BCI_Packet& bci::spatial_filter::biophysical(bci::BCI_Packet & data)
-{
-	// no plans to complete this year
-	return data;
-}
-
-bci::BCI_Packet& bci::spatial_filter::CSP(bci::BCI_Packet & data)
-{
-	// no plans to complete this year 
-	return data;
-}
-*/
-
 using std::size_t;
 using std::vector;
 
-
 // Private function prototypes
 static size_t reverseBits(size_t x, int n);
-
 
 void Fft::transform(vector<double> &real, vector<double> &imag) {
 	size_t n = real.size();

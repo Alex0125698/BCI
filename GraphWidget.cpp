@@ -1,26 +1,21 @@
-#include <QtWidgets>
+#include "resources.h"
 #include "graphwidget.h"
-#include "variable.h"
-#include "state.h"
+#include <QToolButton>
+#include <QLayout>
+#include <QDialog>
+#include <QCheckBox>
 
-const std::array<QColor,size_t(15)> PALETTE
+static const std::array<QColor,size_t(16)> PALETTE
 {
 	{
-		QColor(225, 50, 50),
-		QColor(50, 225, 50),
-		QColor(50, 50, 225),
-		QColor(225, 225, 0),
-		QColor(225, 0, 225),
-		QColor(0, 255, 255),
-		QColor(175, 175, 175),
-		QColor(115, 115, 115),
-		QColor(55, 55, 55),
-		QColor(200, 160, 160),
-		QColor(160, 200, 160),
-		QColor(160, 160, 200),
-		QColor(200, 200, 145),
-		QColor(200, 145, 200),
-		QColor(145, 145, 200)
+		QColor(225, 50, 50),   QColor(50, 225, 50),
+		QColor(50, 50, 225),   QColor(225, 225, 0),
+		QColor(225, 0, 225),   QColor(0, 255, 255), 
+		QColor(175, 175, 175), QColor(115, 115, 115),
+		QColor(55, 55, 55),    QColor(200, 160, 160),
+		QColor(160, 200, 160), QColor(160, 160, 200),
+		QColor(200, 200, 145), QColor(200, 145, 200),
+		QColor(145, 145, 200), QColor(30, 30, 30)
 	}
 };
 
@@ -28,65 +23,53 @@ GraphWidget::GraphWidget(QWidget* parent)
 	:QWidget(parent), m_timeticker(new QCPAxisTickerTime)
 {
 	m_plot = new QCustomPlot(this);
-}
 
-void GraphWidget::init(const QString title, const QString x_title, const double yBottom, const double yTop, const QString y_title_left, const QString y_title_right)
-{
-	// ===== ADD TITLES =====
-	m_plot->plotLayout()->insertRow(0);
-	m_plot->plotLayout()->setRowSpacing(0);
-	m_plot->plotLayout()->addElement(0, 0, new QCPTextElement(m_plot, title, QFont("BankGothic Md BT", 14))); // TODO
-	m_plot->xAxis->setLabel(x_title);
-	m_plot->yAxis->setLabel(y_title_left);
-	// TODO: secondary axis title
+	// ===== Default Setup =====
+	setTitle();
+	setAxisTitles();
+	setRange();
 
-	// ===== SETUP AXES =====
-	m_plot->rescaleAxes();
+	// ===== Default Settings =====
+	//m_plot->rescaleAxes();
 	m_plot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectAxes);
-	m_timeticker->setTimeFormat("%h:%m:%s");
-	m_plot->xAxis->setTicker(m_timeticker);
 	m_plot->axisRect()->setupFullAxesBox();
-	m_plot->yAxis->setRange(yBottom, yTop);
 	m_plot->xAxis->grid()->setSubGridVisible(true);
 	m_plot->yAxis->grid()->setSubGridVisible(true);
-	m_plot->setOpenGl(true,1);
-	
-	// ===== ADD GUI ELEMENTS =====
-	// auto_scroll check box
-	QCheckBox* auto_scroll = new QCheckBox(this);
-	auto_scroll->setText(tr("Auto-Scroll"));
-	auto_scroll->move({30,0});
-	auto_scroll->setChecked(true);
-	connect(auto_scroll, &QCheckBox::toggled, [this](bool b) {m_autoscroll = b; }); // TODO
-	//connect(m_plot->xAxis, static_cast<void(QCPAxis::*)(const QCPRange&)>(&QCPAxis::rangeChanged), [auto_scroll]() {auto_scroll->setChecked(false); });
-	connect(m_plot, &QCustomPlot::mousePress, [auto_scroll]() {auto_scroll->setChecked(false); });
-	connect(m_plot, &QCustomPlot::mouseWheel, [auto_scroll]() {auto_scroll->setChecked(false); });
-	
+	//m_plot->setOpenGl(true,1);
+
+	// ===== Add GUI Elements =====
+
+	// auto-scroll box
+	gui.scrollBox = new QCheckBox(this);
+	gui.scrollBox->setText(tr("Auto-Scroll"));
+	gui.scrollBox->move({ 30,0 });
+	gui.scrollBox->setChecked(true);
+
+	connect(m_plot, &QCustomPlot::mousePress, [this]() {gui.scrollBox->setChecked(false); });
+	connect(m_plot, &QCustomPlot::mouseWheel, [this]() {gui.scrollBox->setChecked(false); });
+
 	// options button
-	QToolButton* btn_options = new QToolButton(this);
-	QIcon icon(":/icons/icons/spanner.png");
-	btn_options->setIcon(icon);
-	btn_options->setIconSize({22,22});
-	btn_options->setFixedSize(24,24);
-	btn_options->move({2,2});
+	gui.optionsBtn = new QToolButton(this);
+	gui.optionsBtn->setIcon(QIcon(":/icons/icons/spanner.png"));
+	gui.optionsBtn->setIconSize({ 22,22 });
+	gui.optionsBtn->setFixedSize(24, 24);
+	gui.optionsBtn->move({ 2,2 });
 
 	// Dialog + buttons
-	m_dialog_select = new QDialog;
-	QPushButton* btn_ok = new QPushButton("OK");
-	QPushButton* btn_cancel = new QPushButton("Cancel");
-	QHBoxLayout* layout_buttons = new QHBoxLayout;
-	layout_buttons->addStretch();
-	layout_buttons->addWidget(btn_ok);
-	layout_buttons->addWidget(btn_cancel);
+	gui.selectDialog = new QDialog;
+	gui.buttons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+	gui.mainLayout = new QVBoxLayout;
+	gui.checkLayout = new QGridLayout;
+	gui.btnLayout = new QHBoxLayout;
 
-	m_dialogLayout = new QGridLayout;
+	gui.btnLayout->addStretch();
+	gui.btnLayout->addWidget(gui.buttons);
+	gui.mainLayout->addLayout(gui.checkLayout);
+	gui.mainLayout->addStretch();
+	gui.mainLayout->addLayout(gui.btnLayout);
 
-	QVBoxLayout* layout_main = new QVBoxLayout;
-	layout_main->addLayout(m_dialogLayout);
-	layout_main->addStretch();
-	layout_main->addLayout(layout_buttons);
-	m_dialog_select->setLayout(layout_main);
-	m_dialog_select->setWindowTitle(title + ": Select Graphs");
+	gui.selectDialog->setLayout(gui.mainLayout);
+	gui.selectDialog->setWindowTitle("Select Visible Graphs");
 
 	// main layout
 	QVBoxLayout* mainLayout = new QVBoxLayout(this);
@@ -96,130 +79,131 @@ void GraphWidget::init(const QString title, const QString x_title, const double 
 	mainLayout->setSpacing(0);
 
 	// ===== CONNECTIONS =====
-	connect(m_dialog_select, &QDialog::accepted, this, &GraphWidget::setVisiblePlots, Qt::QueuedConnection);
-	connect(btn_ok, &QPushButton::clicked, m_dialog_select, &QDialog::accept, Qt::QueuedConnection);
-	connect(btn_cancel, &QPushButton::clicked, m_dialog_select, &QDialog::reject, Qt::QueuedConnection);
-	connect(btn_options, &QToolButton::clicked, [this]() {m_dialog_select->show(); m_dialog_select->raise(); });
-
-	// TODO: extra connections
-
-	// TODO: Mouse Drag should uncheck box
-	//connect(this->graph, &GraphWidget::mousePressEvent, [this]() {graph->m_autoscroll = false; auto_scroll->setChecked(false); });
-	//mainLayout->addWidget(auto_scroll);
-
-	connect(&bci::State::program, &bci::State::sigVarUpdate, this, &GraphWidget::addData, Qt::QueuedConnection);
-	connect(&bci::State::program, &bci::State::sigVarReset, this, &GraphWidget::clear, Qt::QueuedConnection);
+	connect(gui.buttons, &QDialogButtonBox::accepted, gui.selectDialog, &QDialog::accept);
+	connect(gui.buttons, &QDialogButtonBox::rejected, gui.selectDialog, &QDialog::reject);
+	connect(gui.selectDialog, &QDialog::accepted, this, &GraphWidget::setVisiblePlots);
+	connect(gui.optionsBtn, &QToolButton::clicked, this, &GraphWidget::showSelectDialog);
 }
 
-void GraphWidget::addVariable(Variable* const var, const bool visible)
+void GraphWidget::setTitle(str graphTitle, QFont font)
 {
-	m_vars.push_back(var);
-	m_display.push_back(visible);
-	m_checkboxes.push_back(new QCheckBox(QString::fromStdString(var->getName())));
-
-	if (visible)
+	// todo: test
+	if (m_plot->plotLayout()->elementCount() <= 1)
 	{
-		// Add Graph
-		m_plot->addGraph();
-		m_plot->graph(m_plot->graphCount() - 1)->setName(QString::fromStdString(var->getName()));
-		m_plot->graph(m_plot->graphCount() - 1)->setPen(QPen(PALETTE[(m_plot->graphCount() - 1) % PALETTE.size()]));
+		m_plot->plotLayout()->insertRow(0);
+		m_plot->plotLayout()->setRowSpacing(0);
+		m_plot->plotLayout()->addElement(0, 0, new QCPTextElement(m_plot, graphTitle, font));
 	}
-
-	m_checkboxes[m_checkboxes.size() - 1]->setChecked(visible);
-	m_dialogLayout->addWidget(m_checkboxes[m_checkboxes.size() - size_t(1)], int(m_checkboxes.size() - size_t(1)), 0);
-
-	connect(var, &Variable::sigUnitsChanged, this, &GraphWidget::slotRefreshNames, Qt::QueuedConnection);
-	connect(var, &Variable::sigNameChanged, this, &GraphWidget::slotRefreshNames, Qt::QueuedConnection);
-	
-	slotRefreshNames();
-}
-
-void GraphWidget::addVariables(std::vector<Variable*>& vars, const bool visible)
-{
-	for (auto& var : vars) addVariable(var, visible);
-}
-
-void GraphWidget::addData(double time)
-{
-	//m_latest_time = bci::State::program.getVars()[size_t(Vars::TIME)]->data();
-	//qDebug() << time;
-	//qDebug() <<  "g " << m_vars[0]->getValue();
-	size_t index = 0;
-	for (size_t i=0; i<m_vars.size(); ++i)
+	else
 	{
-		if (m_display[i])
-		{
-			m_plot->graph((int)index)->addData(time, m_vars[i]->getValue());
-			++index;
-		}
+		QCPTextElement* title = reinterpret_cast<QCPTextElement*>(m_plot->plotLayout()->element(0, 0));
+		title->setText(graphTitle);
+		title->setFont(font);
 	}
+}
+
+void GraphWidget::setRange(range xRange, range yRange)
+{
+	if (!(xRange.first == 0 && xRange.second == 0))
+	{
+		m_plot->xAxis->setRange(xRange.first, xRange.second);
+		m_plot->xAxis2->setRange(xRange.first, xRange.second);
+	}
+	if (!(yRange.first == 0 && yRange.second == 0))
+	{
+		m_plot->yAxis->setRange(yRange.first, yRange.second);
+		m_plot->yAxis2->setRange(yRange.first, yRange.second);
+	}
+}
+
+void GraphWidget::setAxisTitles(str leftAxisText, str rightAxisText, str bottmpAxisText, str topAxisText)
+{
+	if (!leftAxisText.isEmpty())   m_plot->yAxis->setLabel(leftAxisText);
+	if (!rightAxisText.isEmpty())  m_plot->yAxis2->setLabel(rightAxisText);
+	if (!bottmpAxisText.isEmpty()) m_plot->xAxis->setLabel(bottmpAxisText);
+	if (!topAxisText.isEmpty())    m_plot->xAxis2->setLabel(topAxisText);
+}
+
+void GraphWidget::setRealTime()
+{
+	m_timeticker->setTimeFormat("%h:%m:%s");
+	m_plot->xAxis->setTicker(m_timeticker);
+}
+
+void GraphWidget::clearData()
+{
+	m_time = 0;
+
+	for (int i = 0; i < m_plot->graphCount(); ++i)
+		m_plot->graph(i)->setData({},{});
 }
 
 void GraphWidget::replot()
 {
 	m_plot->replot();
 
-	if (m_autoscroll)
+	if (gui.scrollBox->isChecked())
 	{
-		double key = m_latest_time;
-		m_plot->xAxis->setRange(std::clamp(key-20,0.0,key), key);
+		auto oldRange = m_plot->xAxis->range().size();
+		m_plot->xAxis->setRange(std::clamp(m_time - oldRange, 0.0, m_time), m_time);
 	}
 }
 
-void GraphWidget::clear()
+void GraphWidget::addGraph(GraphWidget::Graph&& properties)
 {
-	m_latest_time = 0;
+	auto index = m_plot->graphCount();
+	m_graphs.push_back(properties);
 
-	for (int i = 0; i< m_plot->graphCount(); ++i)
-		m_plot->graph(i)->setData(QVector<double>(), QVector<double>());
-}
+	m_plot->addGraph();
+	m_plot->graph(index)->setName(m_graphs[index].name + m_graphs[index].extension);
+	m_plot->graph(index)->setPen(QPen(PALETTE[index % PALETTE.size()]));
+	m_plot->graph(index)->setVisible(m_graphs[index].active);
 
-void GraphWidget::slotRefreshNames()
-{
-	QString var_name;
-	size_t j = 0;
-	for (size_t i = 0; i < m_vars.size(); ++i)
-	{
-		if (m_display[i])
-		{
-			var_name = QString::fromStdString(m_vars[i]->getName() + " (" + m_vars[i]->getActiveUnitName() + ')');
-			m_plot->graph((int)j)->setName(var_name);
-			++j;
-		}
-	}
-	
-	if (j > 1)
-	{
+	if (m_graphs.size() > 1)
 		m_plot->legend->setVisible(true);
-		m_plot->yAxis->setLabel("");
-	}
-	else
-	{
-		m_plot->legend->setVisible(false);
-		m_plot->yAxis->setLabel(var_name);
-	}
-	replot();
+}
+
+void GraphWidget::addData(size_t index, std::vector<double>& x, std::vector<double>& y)
+{
+	assert(x.size() == y.size());
+	for (size_t i = 0; i < x.size(); ++i)
+		m_plot->graph((int)index)->addData(x[i], y[i]);
+
+	m_time = *(x.end()-1);
 }
 
 void GraphWidget::setVisiblePlots()
 {
-	m_plot->clearGraphs();
-
-	for (size_t i = 0; i < m_checkboxes.size(); ++i)
+	for (size_t i = 0; i < gui.activeBoxs.size(); ++i)
 	{
-		if (m_checkboxes[i]->isChecked())
-		{
-			m_display[i] = true;
+		m_graphs[i].active = gui.activeBoxs[i]->isChecked();
+		m_plot->graph(i)->setVisible(m_graphs[i].active);
+	}
+}
 
-			// Add Graph
-			m_plot->addGraph();
-			m_plot->graph(m_plot->graphCount() - 1)->setPen(QPen(PALETTE[size_t(m_plot->graphCount() - 1) % PALETTE.size()]));
-		}
-		else
+void GraphWidget::showSelectDialog()
+{
+	if (gui.activeBoxs.size() != m_graphs.size())
+	{
+		for (auto& w : gui.activeBoxs)
 		{
-			m_display[i] = false;
+			gui.btnLayout->removeWidget(w);
+			delete w;
+		}
+
+		gui.activeBoxs.resize(m_graphs.size());
+		for (size_t i = 0; i < gui.activeBoxs.size(); ++i)
+		{
+			gui.activeBoxs[i] = new QCheckBox(m_graphs[i].name);
+			gui.checkLayout->addWidget(gui.activeBoxs[i], i & 0b0111u, i >> 3u);
 		}
 	}
 
-	slotRefreshNames();
+	for (size_t i = 0; i < gui.activeBoxs.size(); ++i)
+	{
+		gui.activeBoxs[i]->setChecked(m_graphs[i].active);
+	}
+
+	gui.selectDialog->show();
+	gui.selectDialog->raise();
 }

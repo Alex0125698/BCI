@@ -13,26 +13,37 @@
 #pragma once
 
 #include "resources.h"
+#include "error.h"
 #include "mainwindowstate.h"
 #include <QMainWindow>
 
+// forward declerations
 class QLabel;
-class QPlainTextEdit;
 class Core;
 class DebugWindow;
+class QProgressBar;
+namespace Ui { class MainWindow; }
 
-namespace Ui {
-class MainWindow;
-}
 
 class MainWindow : public QMainWindow
 {
 	Q_OBJECT
 
 public:
-	explicit MainWindow(QWidget *parent = 0);
+	struct StatusBar
+	{
+		QProgressBar* offlineProgress;
+		QProgressBar* cpuUsagePercent;
+		QLabel* timeText;
+		QLabel* timeLabel;
+		QLabel* runningLabel;
+		QLabel* savingLabel;	
+	};
+
+public:
+	explicit MainWindow(QWidget* parent = 0);
 	~MainWindow();
-	void closeEvent(QCloseEvent * event);
+	void closeEvent(QCloseEvent* event);
 
 signals:
 	void sigRunController(int mode, QString file, uint32_t freq);
@@ -92,4 +103,5 @@ private:
 	QLabel* m_lbl_refreshrate;
 	QThread* m_coreThread;
 	Core* m_core;
+	StatusBar m_bar;
 };

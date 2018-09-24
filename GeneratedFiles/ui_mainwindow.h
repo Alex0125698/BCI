@@ -31,9 +31,8 @@
 #include <QtWidgets/QToolButton>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
-#include <view.h>
+#include "balltest.h"
 #include "brainmap.h"
-#include "game.h"
 #include "graphwidget.h"
 #include "pixplotter.h"
 
@@ -139,7 +138,7 @@ public:
     QVBoxLayout *verticalLayout_10;
     GraphWidget *plot_freq;
     QHBoxLayout *horizontalLayout_9;
-    StateGroup *group_freqs;
+    QWidget *group_freqs;
     QWidget *widget_4;
     QWidget *tab_stft;
     QVBoxLayout *verticalLayout_18;
@@ -210,7 +209,7 @@ public:
     BrainMap *openGLWidget;
     QWidget *tab_test;
     QVBoxLayout *verticalLayout_13;
-    Game *openGLWidget_3;
+    BallTest *openGLWidget_3;
     QWidget *tab_translation;
     QStatusBar *statusbar;
 
@@ -793,7 +792,7 @@ public:
 
         horizontalLayout_9 = new QHBoxLayout();
         horizontalLayout_9->setObjectName(QStringLiteral("horizontalLayout_9"));
-        group_freqs = new StateGroup(tab_freq);
+        group_freqs = new QWidget(tab_freq);
         group_freqs->setObjectName(QStringLiteral("group_freqs"));
 
         horizontalLayout_9->addWidget(group_freqs);
@@ -1250,7 +1249,7 @@ public:
         tab_test->setObjectName(QStringLiteral("tab_test"));
         verticalLayout_13 = new QVBoxLayout(tab_test);
         verticalLayout_13->setObjectName(QStringLiteral("verticalLayout_13"));
-        openGLWidget_3 = new Game(tab_test);
+        openGLWidget_3 = new BallTest(tab_test);
         openGLWidget_3->setObjectName(QStringLiteral("openGLWidget_3"));
 
         verticalLayout_13->addWidget(openGLWidget_3);
@@ -1269,7 +1268,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(0);
+        tabWidget->setCurrentIndex(4);
         box_spatial_type->setCurrentIndex(1);
         box_channel_source->setCurrentIndex(0);
 

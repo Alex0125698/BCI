@@ -16,6 +16,7 @@
 #pragma once
 
 #include "resources.h"
+#include "error.h"
 #include <ostream>
 
 /**

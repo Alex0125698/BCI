@@ -1,7 +1,7 @@
 #pragma once
 
 #include "resources.h"
-#include "state.h"
+#include "error.h"
 #include "openglresources.h"
 #include "shader.h"
 #include "texture.h"

@@ -1,3 +1,4 @@
+#include "resources.h"
 #include "texture.h"
 #include <codeanalysis\warnings.h>
 #pragma warning(push, 0)

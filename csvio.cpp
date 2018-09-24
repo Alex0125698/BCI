@@ -1,3 +1,4 @@
+#include "resources.h"
 #include "csvio.h"
 
 void CSVreader::open(const std::string& name)

@@ -10,6 +10,7 @@
 #pragma once
 
 #include "resources.h"
+#include "error.h"
 #include "bciinterface.h"
 
 // forward declarations

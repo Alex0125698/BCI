@@ -1,4 +1,6 @@
 #pragma once
+#include "resources.h"
+#include "error.h"
 #include <QPlainTextEdit>
 
 class DebugWindow : public QPlainTextEdit

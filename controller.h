@@ -17,9 +17,9 @@
 #pragma once
 
 #include "resources.h"
+#include "error.h"
 #include "mainwindowstate.h"
 #include "controllerstate.h"
-#include "state.h"
 
 namespace bci {
 	class Interface;
@@ -64,7 +64,6 @@ private:
 	void laplaceFilter();
 	void imageProcessing();
 	void exportData();
-
 
 protected:
 	Timer m_run_timer;

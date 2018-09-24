@@ -51,7 +51,7 @@ background-image: url(:/images/images/background-dark.png);
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>4</number>
       </property>
       <property name="elideMode">
        <enum>Qt::ElideNone</enum>
@@ -1015,7 +1015,7 @@ background-color: rgba(150,150,170, 130);
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_9" stretch="1,1">
           <item>
-           <widget class="StateGroup" name="group_freqs" native="true"/>
+           <widget class="QWidget" name="group_freqs" native="true"/>
           </item>
           <item>
            <widget class="QWidget" name="widget_4" native="true"/>
@@ -1799,7 +1799,7 @@ color: rgb(139, 149, 157)
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_13">
         <item>
-         <widget class="Game" name="openGLWidget_3"/>
+         <widget class="BallTest" name="openGLWidget_3"/>
         </item>
        </layout>
       </widget>
@@ -1822,25 +1822,19 @@ color: rgb(139, 149, 157)
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>StateGroup</class>
-   <extends>QWidget</extends>
-   <header location="global">view.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>PixPlotter</class>
    <extends>QOpenGLWidget</extends>
    <header>pixplotter.h</header>
   </customwidget>
   <customwidget>
-   <class>Game</class>
-   <extends>QOpenGLWidget</extends>
-   <header>game.h</header>
-  </customwidget>
-  <customwidget>
    <class>BrainMap</class>
    <extends>QOpenGLWidget</extends>
    <header>brainmap.h</header>
+  </customwidget>
+  <customwidget>
+   <class>BallTest</class>
+   <extends>QOpenGLWidget</extends>
+   <header>balltest.h</header>
   </customwidget>
  </customwidgets>
  <resources>

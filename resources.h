@@ -83,7 +83,7 @@
 //#include <valarray>
 
 // === Boost ===
-#include <boost/circular_buffer.hpp>
+//#include <boost/circular_buffer.hpp>
 //#include <boost/filesystem.hpp>
 
 //#include <boost/interprocess/shared_memory_object.hpp>
@@ -98,6 +98,4 @@
 
 // === My Stuff ===
 
-#include "error.h"
 #include "timer.h"
-#include "profiler.h"

@@ -1,7 +1,8 @@
 #pragma once
 
-#include "openglresources.h"
 #include "resources.h"
+#include "error.h"
+#include "openglresources.h"
 #include "texture.h"
 
 typedef unsigned int GLuint;

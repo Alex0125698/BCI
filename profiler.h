@@ -1,5 +1,6 @@
 #pragma once
 
+#include "resources.h"
 #include "csvio.h"
 #include "timer.h"
 #include <map>

@@ -1,3 +1,4 @@
+#include "resources.h"
 #include "profiler.h"
 
 Profiler Profiler::p;

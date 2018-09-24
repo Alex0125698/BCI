@@ -1,6 +1,6 @@
+#include "resources.h"
 #include <QApplication>
 #include "mainwindow.h"
-#include "variable.h"
 #include <QDebug>
 
 int main(int argc, char *argv[])

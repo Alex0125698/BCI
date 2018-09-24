@@ -1,3 +1,4 @@
+#include "resources.h"
 #include "offline.h"
 #include "csvio.h"
 #include <QTimer>

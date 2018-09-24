@@ -1,6 +1,6 @@
+#include "resources.h"
 #include <fstream>
 #include <sstream>
-
 #include "shader.h"
 
 // ===== Shader =====

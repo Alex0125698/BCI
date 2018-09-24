@@ -1,3 +1,4 @@
+#include "resources.h"
 #include "bciinterface.h"
 #include <QThread>
 

@@ -1,21 +1,19 @@
+#include "resources.h"
 #include <QWinTaskbarButton>
 #include <QtWidgets>
+#include <QDesktopServices>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "debugwindow.h"
 #include "graphwidget.h"
-#include "variable.h"
-#include "view.h"
 #include "core.h"
-#include <QDesktopServices>
+
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
 	ui(new Ui::MainWindow)
 {
-	bci::State::init();
-
 	// ===== SETUP MAINWINDOW =====
 	ui->setupUi(this);
 	m_core = new Core(this);
@@ -25,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	//button->setOverlayIcon(QIcon(":/icons/icons/cool arrow effect.jpg"));
 
 	// ===== SETUP DEBUG WINDOW =====
-		// it will be shown as a separate window
+	// it will be shown as a separate window
 	m_debug_window = new DebugWindow();
 	m_debug_window->show();
 	connect(m_debug_window, &DebugWindow::sigHideWindow, [this]() {on_btn_debug_window_toggled(false); });
@@ -34,46 +32,55 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	// ===== CONNECTIONS =====
 	connect(&DebugOutput::getDebug(), &DebugOutput::sigDebugMessage, this, &MainWindow::slotDebugMessage, Qt::QueuedConnection);
-
 	DEBUG_PRINTLN("Program Started");
-
-	// ===== ADD STATEVARIABLES TO STATEGROUPS =====
-
-	auto chVars = bci::State::program.searchVars({ Tag::DATA_CHANNEL });
-	auto fbandVars = bci::State::program.searchVars({ Tag::FREQ_BAND });
-	fbandVars.push_back(fbandVars[0]);
-	auto freqViews = bci::State::program.generateViews(fbandVars, View::Type::TABLE);
-
-	//ui->group_freqs->setup("", {}, freqViews);
 
 	// ===== SET UP GRAPHS =====
 
-	ui->plot_freq->init("Frequency Bands", "Time (s)", -1, +1, "");
-	ui->plot_time->init("Time-Domain", "Time (s)", -0.187, 0.187, "");
+	ui->plot_freq->setTitle("FFT Plot");
+	ui->plot_freq->setAxisTitles("Magnitude (V)", "", "Frequency (Hz)", "");
+	ui->plot_freq->setRange({ 0,128 }, { 0,1 });
 
-	ui->plot_time->addVariables(chVars, true);
-	ui->plot_freq->addVariables(fbandVars, true);
+	ui->plot_time->setTitle("Time-Domain Data");
+	ui->plot_time->setAxisTitles("Magnitude (V)", "", "Time (h:m:s)", "");
+	ui->plot_time->setRange({ 0,128 }, { 0,1 });
 
 	// ===== set up status bar =====
+	m_bar.cpuUsagePercent = new QProgressBar;
+	m_bar.offlineProgress = new QProgressBar;
+	m_bar.offlineProgress->setVisible(false);
+	m_bar.runningLabel = new QLabel("Not Running");
+	m_bar.savingLabel = new QLabel("Not Saving");
+	m_bar.savingLabel->setVisible(false);
+	m_bar.timeLabel = new QLabel("0 seconds");
+	m_bar.timeText = new QLabel("Run Time");
 
-	auto statusVars = bci::State::program.searchVars({ Tag::STATUS_BAR });
-	auto statusViews = bci::State::program.generateViews(statusVars, View::Type::TABLE);
-
-	for (auto& view : statusViews)
-	{
-		auto tmp = new QWidget();
-		tmp->setLayout(view->getLayout());
-		ui->statusbar->addPermanentWidget(tmp);
-	}
-
-	ui->tabWidget->setCurrentIndex(5);
-	//ui->tabWidget->setCurrentIndex(4);
-	ui->tabWidget->setCurrentIndex(0);
+	ui->statusbar->addPermanentWidget(m_bar.cpuUsagePercent);
+	ui->statusbar->addPermanentWidget(m_bar.offlineProgress);
+	ui->statusbar->addPermanentWidget(m_bar.runningLabel);
+	ui->statusbar->addPermanentWidget(m_bar.savingLabel);
+	ui->statusbar->addPermanentWidget(m_bar.timeText);
+	ui->statusbar->addPermanentWidget(m_bar.timeLabel);
 }
 
 MainWindow::~MainWindow()
 {
 	delete ui;
+
+	if (m_debug_window)
+	{
+		delete m_debug_window;
+		m_debug_window = nullptr;
+	}
+
+	std::this_thread::sleep_for(std::chrono::milliseconds(100));
+	if (m_core)
+	{
+		delete m_core;
+		m_core = nullptr;
+	}
+
+	// TODO: wait for run thread
+	std::this_thread::sleep_for(std::chrono::milliseconds(100));
 }
 
 // NEARLY DONE
@@ -81,14 +88,10 @@ void MainWindow::closeEvent(QCloseEvent* event)
 {
 	on_btn_save_stop_clicked();
 	on_btn_connect_clicked(false);
+
 	if (m_debug_window)
-	{
 		m_debug_window->closeWindow();
-		delete m_debug_window;
-		m_debug_window = nullptr;
-	}
-	// TODO: wait for run thread
-	std::this_thread::sleep_for(std::chrono::milliseconds(15));
+
 	QMainWindow::closeEvent(event);
 }
 
@@ -145,6 +148,13 @@ void MainWindow::slotDebugMessage(QString msg, QString file, int line, int type)
 
 void MainWindow::slotViewUpdate()
 {
+	// update labels
+
+
+	// add data to graphs
+
+
+	// replot graphs
 	if (ui->tabWidget->tabText(ui->tabWidget->currentIndex()) == "Freq Analysis")
 		ui->plot_freq->replot();
 	else if (ui->tabWidget->tabText(ui->tabWidget->currentIndex()) == "Time Analysis")

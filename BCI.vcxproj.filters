@@ -141,17 +141,17 @@
     <None Include="shaders\FS_brainmap.glsl">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="shaders\FS_balltest.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\VS_balltest.glsl">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include=".\BCI_resource.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="view.cpp">
-      <Filter>Libraries</Filter>
-    </ClCompile>
-    <ClCompile Include="variable.cpp">
-      <Filter>Libraries</Filter>
-    </ClCompile>
     <ClCompile Include="csvio.cpp">
       <Filter>Libraries</Filter>
     </ClCompile>
@@ -185,13 +185,7 @@
     <ClCompile Include="sigprocessing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="state.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="stb_image.c">
-      <Filter>OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="game.cpp">
       <Filter>OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="shader.cpp">
@@ -221,6 +215,12 @@
     <ClCompile Include="mainwindowstate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="balltest.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="resources.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="bciinterface.h">
@@ -235,29 +235,11 @@
     <QtMoc Include="cytoninterface.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="mainwindow.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="state.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="view.h">
-      <Filter>Libraries</Filter>
-    </QtMoc>
-    <QtMoc Include="variable.h">
-      <Filter>Libraries</Filter>
-    </QtMoc>
     <QtMoc Include="error.h">
-      <Filter>Libraries</Filter>
-    </QtMoc>
-    <QtMoc Include="graphwidget.h">
       <Filter>Libraries</Filter>
     </QtMoc>
     <QtMoc Include="qcustomplot.h">
       <Filter>Libraries</Filter>
-    </QtMoc>
-    <QtMoc Include="game.h">
-      <Filter>OpenGL</Filter>
     </QtMoc>
     <QtMoc Include="brainmap.h">
       <Filter>OpenGL</Filter>
@@ -269,6 +251,15 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="debugwindow.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="balltest.h">
+      <Filter>OpenGL</Filter>
+    </QtMoc>
+    <QtMoc Include="graphwidget.h">
+      <Filter>Libraries</Filter>
+    </QtMoc>
+    <QtMoc Include="mainwindow.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

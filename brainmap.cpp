@@ -1,7 +1,9 @@
+#include "resources.h"
 #include "brainmap.h"
-#include "state.h"
 #include <QTimer>
 #include <QMouseEvent>
+#include <QPainter>
+#include <QFont>
 
 float BrainMap::vertices[] = {
 	// positions           // texture coords
@@ -16,7 +18,8 @@ unsigned int BrainMap::indices[] = {
 };
 
 BrainMap::BrainMap(QWidget* parent)
-	: QOpenGLWidget(parent)
+	: QOpenGLWidget(parent),
+	painter(this)
 {
 	QSurfaceFormat format;
 	format.setVersion(3, 3);
@@ -29,11 +32,13 @@ void BrainMap::initializeGL()
 	ctx = new QOpenGLFunctions_3_3_Core();
 	ctx->initializeOpenGLFunctions();
 
+	ctx->glEnable(GL_BLEND);
+	ctx->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	// create + compile shaders ; add to shader program
 	m_sprogram = new ShaderProgram(ctx);
 	m_sprogram->setVertexShader(std::make_shared<VertexShader>(ctx, "shaders/VS_brainmap.glsl"));
 	m_sprogram->setFragmentShader(std::make_shared<FragmentShader>(ctx, "shaders/FS_brainmap.glsl"));
-	// link shaders
 	m_sprogram->compile();
 	m_sprogram->setActive();
 
@@ -54,15 +59,21 @@ void BrainMap::initializeGL()
 	}
 	ctx->glBindVertexArray(0);
 
-	m_pixels = new glw::Texture(ctx, "textures/test.png");
-	m_head = new glw::Texture(ctx, "textures/test.png");
+	m_brainTex = new glw::Texture(ctx, "textures/head_10_20.png");
+	m_activityTex = new glw::Texture(ctx, "textures/activity.png");
 
-	m_sprogram->setTextureLocation("ourTexture1", *m_pixels);
-	m_sprogram->setTextureLocation("ourTexture2", *m_head);
+	for (size_t i = 0; i < m_chTex.size(); ++i)
+	{
+		m_chTex[i] = new glw::Texture(ctx, "textures/ch" + std::to_string(i + 1) + ".png");
+		m_sprogram->setTextureLocation(std::string("ch"+std::to_string(i+1)).c_str(), *m_chTex[i]);
+	}
+	
+	m_sprogram->setTextureLocation("braintex", *m_brainTex);
+	m_sprogram->setTextureLocation("activitytex", *m_activityTex);
 
 	QTimer* timer = new QTimer(this);
 	connect(timer, SIGNAL(timeout()), this, SLOT(update()));
-	timer->start(100);
+	timer->start(33);
 }
 
 void BrainMap::resizeGL(int width, int height)
@@ -71,45 +82,113 @@ void BrainMap::resizeGL(int width, int height)
 
 void BrainMap::paintGL()
 {
+	//painter.begin(this);
+	painter.beginNativePainting();
+
+	int posLoc = ctx->glGetUniformLocation(m_sprogram->m_program_id, "pos");
+	int sizeLoc = ctx->glGetUniformLocation(m_sprogram->m_program_id, "size");
+	int useTexLoc = ctx->glGetUniformLocation(m_sprogram->m_program_id, "_useTex");
+	int magLoc = ctx->glGetUniformLocation(m_sprogram->m_program_id, "mag");
+	int chSelectLoc = ctx->glGetUniformLocation(m_sprogram->m_program_id, "chSelect");
+	int aspectRatioLoc = ctx->glGetUniformLocation(m_sprogram->m_program_id, "aspectRatio");
+
 	m_sprogram->setActive();
-	m_pixels->fillColor(0xFFFFFFFF);
+	ctx->glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
-	float xpos2 = xpos * m_pixels->width();
-	float ypos2 = ypos * m_pixels->height();
+	m_brainTex->basic.glwActiveTexture();
+	m_brainTex->basic.glwBindTexture();
+	m_activityTex->basic.glwActiveTexture();
+	m_activityTex->basic.glwBindTexture();
 
-	int xstart = (int(xpos*m_pixels->width()) - 60 >= 0) ? int(xpos*m_pixels->width()) - 60 : 0;
-	int xstop = (int(xpos*m_pixels->width()) + 60 < m_pixels->width()) ? int(xpos*m_pixels->width()) + 60 : m_pixels->width()-1;
-	
-	int ystart = (int(ypos*m_pixels->height()) - 60 >= 0) ? int(ypos*m_pixels->height()) - 60 : 0;
-	int ystop = (int(ypos*m_pixels->height()) + 60 < m_pixels->height()) ? int(ypos*m_pixels->height()) + 60 : m_pixels->height()-1;
-
-	for (size_t y = ystart; y < ystop; ++y)
+	for (size_t i = 0; i < m_chTex.size(); ++i)
 	{
-
-		for (size_t x = xstart; x <xstop; ++x)
-		{
-			//float mag = sqrt((x - xpos2)*(x - xpos2) + (y - ypos2)*(y - ypos2)) / (1.41*60.0);
-			//tmp2[x + y * m_pixels->width()] = glw::color(mag*250, mag * 250,255,0);
-		}
+		m_chTex[i]->basic.glwActiveTexture();
+		m_chTex[i]->basic.glwBindTexture();
 	}
 
-	m_pixels->sendToGPU();
+	ctx->glUniform2f(posLoc, (GLfloat)0.0, (GLfloat)0.0);
+	ctx->glUniform1f(sizeLoc, 1.0);
+	ctx->glUniform1f(useTexLoc, 1.0);
+	ctx->glUniform1f(magLoc, 1.0);
+	ctx->glUniform1f(aspectRatioLoc, GLfloat(width())/GLfloat(height()));
 
 	ctx->glBindVertexArray(VAO);
 	ctx->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	ctx->glBindVertexArray(0);
+
+	ctx->glBindVertexArray(VAO);
+	for (int i = 0; i < elecManager.get().size(); ++i)
+	{
+		// draw red shading
+		double x = elecManager.get()[i].pos.x;
+		double y = elecManager.get()[i].pos.y;
+		ctx->glUniform2f(posLoc, (GLfloat)(x), (GLfloat)(y));
+		ctx->glUniform1f(sizeLoc, 0.4);
+		ctx->glUniform1f(useTexLoc, 0.0);
+		auto tmpMag = 1.0;// rand() / float(RAND_MAX);
+		ctx->glUniform1f(magLoc, tmpMag);
+		ctx->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	}
+
+	for (int i = 0; i < elecManager.get().size(); ++i)
+	{
+		// draw channel name
+		double x = elecManager.get()[i].pos.x;
+		double y = elecManager.get()[i].pos.y;
+		ctx->glUniform2f(posLoc, (GLfloat)(x), (GLfloat)(y));
+		ctx->glUniform1f(sizeLoc, 0.08);
+		ctx->glUniform1f(chSelectLoc, (GLfloat)(i % m_chTex.size()));
+		ctx->glUniform1f(useTexLoc, 2.0);
+		ctx->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	}
+
+	ctx->glBindVertexArray(0);
+
+	painter.endNativePainting();
+	//painter.end();
+
+	//this->makeCurrent();
+	//this->doneCurrent();
+
+	//drawLabels();
+}
+
+void BrainMap::drawLabels()
+{
+	painter.begin(this);
+	painter.setPen(QColor(50,150,70));
+
+	QFont font("Times", 8, QFont::Bold);
+	font.setPixelSize(8);
+	painter.setFont(font);
+
+	for (size_t i = 0; i < elecManager.get().size(); ++i)
+	{
+		int x = int(width()*0.5*(1.0 + elecManager.get()[i].pos.x));
+		int y = int(height()*0.5*(1.0 + -elecManager.get()[i].pos.y));
+
+		painter.drawText(x, y, "Ch " + QString::number(i));
+	}
+	painter.end();
 }
 
 void BrainMap::mousePressEvent(QMouseEvent* event)
 {
+	float x = 2.0f * event->x() / (float)this->width() - 1.0f;
+	float y = 1.0f - 2.0f * event->y() / (float)this->height();
+
+	elecManager.testSelect({ x,y });
+}
+
+void BrainMap::mouseReleaseEvent(QMouseEvent* event)
+{
+	elecManager.deselect();
 }
 
 void BrainMap::mouseMoveEvent(QMouseEvent* event)
 {
-	xpos = event->x() / float(this->width());
-	ypos = 1 - event->y() / float(this->height());
-}
-
-void BrainMap::mouseDoubleClickEvent(QMouseEvent* event)
-{
+	float x = 2.0f * event->x() / (float)this->width() - 1.0f;
+	float y = 1.0f - 2.0f * event->y() / (float)this->height();
+	
+	elecManager.moveElectrode({ x,y });
 }

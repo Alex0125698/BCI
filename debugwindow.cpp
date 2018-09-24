@@ -1,6 +1,5 @@
+#include "resources.h"
 #include "debugwindow.h"
-
-
 
 DebugWindow::DebugWindow(QWidget* parent)
 	: QPlainTextEdit(parent)

@@ -1,3 +1,4 @@
+#include "resources.h"
 #include "pixplotter.h"
 #include "controllerstate.h"
 #include "mainwindowstate.h"
@@ -115,7 +116,7 @@ void PixPlotter::updateTexture()
 	size_t reqTime = dtft.timeSpan << 1u;
 	size_t reqFreq = newData[0].size();
 
-	double gain = 5.0*std::pow(10.0,dtft.brightness*6.0-2.0);
+	double gain = 5.0*std::pow(10.0,dtft.brightness*8.0-3.0);
 
 	// resize pixel buffer + delete old pixels
 	if (reqTime != m_numTimepoints || reqFreq != m_numFreqpoints)

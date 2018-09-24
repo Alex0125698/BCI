@@ -1,3 +1,4 @@
+#include "resources.h"
 #include "error.h"
 
 DetailedException::DetailedException(const QString msg, const int line, const QString file)

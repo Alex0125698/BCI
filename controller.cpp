@@ -1,9 +1,9 @@
+#include "resources.h"
 #include "controller.h"
 #include "bciinterface.h"
 #include "cytoninterface.h"
 #include "offline.h"
 #include "sigprocessing.h"
-#include "state.h"
 #include <QTimer>
 
 Controller::Controller()
