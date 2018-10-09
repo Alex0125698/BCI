@@ -5,19 +5,18 @@
 layout (location = 0) in vec3 position;
 layout (location = 1) in vec2 texCoord;
 
+// texture position (0 for non-electrode)
 uniform vec2 pos;
+// texture size
 uniform float size;
-uniform float _useTex;
-uniform float aspectRatio; // = width / height
+// aspectRatio = width / height
+uniform float aspectRatio; 
 
 out vec2 TexCoord;
-out float useTex;
-
 //!out vec4 gl_Position;
 
 void main()
 {
-	useTex = _useTex;
 	TexCoord = texCoord;
 
 	float x = position.x*size+pos.x;

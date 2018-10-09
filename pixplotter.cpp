@@ -2,7 +2,6 @@
 #include "pixplotter.h"
 #include "controllerstate.h"
 #include "mainwindowstate.h"
-#include <QTimer>
 #include <QPainter>
 
 float PixPlotter::vertices[] = {
@@ -20,11 +19,6 @@ unsigned int PixPlotter::indices[] = {
 PixPlotter::PixPlotter(QWidget* parent)
 	: QOpenGLWidget(parent)
 {
-	QSurfaceFormat format;
-	format.setVersion(3, 3);
-	format.setProfile(QSurfaceFormat::CoreProfile);
-	this->setFormat(format);
-
 	// setup timer to provide continuous drawing
 	timer = new QTimer(this);
 	connect(timer, SIGNAL(timeout()), this, SLOT(updateTexture()));
@@ -32,15 +26,8 @@ PixPlotter::PixPlotter(QWidget* parent)
 
 void PixPlotter::initializeGL()
 {
-	ctx = new QOpenGLFunctions_3_3_Core();
+	ctx = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_3_3_Core>();
 	ctx->initializeOpenGLFunctions();
-
-	//ctx->glEnable(GL_CULL_FACE);
-	//ctx->glEnable(GL_BLEND);
-	//ctx->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	// Disable byte-alignment restriction
-	//ctx->glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
 	// create + compile shaders ; add to shader program
 	m_sprogram = new ShaderProgram(ctx);
@@ -70,7 +57,7 @@ void PixPlotter::initializeGL()
 
 	// setup texture
 	m_pixels = new PixTextureFlip(ctx, 100, 128);
-	m_pixels->fillColor(glw::color(5,5,15));
+	m_pixels->fillColor(glw::color(5, 5, 15));
 	m_pixels->sendToGPU();
 	m_sprogram->setTextureLocation("ourTexture1", *m_pixels);
 
@@ -80,7 +67,7 @@ void PixPlotter::initializeGL()
 
 void PixPlotter::resizeGL(int width, int height)
 {
-
+	width; height;
 }
 
 void PixPlotter::checkState(std::vector<std::vector<double>>& data_out)
@@ -96,12 +83,12 @@ void PixPlotter::checkState(std::vector<std::vector<double>>& data_out)
 		std::lock_guard<std::mutex> lock(MainWindowState::state.mtx_data);
 		dtft = MainWindowState::state.dtft;
 	}
-
 }
 
 // todo: reset signal
 void PixPlotter::updateTexture()
 {
+	//makeCurrent();
 	// store our old properties for comparison
 	DTFTproperties old_dtft = dtft;
 
@@ -116,7 +103,8 @@ void PixPlotter::updateTexture()
 	size_t reqTime = dtft.timeSpan << 1u;
 	size_t reqFreq = newData[0].size();
 
-	double gain = 5.0*std::pow(10.0,dtft.brightness*8.0-3.0);
+	// we need to ajust the gain until the pixels are visible
+	double gain = 5.0*std::pow(10.0, dtft.brightness*8.0 - 3.0);
 
 	// resize pixel buffer + delete old pixels
 	if (reqTime != m_numTimepoints || reqFreq != m_numFreqpoints)
@@ -129,9 +117,10 @@ void PixPlotter::updateTexture()
 
 	// copy the pixels
 	for (size_t w = 0; w < newData.size(); ++w)
-	{	
+	{
 		for (size_t h = 0; h < reqFreq; ++h)
 		{
+			// todo: this could be done in GPU if we use floating-point image
 			double col = newData[w][h] * gain - dtft.hardLimit*255.0;
 			if (col > 255.0) col = 255.0;
 			if (col < 0.0) col = 0.0;
@@ -139,53 +128,64 @@ void PixPlotter::updateTexture()
 		}
 		m_pixels->nextColumn();
 	}
+	//doneCurrent();
 }
 
 void PixPlotter::paintGL()
 {
-	// send pixels to GPU
-	int rangeLoc = ctx->glGetUniformLocation(m_sprogram->m_program_id, "range");
-	m_sprogram->setActive();
-	ctx->glUniform1f(rangeLoc, dtft.maxFreq);
-	m_pixels->sendToGPU();
+	{
+		QPainter painter(this);
+		painter.beginNativePainting();
 
-	// draw pixles inside of rect
-	ctx->glBindVertexArray(VAO);
-	ctx->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-	ctx->glBindVertexArray(0);
+		// send stuff to GPU
+		m_sprogram->setActive();
+		ctx->glUniform1f(ctx->glGetUniformLocation(m_sprogram->m_program_id, "range"), dtft.maxFreq);
+		m_pixels->sendToGPU();
 
+		// draw pixles inside of rect
+		ctx->glBindVertexArray(VAO);
+		ctx->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		ctx->glBindVertexArray(0);
+
+		painter.endNativePainting();
+	}
 	drawLabels();
 }
 
 void PixPlotter::drawLabels()
 {
-	int num_freqs = 2 + ((8 * this->height()) / 550) & 0xFFFFFFFE;
+	QPainter painter(this);
+	painter.setPen(QColor(100, 130, 210));
+	QFont font("Times",9);
+	font.setBold(true);
+	painter.setFont(font);
 
-	QPainter tmp(this);
-
-	tmp.beginNativePainting();
-	tmp.setPen(QColor(100, 130, 210));
-
-	QFont font("Times", 10, QFont::Bold);
-	font.setPixelSize(9);
-	tmp.setFont(font);
-
-	int xpos = 0.005*this->width() + 2;
-	int blockSize = this->height() / dtft.wndSize + 2;
-
-	for (int i = 0; i < num_freqs; ++i)
+	// === Frequency Labels ===
 	{
-		int ypos = 8.0 + int(blockSize / 2.0 + (i / double(num_freqs - 1.0)) * (this->height() - blockSize - 8.0));
-		int freq = int((dtft.maxFreq * m_freq * (num_freqs-i-1.0)) / double(num_freqs-1.0));
+		int xpos = 0.005*this->width() + 2;
+		int blockSize = this->height() / m_numFreqpoints + 2;
 
-		tmp.drawText(xpos, ypos, QString::number(freq) + " Hz");
+		int num_freqs = 2 + ((8 * this->height()) / 550) & 0xFFFFFFFE;
+
+		for (int i = 0; i < num_freqs; ++i)
+		{
+			int ypos = 8.0 + int(blockSize / 2.0 + (i / double(num_freqs - 1.0)) * (this->height() - blockSize - 8.0));
+			int freq = int((dtft.maxFreq * m_freq * (num_freqs - i - 1.0)) / double(num_freqs - 1.0));
+
+			painter.drawText(xpos, ypos, QString::number(freq) + " Hz");
+		}
 	}
 
-	for (int i = 0; i < 10; ++i)
+	// === Time Labels ===
 	{
-		//tmp.drawText(0.2*this->width(), 0.2*this->height(), "Test");
+		int ypos = int(this->height()*0.995 - 2);
+		int blockSize = this->width() / m_numTimepoints;
+
+		for (int i = 0; i < 10; ++i)
+		{
+			int xpos = int(this->width() * i / 10.0);
+			if (xpos < 20) continue;
+			painter.drawText(xpos,ypos, " S");
+		}
 	}
-
-
-	tmp.endNativePainting();
 }

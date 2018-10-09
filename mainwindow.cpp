@@ -4,11 +4,11 @@
 #include <QDesktopServices>
 
 #include "mainwindow.h"
+#include "controllerstate.h"
 #include "ui_mainwindow.h"
 #include "debugwindow.h"
 #include "graphwidget.h"
 #include "core.h"
-
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
@@ -44,17 +44,37 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->plot_time->setAxisTitles("Magnitude (V)", "", "Time (h:m:s)", "");
 	ui->plot_time->setRange({ 0,128 }, { 0,1 });
 
+	ui->plot_translation->setTitle("Translation Control Signals");
+	ui->plot_translation->setAxisTitles("Magnitude (V)", "", "Time (h:m:s)", "");
+	ui->plot_translation->setRange({ 0,120 }, { -1,1 });
+	ui->plot_translation->addGraph({ "Control", "", true});
+
+	auto makeQLabel = [](QString text, QColor c = QColor("#701515"), QFont f = QFont("times"), int pt = 11)
+	{
+		text = "<html><head/><body><p><span style = \" color:" + c.name() + ";\">" + text + "</span></p></body></html>";
+		f.setPointSize(pt);
+		auto lbl = new QLabel(text);
+		lbl->setFont(f);
+		return lbl;
+	};
+
 	// ===== set up status bar =====
+
+	m_bar.cpuUsagePercentText = makeQLabel("CPU Usage (%): ");
 	m_bar.cpuUsagePercent = new QProgressBar;
+	m_bar.offlineProgressText = makeQLabel("Progress: ");
+	m_bar.offlineProgressText->setVisible(false);
 	m_bar.offlineProgress = new QProgressBar;
 	m_bar.offlineProgress->setVisible(false);
-	m_bar.runningLabel = new QLabel("Not Running");
-	m_bar.savingLabel = new QLabel("Not Saving");
+	m_bar.runningLabel = makeQLabel("Not Running");
+	m_bar.savingLabel = makeQLabel("Not Saving");
 	m_bar.savingLabel->setVisible(false);
-	m_bar.timeLabel = new QLabel("0 seconds");
-	m_bar.timeText = new QLabel("Run Time");
+	m_bar.timeLabel = makeQLabel("0", { 0,0,0 });
+	m_bar.timeText = makeQLabel("Run Time (s): ");
 
+	ui->statusbar->addPermanentWidget(m_bar.cpuUsagePercentText);
 	ui->statusbar->addPermanentWidget(m_bar.cpuUsagePercent);
+	ui->statusbar->addPermanentWidget(m_bar.offlineProgressText);
 	ui->statusbar->addPermanentWidget(m_bar.offlineProgress);
 	ui->statusbar->addPermanentWidget(m_bar.runningLabel);
 	ui->statusbar->addPermanentWidget(m_bar.savingLabel);
@@ -64,23 +84,24 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+	
+	if (m_core)
+	{
+		delete m_core;
+		m_core = nullptr;
+	}
+	std::this_thread::sleep_for(std::chrono::milliseconds(50));
+	
 	delete ui;
+	//sassert(ui->openGLWidget_2 == nullptr);
 
 	if (m_debug_window)
 	{
 		delete m_debug_window;
 		m_debug_window = nullptr;
 	}
-
-	std::this_thread::sleep_for(std::chrono::milliseconds(100));
-	if (m_core)
-	{
-		delete m_core;
-		m_core = nullptr;
-	}
-
 	// TODO: wait for run thread
-	std::this_thread::sleep_for(std::chrono::milliseconds(100));
+	std::this_thread::sleep_for(std::chrono::milliseconds(50));
 }
 
 // NEARLY DONE
@@ -95,7 +116,6 @@ void MainWindow::closeEvent(QCloseEvent* event)
 	QMainWindow::closeEvent(event);
 }
 
-// DONE
 void MainWindow::slotDebugMessage(QString msg, QString file, int line, int type)
 {
 	if (msg == "clear")
@@ -153,15 +173,72 @@ void MainWindow::slotViewUpdate()
 
 	// add data to graphs
 
+	std::vector<std::vector<double>> tmp;
+	double freq;
+	{
+		std::lock_guard<std::mutex> lock(ControllerState::state.mtx_data);
+		// copy NOT move the data
+		tmp = ControllerState::state.filteredFreqs;
+		freq = ControllerState::state.freq;
+	}
+
+	// size == 0 means controller is using it
+	if (tmp.size() != 0)
+	{
+		// generate frequencies vector
+		static std::vector<double> freqs;
+		if (freqs.size() != tmp[0].size()) freqs.resize(tmp[0].size());
+
+		for (size_t i = 0; i < freqs.size(); i++)
+		{
+			freqs[i] = (freq*i) / (double)freqs.size();
+		}
+
+		// ensure we have the right number of graphs
+		if (ui->plot_freq->numGraphs() != tmp.size())
+		{
+			ui->plot_freq->clearGraphs();
+			for (size_t i = 0; i < tmp.size(); i++)
+			{
+				ui->plot_freq->addGraph({ ("Channel " + QString::number(i)), " (V)", true });
+			}
+		}
+
+		// replace the old graph data
+		ui->plot_freq->clearData();
+		for (size_t i = 0; i < tmp.size(); i++)
+		{
+			ui->plot_freq->addData(i, freqs, tmp[i]);
+		}
+	}
+
+
+	// add translation data
+
+	std::vector<double> control;
+	{
+		std::lock_guard<std::mutex> lock(ControllerState::state.mtx_data);
+		control = std::move(ControllerState::state.controlMW);
+		ControllerState::state.controlMW.clear();
+	}
+
+	static int counter = 0;
+
+	for (size_t i = 0; i < control.size(); i++)
+	{
+		ui->plot_translation->addData(0, counter, control[i]);
+		++counter;
+	}
 
 	// replot graphs
 	if (ui->tabWidget->tabText(ui->tabWidget->currentIndex()) == "Freq Analysis")
 		ui->plot_freq->replot();
 	else if (ui->tabWidget->tabText(ui->tabWidget->currentIndex()) == "Time Analysis")
 		ui->plot_time->replot();
+	else if (ui->tabWidget->tabText(ui->tabWidget->currentIndex()) == "Translation")
+		ui->plot_translation->replot();
 }
 
-// DONE
 void MainWindow::slotRunStateChanged(bool running)
 {
 	if (running)
@@ -177,7 +254,6 @@ void MainWindow::slotRunStateChanged(bool running)
 	}
 }
 
-// DONE
 void MainWindow::slotSaveStateChanged(bool saving)
 {
 	if (saving)
@@ -192,7 +268,10 @@ void MainWindow::slotSaveStateChanged(bool saving)
 	}
 }
 
-// DONE
+// =================================== //
+// ========== Main Controls ========== //
+// =================================== //
+
 void MainWindow::on_btn_connect_clicked(bool checked)
 {
 	if (checked)
@@ -214,7 +293,6 @@ void MainWindow::on_btn_connect_clicked(bool checked)
 		emit sigStopController();
 }
 
-// DONE
 void MainWindow::on_btn_uoa_clicked()
 {
 	QDesktopServices::openUrl(QUrl("https://www.eleceng.adelaide.edu.au/students/wiki/projects/index.php/Projects:2018s1-155_Brain_Computer_Interface_Control_for_Biomedical_Applications"));
@@ -257,7 +335,6 @@ void MainWindow::on_btn_save_stop_clicked()
 
 }
 
-// DONE
 void MainWindow::on_box_source_currentIndexChanged(const QString& arg1)
 {
 	// the current index is polled when we try to connect
@@ -267,7 +344,51 @@ void MainWindow::on_box_source_currentIndexChanged(const QString& arg1)
 		ui->widget_offline->setVisible(false);
 }
 
-// DONE
+// REMOVE??
+void MainWindow::on_tabWidget_currentChanged(int index)
+{
+	index;
+	slotViewUpdate();
+}
+
+void MainWindow::on_btn_data_in_clicked()
+{
+	QString full_file_path = QFileDialog::getOpenFileName(this, "Load", "", "BCI Data: (*.csv)");
+
+	if (full_file_path != "")
+	{
+		// check if we can open the file
+		QFile file(full_file_path);
+		if (!file.open(QFile::ReadOnly))
+		{
+			DEBUG_PRINTLNY("File cannot be opened", MSG_TYPE::DEXCEP);
+		}
+		else
+		{
+			ui->line_data_in->setText(full_file_path);
+		}
+	}
+}
+
+void MainWindow::on_btn_debug_window_toggled(bool checked)
+{
+	ui->btn_debug_window->setChecked(checked);
+	if (checked)
+	{
+		ui->btn_debug_window->setText("Hide Debug Window");
+		m_debug_window->setVisible(true);
+	}
+	else
+	{
+		ui->btn_debug_window->setText("Show Debug Window");
+		m_debug_window->setVisible(false);
+	}
+}
+
+// =================================== //
+// ========== STFT Controls ========== //
+// =================================== //
+
 void MainWindow::on_btn_stft_larger_toggled(bool checked)
 {
 	ui->groupBox_stft_controls->setVisible(!checked);
@@ -278,7 +399,6 @@ void MainWindow::on_btn_stft_larger_toggled(bool checked)
 		ui->btn_stft_larger->setArrowType(Qt::ArrowType::DownArrow);
 }
 
-// DONE
 void MainWindow::on_box_wnd_overlap_valueChanged(int arg1)
 {
 	if (arg1 >= ui->box_wnd_size->value())
@@ -290,35 +410,30 @@ void MainWindow::on_box_wnd_overlap_valueChanged(int arg1)
 	state->dtft.wndOverlap = arg1;
 }
 
-// DONE
 void MainWindow::on_slider_sharpen_size_valueChanged(int value)
 {
 	std::lock_guard<std::mutex> lock(state->mtx_data);
 	state->dtft.sharpenKernelSize = value / 999.0;
 }
 
-// DONE
 void MainWindow::on_slider_sharpen_amount_valueChanged(int value)
 {
 	std::lock_guard<std::mutex> lock(state->mtx_data);
 	state->dtft.sharpenAmount = value / 999.0;
 }
 
-// DONE
 void MainWindow::on_slider_blur_size_valueChanged(int value)
 {
 	std::lock_guard<std::mutex> lock(state->mtx_data);
 	state->dtft.blurKernelSize = value / 999.0;
 }
 
-// DONE
 void MainWindow::on_slider_blur_amount_valueChanged(int value)
 {
 	std::lock_guard<std::mutex> lock(state->mtx_data);
 	state->dtft.blurAmount = value/999.0;
 }
 
-// DONE
 void MainWindow::on_box_wnd_type_currentIndexChanged(const QString& arg1)
 {
 	std::lock_guard<std::mutex> lock(state->mtx_data);
@@ -328,7 +443,6 @@ void MainWindow::on_box_wnd_type_currentIndexChanged(const QString& arg1)
 		state->dtft.wndType = DFTwindow::RECTANGULAR;
 }
 
-// DONE
 void MainWindow::on_box_wnd_size_editingFinished()
 {
 	int arg1 = ui->box_wnd_size->value();
@@ -365,7 +479,6 @@ void MainWindow::on_box_wnd_size_editingFinished()
 	state->dtft.wndOverlap = arg2;
 }
 
-// DONE
 void MainWindow::on_btn_stft_enabled_toggled(bool checked)
 {
 	if (checked)
@@ -381,48 +494,6 @@ void MainWindow::on_btn_stft_enabled_toggled(bool checked)
 
 	std::lock_guard<std::mutex> lock(state->mtx_data);
 	state->dtft.enabled = checked;
-}
-
-// REMOVE??
-void MainWindow::on_tabWidget_currentChanged(int index)
-{
-	slotViewUpdate();
-}
-
-// DONE
-void MainWindow::on_btn_data_in_clicked()
-{
-	QString full_file_path = QFileDialog::getOpenFileName(this, "Load", "", "BCI Data: (*.csv)");
-
-	if (full_file_path != "")
-	{
-		// check if we can open the file
-		QFile file(full_file_path);
-		if (!file.open(QFile::ReadOnly))
-		{
-			DEBUG_PRINTLNY("File cannot be opened", MSG_TYPE::DEXCEP);
-		}
-		else
-		{
-			ui->line_data_in->setText(full_file_path);
-		}
-	}
-}
-
-// DONE
-void MainWindow::on_btn_debug_window_toggled(bool checked)
-{
-	ui->btn_debug_window->setChecked(checked);
-	if (checked)
-	{
-		ui->btn_debug_window->setText("Hide Debug Window");
-		m_debug_window->setVisible(true);
-	}
-	else
-	{
-		ui->btn_debug_window->setText("Show Debug Window");
-		m_debug_window->setVisible(false);
-	}
 }
 
 void MainWindow::on_box_spatial_type_currentIndexChanged(const QString &arg1)
@@ -464,4 +535,109 @@ void MainWindow::on_box_channel_source_currentIndexChanged(int index)
 {
 	std::lock_guard<std::mutex> lock(state->mtx_data);
 	state->dtft.channelSource = index;
+}
+
+// ==================================== //
+// ======= Translation Controls ======= //
+// ==================================== //
+
+void MainWindow::on_slider_tr_span_valueChanged(int value)
+{
+	std::lock_guard<std::mutex> lock(state->mtx_data);
+	state->translation.spanFreq = value / 999.0;
+}
+
+void MainWindow::on_slider_tr_gain_valueChanged(int value)
+{
+	std::lock_guard<std::mutex> lock(state->mtx_data);
+	state->translation.gain = value / 999.0;
+}
+
+void MainWindow::on_box_tr_centre_freq_valueChanged(int arg1)
+{
+	std::lock_guard<std::mutex> lock(state->mtx_data);
+	state->translation.centreFreq = arg1;
+}
+
+void MainWindow::on_slider_tr_offset_valueChanged(int value)
+{
+	std::lock_guard<std::mutex> lock(state->mtx_data);
+	state->translation.offset = value / 999.0;
+}
+
+void MainWindow::on_btn_tr_larger_toggled(bool checked)
+{
+	ui->groupBox_translation->setVisible(!checked);
+
+	if (checked)
+		ui->btn_tr_larger->setArrowType(Qt::ArrowType::UpArrow);
+	else
+		ui->btn_tr_larger->setArrowType(Qt::ArrowType::DownArrow);
+}
+
+void MainWindow::on_box_tr_span_valueChanged(int arg1)
+{
+	std::lock_guard<std::mutex> lock(state->mtx_data);
+	state->translation.spanFreq = arg1;
+}
+
+void MainWindow::on_box_tr_spreading_valueChanged(int arg1)
+{
+	std::lock_guard<std::mutex> lock(state->mtx_data);
+	state->translation.freqSpreading = arg1;
+}
+
+void MainWindow::on_box_tr_flip_toggled(bool checked)
+{
+	std::lock_guard<std::mutex> lock(state->mtx_data);
+	state->translation.flip = checked;
+}
+
+void MainWindow::on_slider_tr_sensitivity_valueChanged(int value)
+{
+	std::lock_guard<std::mutex> lock(state->mtx_data);
+	state->translation.sensitivity = value / 999.0;
+}
+
+void MainWindow::on_slider_tr_smoothing_valueChanged(int value)
+{
+	std::lock_guard<std::mutex> lock(state->mtx_data);
+	state->translation.smoothing = value / 999.0;
+}
+
+// TODO
+void MainWindow::on_btn_tr_auto_gain_clicked()
+{
+
+}
+
+// TODO
+void MainWindow::on_btn_tr_auto_offset_clicked()
+{
+
+
+}
+
+void MainWindow::on_slider_tr_off_speed_valueChanged(int value)
+{
+	std::lock_guard<std::mutex> lock(state->mtx_data);
+	state->translation.offCorrSpeed = value / 999.0;
+}
+
+void MainWindow::on_slider_tr_off_limit_valueChanged(int value)
+{
+	std::lock_guard<std::mutex> lock(state->mtx_data);
+	state->translation.offCorrLimit = value / 999.0;
+}
+
+void MainWindow::on_slider_tr_mag_speed_valueChanged(int value)
+{
+	std::lock_guard<std::mutex> lock(state->mtx_data);
+	state->translation.magCorrSpeed = value / 999.0;
+}
+
+void MainWindow::on_slider_tr_mag_limit_valueChanged(int value)
+{
+	std::lock_guard<std::mutex> lock(state->mtx_data);
+	state->translation.magCorrLimit = value / 999.0;
 }

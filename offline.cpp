@@ -1,7 +1,6 @@
 #include "resources.h"
 #include "offline.h"
 #include "csvio.h"
-#include <QTimer>
 
 // automatically add line & file macros
 #define SIGERROR(x) sigError(x,__FILE__,__LINE__)
@@ -90,6 +89,7 @@ void bci::Offline::openFile()
 	}
 	catch (DetailedException& e)
 	{
+		e;
 		emit SIGERROR(QString("Data aquisition file: %1 could not be loaded").arg(m_fileName.c_str()));
 		stop_helper();
 	}

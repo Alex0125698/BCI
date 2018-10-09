@@ -1,12 +1,8 @@
 #pragma once
 
 #include "resources.h"
-#include "error.h"
 #include "openglresources.h"
-#include "shader.h"
-#include "texture.h"
 #include "mainwindowstate.h"
-#include <stack>
 
 class PixTexture : public glw::Texture
 {
@@ -56,9 +52,9 @@ public:
 		}
 
 		if (m_currRow >= m_maxHeight)
-			assert(m_currRow < m_maxHeight);
+			sassert(m_currRow < m_maxHeight);
 		if (m_currOffset >= m_height+1)
-			assert(m_currOffset < m_height+1);
+			sassert(m_currOffset < m_height+1);
 	}
 
 	void shiftData()
@@ -112,9 +108,28 @@ class PixPlotter : public QOpenGLWidget
 
 public:
 	PixPlotter(QWidget* parent);
+	virtual ~PixPlotter()
+	{
+		if (timer) timer->stop();
+
+		makeCurrent();
+		if (m_sprogram)
+		{
+			delete m_sprogram;
+			m_sprogram = nullptr;
+		}
+		if (m_pixels)
+		{
+			delete m_pixels;
+			m_pixels = nullptr;
+		}
+		doneCurrent();
+		//std::this_thread::sleep_for(std::chrono::milliseconds(50));
+	}
 	//~PixPlotter();
 	void initializeGL() override;
 	void resizeGL(int width, int height) override;
+	// get the FFT data, freq, wndSize
 	void checkState(std::vector<std::vector<double>>& data_out);
 	void paintGL() override;
 
@@ -126,8 +141,8 @@ public slots:
 private:
 	size_t m_fillPos{ 0 };
 	size_t m_plotPos{ 0 };
-	size_t m_numTimepoints{ 1 };
-	size_t m_numFreqpoints{ 1 };
+	size_t m_numTimepoints{ 64 };
+	size_t m_numFreqpoints{ 16 };
 	QOpenGLFunctions_3_3_Core* ctx{ nullptr };
 	ShaderProgram* m_sprogram{ nullptr };
 	PixTextureFlip* m_pixels{ nullptr };

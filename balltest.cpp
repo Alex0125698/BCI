@@ -1,6 +1,6 @@
 #include "resources.h"
 #include "balltest.h"
-#include <QTimer>
+#include "controllerstate.h"
 #include <QMouseEvent>
 
 float BallTest::vertices[] = {
@@ -18,15 +18,11 @@ unsigned int BallTest::indices[] = {
 BallTest::BallTest(QWidget* parent)
 	: QOpenGLWidget(parent)
 {
-	QSurfaceFormat format;
-	format.setVersion(3, 3);
-	format.setProfile(QSurfaceFormat::CoreProfile);
-	this->setFormat(format);
 }
 
 void BallTest::initializeGL()
 {
-	ctx = new QOpenGLFunctions_3_3_Core();
+	ctx = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_3_3_Core>();
 	ctx->initializeOpenGLFunctions();
 	ctx->glEnable(GL_BLEND);
 	ctx->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -63,22 +59,22 @@ void BallTest::initializeGL()
 	m_sprogram->setTextureLocation("balltex", *m_ballTex);
 
 	// setup timer to provide continuous drawing
-	QTimer* timer = new QTimer(this);
+	timer = new QTimer(this);
 	connect(timer, SIGNAL(timeout()), this, SLOT(update()));
 	timer->start(33);
 }
 
 void BallTest::resizeGL(int width, int height)
 {
-
+	width; height;
 }
 
 void BallTest::paintGL()
 {
-	// send pixels to GPU
+	// send data to GPU
+	m_sprogram->setActive();
 	int posLoc = ctx->glGetUniformLocation(m_sprogram->m_program_id, "pos");
 	int aspectRatioLoc = ctx->glGetUniformLocation(m_sprogram->m_program_id, "aspectRatio");
-	m_sprogram->setActive();
 	ctx->glUniform2f(posLoc,(GLfloat)xpos,(GLfloat)ypos);
 	ctx->glUniform1f(aspectRatioLoc,(GLfloat)this->width()/(GLfloat)this->height());
 	
@@ -90,7 +86,19 @@ void BallTest::paintGL()
 	ctx->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	ctx->glBindVertexArray(0);
 
-	ballMovement(xd, yd);
+	std::vector<double> control;
+
+	{
+		std::lock_guard<std::mutex> lock(ControllerState::state.mtx_data);
+		control = std::move(ControllerState::state.controlBT);
+		ControllerState::state.controlBT.clear();
+	}
+
+	for (auto& c : control)
+	{
+		auto tmp = std::clamp(c, -0.3, 1.0);
+		ballMovement(tmp,tmp);
+	}
 }
 
 void BallTest::mouseMoveEvent(QMouseEvent* event)

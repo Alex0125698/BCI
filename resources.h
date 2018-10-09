@@ -78,7 +78,7 @@
 //#include <tuple>
 //#include <typeindex>
 //#include <typeinfo>
-//#include <type_traits>
+#include <type_traits>
 #include <utility>
 //#include <valarray>
 
@@ -94,8 +94,21 @@
 
 #include <QObject>
 #include <QString>
+#include <QWidget>
 #include <QDebug>
+#include <QTimer>
 
 // === My Stuff ===
 
 #include "timer.h"
+#include "error.h"
+
+inline void sassert(bool cond)
+{
+#if defined(DEBUG) || defined(_DEBUG)
+	if (!cond)
+	{
+		assert(false);
+	}
+#endif
+}

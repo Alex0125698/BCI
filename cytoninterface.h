@@ -3,7 +3,7 @@
 * communicate with the cyton with daisy BCI via a serial port (COM). The serial port exists
 * when the bluetooth dongle is plugged in (which acts as a communication channel between the 
 * PC and BCI). This class will decode each serial packet and store the channel voltages which 
-* can be retrived via getData(std::vector<double>& rx).
+* can be retrived via getData(std::vector<double>& rx, time).
 *
 * Error Handling - inherits from bci::interface
 *
@@ -20,6 +20,7 @@
 #include "error.h"
 #include "bciinterface.h"
 
+// forward declerations
 class QTimer;
 class QSerialPort;
 class QThread;
@@ -34,12 +35,16 @@ class CytonInterface : public bci::Interface
 public:
 	CytonInterface() = default;
 	virtual ~CytonInterface();
+
+public:
+	// === required interface functions ===
 	virtual const size_t numChannels() override { return 16; }
 	virtual const double freq() override { return 125.0;  }
 	virtual void start_helper() override;
 	virtual void stop_helper() override;
 
 protected:
+	// === required helper functions ===
 	virtual void init() override;
 
 private slots:
@@ -49,6 +54,7 @@ private slots:
 	void slotReadyRead();
 	
 private:
+	// === helper functions ===
 	void write(QString&& msg);
 	char getNibbleDigit(char c);
 	void processByte(quint8 byte);

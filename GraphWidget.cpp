@@ -130,6 +130,11 @@ void GraphWidget::setRealTime()
 	m_plot->xAxis->setTicker(m_timeticker);
 }
 
+int GraphWidget::numGraphs()
+{
+	return m_plot->graphCount();
+}
+
 void GraphWidget::clearData()
 {
 	m_time = 0;
@@ -172,12 +177,23 @@ void GraphWidget::addData(size_t index, std::vector<double>& x, std::vector<doub
 	m_time = *(x.end()-1);
 }
 
+void GraphWidget::addData(size_t index, double x, double y)
+{
+	m_plot->graph((int)index)->addData(x, y);
+	m_time = x;
+}
+
+void GraphWidget::clearGraphs()
+{
+	m_plot->clearGraphs();
+}
+
 void GraphWidget::setVisiblePlots()
 {
 	for (size_t i = 0; i < gui.activeBoxs.size(); ++i)
 	{
 		m_graphs[i].active = gui.activeBoxs[i]->isChecked();
-		m_plot->graph(i)->setVisible(m_graphs[i].active);
+		m_plot->graph((int)i)->setVisible(m_graphs[i].active);
 	}
 }
 
@@ -195,7 +211,7 @@ void GraphWidget::showSelectDialog()
 		for (size_t i = 0; i < gui.activeBoxs.size(); ++i)
 		{
 			gui.activeBoxs[i] = new QCheckBox(m_graphs[i].name);
-			gui.checkLayout->addWidget(gui.activeBoxs[i], i & 0b0111u, i >> 3u);
+			gui.checkLayout->addWidget(gui.activeBoxs[i], i & 0b0111u, (unsigned)i >> 3u);
 		}
 	}
 
@@ -207,3 +223,4 @@ void GraphWidget::showSelectDialog()
 	gui.selectDialog->show();
 	gui.selectDialog->raise();
 }
+

@@ -97,7 +97,7 @@
       <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName)_$(PlatformTarget).pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>C:\QT\5.10.0\MSVC2017_64\lib\qtmain.lib;shell32.lib;opengl32.lib;glu32.lib;C:\QT\5.10.0\MSVC2017_64\lib\Qt5OpenGL.lib;C:\QT\5.10.0\MSVC2017_64\lib\Qt5PrintSupport.lib;C:\QT\5.10.0\MSVC2017_64\lib\Qt5Widgets.lib;C:\QT\5.10.0\MSVC2017_64\lib\Qt5WinExtras.lib;C:\QT\5.10.0\MSVC2017_64\lib\Qt5Gui.lib;C:\QT\5.10.0\MSVC2017_64\lib\Qt5SerialPort.lib;C:\QT\5.10.0\MSVC2017_64\lib\Qt5Core.lib;%(AdditionalDependencies);freetype.lib</AdditionalDependencies>
+      <AdditionalDependencies>C:\QT\5.10.0\MSVC2017_64\lib\qtmain.lib;shell32.lib;opengl32.lib;glu32.lib;C:\QT\5.10.0\MSVC2017_64\lib\Qt5OpenGL.lib;C:\QT\5.10.0\MSVC2017_64\lib\Qt5PrintSupport.lib;C:\QT\5.10.0\MSVC2017_64\lib\Qt5Widgets.lib;C:\QT\5.10.0\MSVC2017_64\lib\Qt5WinExtras.lib;C:\QT\5.10.0\MSVC2017_64\lib\Qt5Gui.lib;C:\QT\5.10.0\MSVC2017_64\lib\Qt5SerialPort.lib;C:\QT\5.10.0\MSVC2017_64\lib\Qt5Core.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:\QT\5.10.0\MSVC2017_64\lib;C:\utils\my_sql\my_sql\lib;C:\utils\postgresql\pgsql\lib;$(QTDIR)\lib;C:\libraries\boost\1.67.0\lib;C:\libraries\freetype\2.9.1\win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>"/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'" %(AdditionalOptions)</AdditionalOptions>
       <DataExecutionPrevention>true</DataExecutionPrevention>
@@ -108,6 +108,10 @@
       <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <SubSystem>Windows</SubSystem>
       <SuppressStartupBanner>true</SuppressStartupBanner>
+      <StackReserveSize>
+      </StackReserveSize>
+      <StackCommitSize>
+      </StackCommitSize>
     </Link>
     <Midl>
       <DefaultCharType>Unsigned</DefaultCharType>
@@ -170,7 +174,7 @@
       <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName)_$(PlatformTarget).pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>C:\QT\5.10.0\MSVC2017_64\lib\qtmaind.lib;shell32.lib;opengl32.lib;glu32.lib;C:\QT\5.10.0\MSVC2017_64\lib\Qt5OpenGLd.lib;C:\QT\5.10.0\MSVC2017_64\lib\Qt5PrintSupportd.lib;C:\QT\5.10.0\MSVC2017_64\lib\Qt5Widgetsd.lib;C:\QT\5.10.0\MSVC2017_64\lib\Qt5WinExtrasd.lib;C:\QT\5.10.0\MSVC2017_64\lib\Qt5Guid.lib;C:\QT\5.10.0\MSVC2017_64\lib\Qt5SerialPortd.lib;C:\QT\5.10.0\MSVC2017_64\lib\Qt5Cored.lib;%(AdditionalDependencies);freetype.lib</AdditionalDependencies>
+      <AdditionalDependencies>C:\QT\5.10.0\MSVC2017_64\lib\qtmaind.lib;shell32.lib;opengl32.lib;glu32.lib;C:\QT\5.10.0\MSVC2017_64\lib\Qt5OpenGLd.lib;C:\QT\5.10.0\MSVC2017_64\lib\Qt5PrintSupportd.lib;C:\QT\5.10.0\MSVC2017_64\lib\Qt5Widgetsd.lib;C:\QT\5.10.0\MSVC2017_64\lib\Qt5WinExtrasd.lib;C:\QT\5.10.0\MSVC2017_64\lib\Qt5Guid.lib;C:\QT\5.10.0\MSVC2017_64\lib\Qt5SerialPortd.lib;C:\QT\5.10.0\MSVC2017_64\lib\Qt5Cored.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:\QT\5.10.0\MSVC2017_64\lib;C:\utils\my_sql\my_sql\lib;C:\utils\postgresql\pgsql\lib;$(QTDIR)\lib;C:\libraries\boost\1.67.0\lib;C:\libraries\freetype\2.9.1\win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>"/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'" %(AdditionalOptions)</AdditionalOptions>
       <DataExecutionPrevention>true</DataExecutionPrevention>
@@ -180,6 +184,10 @@
       <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <SubSystem>Windows</SubSystem>
       <SuppressStartupBanner>true</SuppressStartupBanner>
+      <StackReserveSize>
+      </StackReserveSize>
+      <StackCommitSize>
+      </StackCommitSize>
     </Link>
     <Midl>
       <DefaultCharType>Unsigned</DefaultCharType>
@@ -303,7 +311,10 @@
     <ClCompile Include="csvio.cpp" />
     <ClCompile Include="cytoninterface.cpp" />
     <ClCompile Include="debugwindow.cpp" />
-    <ClCompile Include="error.cpp" />
+    <ClCompile Include="error.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="graphwidget.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mainwindow.cpp" />

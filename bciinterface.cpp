@@ -27,9 +27,14 @@ bci::Interface::~Interface()
 	}
 }
 
-void bci::Interface::getData(std::vector<double>& rx)
+void bci::Interface::getData(std::vector<double>& rx, double& time)
  {
-	 assert(rx.size() == numChannels());
+	 sassert(rx.size() == numChannels());
+	 sassert(freq() != 0.0);
+
+	 m_time += 1.0 / freq();
+	 time = m_time;
+
 	 // lock guard will always unlock the mutex when we are done
 	 std::lock_guard<std::mutex> lock(m_ch_mtx);
 
@@ -45,14 +50,14 @@ void bci::Interface::getData(std::vector<double>& rx)
 
  void bci::Interface::getGyroXYZ(double& gX, double& gY, double& gZ)
  {
-	 //TODO: assert(rx.size() <= numChannels());
+	 //TODO: sassert(rx.size() <= numChannels());
 	 std::lock_guard<std::mutex> lock(m_gyro_mtx);
 
 	 if (m_gyro.empty())
 		 emit SIGERROR("getGyroXYZ() attempted but queue is empty");
 	 else
 	 {
-		 assert(m_gyro.front().size() == 3);
+		 sassert(m_gyro.front().size() == 3);
 		 gX = m_gyro.front()[0];
 		 gY = m_gyro.front()[1];
 		 gZ = m_gyro.front()[2];
@@ -63,7 +68,7 @@ void bci::Interface::getData(std::vector<double>& rx)
  void bci::Interface::getElecImpedance(std::vector<double>& rx)
  {
 	 std::lock_guard<std::mutex> lock(m_imp_mtx);
-	 assert(rx.size() == m_elec_imp.size());
+	 sassert(rx.size() == m_elec_imp.size());
 	 
 	 if (m_elec_imp.empty())
 		 emit SIGERROR("getElecImpedance() attempted but queue is empty");

@@ -45,12 +45,15 @@ public:
 	GraphWidget(QWidget* parent);
 	void setTitle(str graphTitle = "title", QFont font = QFont("times",14));
 	void setRange(range xRange = { 0,1 }, range yRange = { 0,1 });
-	void setAxisTitles(str leftAxisText = "l", str rightAxisText = "r", str bottmpAxisText = "b", str topAxisText = "t");
+	void setAxisTitles(str leftAxisText = "l", str rightAxisText = "", str bottmpAxisText = "b", str topAxisText = "");
 	void setRealTime();
 
 public:
 	void addGraph(Graph&& properties);
 	void addData(size_t index, std::vector<double>& x, std::vector<double>& y);
+	void addData(size_t index, double x, double y);
+	void clearGraphs();
+	int numGraphs();
 	void clearData();
 	void replot();
 

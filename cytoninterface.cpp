@@ -1,6 +1,5 @@
 #include "resources.h"
 #include "cytoninterface.h"
-#include <QTimer>
 #include <QSerialPort>
 
 // automatically add line & file macros

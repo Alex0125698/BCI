@@ -32,12 +32,15 @@ class MainWindow : public QMainWindow
 public:
 	struct StatusBar
 	{
+		QLabel* offlineProgressText;
 		QProgressBar* offlineProgress;
+		QLabel* cpuUsagePercentText;
 		QProgressBar* cpuUsagePercent;
 		QLabel* timeText;
 		QLabel* timeLabel;
 		QLabel* runningLabel;
 		QLabel* savingLabel;	
+		void slotViewUpdate();
 	};
 
 public:
@@ -90,10 +93,26 @@ private slots:
 	void on_slider_dark_boost_valueChanged(int value);
 	void on_slider_hard_limit_valueChanged(int value);
 	void on_box_channel_source_currentIndexChanged(int index);
+	void on_slider_tr_span_valueChanged(int value);
+	void on_slider_tr_gain_valueChanged(int value);
+	void on_box_tr_centre_freq_valueChanged(int arg1);
+	void on_slider_tr_offset_valueChanged(int value);
+	void on_btn_tr_larger_toggled(bool checked);
+	void on_box_tr_span_valueChanged(int arg1);
+	void on_box_tr_spreading_valueChanged(int arg1);
+	void on_box_tr_flip_toggled(bool checked);
+	void on_slider_tr_sensitivity_valueChanged(int value);
+	void on_slider_tr_smoothing_valueChanged(int value);
+	void on_btn_tr_auto_gain_clicked();
+	void on_btn_tr_auto_offset_clicked();
+	void on_slider_tr_off_speed_valueChanged(int value);
+	void on_slider_tr_off_limit_valueChanged(int value);
+	void on_slider_tr_mag_speed_valueChanged(int value);
+	void on_slider_tr_mag_limit_valueChanged(int value);
 
 private:
 	MainWindowState* state{ &MainWindowState::state };
-	Ui::MainWindow *ui;
+	Ui::MainWindow* ui;
 	// this will be used for displaying debug messages
 	DebugWindow* m_debug_window;
 	// these are displayed in the status bar

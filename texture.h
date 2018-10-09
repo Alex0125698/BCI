@@ -1,11 +1,11 @@
 #pragma once
 
 #include "resources.h"
-#include "error.h"
-#include "openglresources.h"
+#include <QOpenGLFunctions_3_3_Core>
 
 // TODO: use an array of bound + active textures
 class ShaderProgram;
+class TextureGroup;
 
 namespace glw
 {
@@ -37,6 +37,32 @@ namespace glw
 		class Texture
 		{
 		public:
+			Texture(QOpenGLFunctions_3_3_Core* ctx, id offset)
+				: m_ctx{ ctx }
+			{
+				// what does this mean ???
+				if (m_maxTexUnits == 0)
+					ctx->glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &m_maxTexUnits);
+
+				// todo: not correct if we have multiple contexts
+				m_shader_offset = offset;
+
+				// assign a unit to each texture ; we try to make efficient use of these
+				m_unit = (m_shader_offset % m_maxTexUnits) + GL_TEXTURE0;
+
+				// todo: not correct if we have multiple contexts
+				//++m_textureCount;
+
+				glwGenTextures();
+
+				// todo: can these be deleted?
+				glwActiveTexture();
+				glwBindTexture();
+
+				// todo: use a function for this
+				ctx->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+				ctx->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			}
 			Texture(QOpenGLFunctions_3_3_Core* ctx)
 				: m_ctx{ ctx }
 			{
@@ -173,7 +199,7 @@ namespace glw
 				m_ctx->glGenerateMipmap(GL_TEXTURE_2D);
 			}
 
-		private:
+		protected:
 			// OpenGL stuff
 			QOpenGLFunctions_3_3_Core* m_ctx;
 
@@ -191,6 +217,7 @@ namespace glw
 
 			friend class ::glw::Texture;
 			friend class ::ShaderProgram;
+			friend class ::TextureGroup;
 		};
 	}
 
@@ -215,7 +242,13 @@ namespace glw
 		{
 			loadImage(std::move(fileName));
 			basic.glwTexImage2D((GLsizei)m_width, (GLsizei)m_height, (GLvoid*)&m_pixels[0]);
-		}	
+		}
+		Texture(QOpenGLFunctions_3_3_Core* ctx, std::string&& fileName, id offset)
+			: basic(ctx,offset)
+		{
+			loadImage(std::move(fileName));
+			basic.glwTexImage2D((GLsizei)m_width, (GLsizei)m_height, (GLvoid*)&m_pixels[0]);
+		}
 		void loadImage(std::string&& fileName);
 		void resize(size_t width, size_t height)
 		{

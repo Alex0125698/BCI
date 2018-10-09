@@ -7,8 +7,6 @@
  * will stop if there is an error, so the controller should update its state appropriately. 
  * Then you can call start() to recieve BCI data again.
  * 
- * TODO: timestamps for each data packet
- *
  * Author:  A.S. Woodcock
  * Project: BCI Controller for Biomedical Applications
  */
@@ -42,7 +40,7 @@ public:
 	// all base classes must have a virtual destructor to avoid leaks
 	virtual ~Interface() = 0;
 	// use this to connect to BCI & start data aquisition
-	virtual void start() { m_connected = true; emit sigCallStartHelper(); }
+	virtual void start() { m_connected = true; m_time = 0; emit sigCallStartHelper(); }
 	// use this to disconnect the BCI
 	virtual void stop() { m_connected = false;  emit sigCallStopHelper(); };
 
@@ -56,7 +54,7 @@ public:
 	// the frequency at which packets arrive
 	virtual const double freq() = 0;
 	// use these to get the least-recent data (it is released from the queue)
-	void getData(std::vector<double>& rx);
+	void getData(std::vector<double>& rx, double& time);
 	void getGyroXYZ(double& gX, double& gY, double& gZ);
 	void getElecImpedance(std::vector<double>& rx);
 
@@ -100,6 +98,10 @@ protected:
 	std::atomic<bool> m_connected{ false };
 	// is the number of channels avaliable to read yet
 	std::atomic<bool> m_stats_avaliable{ false };
+	// the total time since start of data aquisition
+	double m_time{ 0 };
+
+
 };
 
 }

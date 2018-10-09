@@ -19,3 +19,7 @@
 #include <QOpenGLShaderProgram>
 
 #pragma warning(pop)
+
+// my wrappers
+#include "texture.h"
+#include "shader.h"

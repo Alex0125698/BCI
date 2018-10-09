@@ -29,10 +29,29 @@ struct DTFTproperties
 	bool enabled{ true };
 };
 
+struct TrProperties
+{
+	int centreFreq{ 10 };
+	int spanFreq{ 3 };
+	int freqSpreading{ 2 };
+	bool flip{ true };
+
+	double sensitivity{ 0.5 };
+	double smoothing{ 0.5 };
+	double gain{ 0.5 };
+	double offset{ 0.5 };
+
+	double offCorrSpeed{ 0.5 };
+	double offCorrLimit{ 0.5 };
+	double magCorrSpeed{ 0.5 };
+	double magCorrLimit{ 0.5 };
+};
+
 struct MainWindowState
 {
 	static MainWindowState state;
 	DTFTproperties dtft;
+	TrProperties translation;
 	std::mutex mtx_data;
 
 private:

@@ -1,11 +1,11 @@
 #pragma once
 
 #include "resources.h"
-#include "error.h"
-#include "openglresources.h"
 #include "texture.h"
+#include <QOpenGLFunctions_3_3_Core>
 
 typedef unsigned int GLuint;
+namespace glw { class Texture; }
 
 class Shader
 {

@@ -1,12 +1,57 @@
 #pragma once
 
 #include "resources.h"
-#include "error.h"
 #include "openglresources.h"
-#include "shader.h"
-#include "texture.h"
 #include <stack>
-#include <QPainter>
+
+class QWidget;
+class QVBoxLayout;
+class QHBoxLayout;
+class QComboBox;
+class QToolButton;
+class QSlider;
+
+
+class TextureGroup
+{
+public:
+	TextureGroup(QOpenGLFunctions_3_3_Core* ctx)
+		:ctx(ctx)
+	{
+	}
+	~TextureGroup()
+	{
+		for (auto& ptr : textures)
+		{
+			if (ptr)
+			{
+				delete ptr;
+				ptr = nullptr;
+			}
+		}
+	}
+
+	void addTexture(std::string&& path)
+	{
+		glw::Texture* tmp = new glw::Texture(ctx, std::move(path),2);
+		textures.push_back(tmp);
+	}
+
+	void setActive(size_t index)
+	{
+		textures[index]->basic.glwActiveTexture();
+		textures[index]->basic.glwBindTexture();
+	}
+
+	auto* getTexture(size_t index)
+	{
+		return textures[index];
+	}
+
+private:
+	QOpenGLFunctions_3_3_Core* ctx{ nullptr };
+	std::vector<glw::Texture*> textures;
+};
 
 struct electrode
 {
@@ -22,6 +67,8 @@ public:
 	}
 	void setElectrodeCount(size_t n)
 	{
+		elecStateRight.resize(n, 1.0);
+		elecStateLeft.resize(n, 1.0);
 		electrodes.resize(n);
 		// generate positions across moor cortex
 		for (size_t i = 0; i < electrodes.size(); ++i)
@@ -42,7 +89,7 @@ public:
 		assert(electrodes.size() > 0);
 		// check if any electrodes are within range
 		// if so we select the one closest to the cursor
-		const float elecRadius = 0.08;
+		const float elecRadius = 0.08f;
 		selectOn = false;
 
 		size_t i = selected;	
@@ -55,7 +102,7 @@ public:
 				// we select the first potential electrode
 				// but begin the search after the previous one
 				// so tht it will cycle through
-				selected = i;
+				selected = (int)i;
 				selectOn = true;
 				off = cursorPos - electrodes[i].pos;
 				break;
@@ -65,6 +112,35 @@ public:
 		
 
 	}
+	void switchColor(bool left)
+	{
+		if (!selectOn) return;
+		if (left)
+		{
+			if (elecStateLeft[selected] > 0.0)
+				elecStateLeft[selected] = -1.0;
+			else if (elecStateLeft[selected] < 0.0)
+				elecStateLeft[selected] = 0.0;
+			else
+				elecStateLeft[selected] = 1.0;
+		}
+		else
+		{
+			if (elecStateRight[selected] > 0.0)
+				elecStateRight[selected] = -1.0;
+			else if (elecStateRight[selected] < 0.0)
+				elecStateRight[selected] = 0.0;
+			else
+				elecStateRight[selected] = 1.0;
+		}
+	}
+	auto getColor(int index, bool left)
+	{
+		if (left)
+			return elecStateLeft[index];
+		else
+			return elecStateRight[index];
+	}
 	const auto& get()
 	{
 		return electrodes;
@@ -73,12 +149,20 @@ public:
 	{
 		selectOn = false;
 	}
+	bool isSelected(int index)
+	{
+		sassert((unsigned)index < electrodes.size());
+		return selectOn && (selected == index);
+	}
 
 private:
 	std::vector<electrode> electrodes;
 	bool selectOn{ false };
 	int selected{ 0 };
 	glm::vec2 off;
+	// -1 = subtract ; 0 = ignore ; +1 = add
+	std::vector<double> elecStateRight;
+	std::vector<double> elecStateLeft;
 };
 
 class BrainMap : public QOpenGLWidget
@@ -87,6 +171,26 @@ class BrainMap : public QOpenGLWidget
 
 public:
 	BrainMap(QWidget* parent);
+	virtual ~BrainMap()
+	{
+		makeCurrent();
+		if (m_sprogram)
+		{
+			delete m_sprogram;
+			m_sprogram = nullptr;
+		}
+		if (m_activityTex)
+		{
+			delete m_activityTex;
+			m_activityTex = nullptr;
+		}
+		if (m_brainTex)
+		{
+			delete m_brainTex;
+			m_brainTex = nullptr;
+		}
+		doneCurrent();
+	}
 	void initializeGL() override;
 	void resizeGL(int width, int height) override;
 	void paintGL() override;
@@ -100,13 +204,30 @@ private:
 	ShaderProgram* m_sprogram{ nullptr };
 	glw::Texture* m_activityTex{ nullptr };
 	glw::Texture* m_brainTex{ nullptr };
-	std::array<glw::Texture*, 3> m_chTex;
-	GLuint VBO, VAO, EBO;
+	TextureGroup* m_textures{ nullptr };
+	GLuint VBO = 0, VAO = 0, EBO = 0;
 	electrodeManager elecManager;
-	QPainter painter;
 
 private:
 	static float vertices[];
 	static unsigned int indices[];
+
+private:
+	struct GUIelements
+	{
+		QWidget* container{ nullptr };
+		QVBoxLayout* contLayout{ nullptr };
+		QHBoxLayout* r1Layout{ nullptr };
+		QHBoxLayout* r2Layout{ nullptr };
+		QHBoxLayout* r3Layout{ nullptr };
+		QHBoxLayout* r4Layout{ nullptr };
+		QHBoxLayout* r5Layout{ nullptr };
+		QComboBox* box_filterDisp{ nullptr };
+		QComboBox* box_filter1{ nullptr };
+		QComboBox* box_filter2{ nullptr };
+		QToolButton* btn_color{ nullptr };
+		QSlider* slider_head{ nullptr };
+		QSlider* slider_elec{ nullptr };
+	} gui;
 };
 

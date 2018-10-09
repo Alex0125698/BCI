@@ -2,37 +2,45 @@
 
 #version 330 core
 in vec2 TexCoord;
-in float useTex;
-
 out vec4 color; // RGBA 0.0f to 1.0f
 
+uniform float elecBrightness;
+uniform float headBrightness;
+// selects between channel names (2) ; 10-20 system (1) ; activity (else)
+uniform int useTex;
+// magnitude of current electrode
 uniform float mag;
-uniform float chSelect;
+// is the current electrode selected?
+uniform bool selected;
+// switch between red (0) ; blue (1) ; off (else)
+uniform int col;
+// the 10-20 system texture
 uniform sampler2D braintex;
+// the shading aroung each electrode
 uniform sampler2D activitytex;
-
-uniform sampler2D ch1;
-uniform sampler2D ch2;
-uniform sampler2D ch3;
+// electrode names
+uniform sampler2D channels;
 
 void main()
 {
-	if (useTex == 2.0)
+	if (useTex == 2)
 	{
-		if (chSelect == 0)
-			color = texture(ch1,TexCoord);
-		else if (chSelect == 1)
-			color = texture(ch2,TexCoord);
-		else if (chSelect == 2)
-			color = texture(ch3,TexCoord);
+		color = texture(channels,TexCoord);
+		if (selected) color = vec4(color.rgb, color.a*0.9*elecBrightness);
 	}	
-	else if (useTex == 1.0)
+	else if (useTex == 1)
 	{
-		color = vec4(texture(braintex,TexCoord).rgb,1.0);
+		color = vec4(texture(braintex,TexCoord).rgb, headBrightness);
 	}
 	else
 	{
 		vec4 tmp2 = texture(activitytex,TexCoord);
-		color = vec4(tmp2.rgb,tmp2.a*mag);
+
+		if (col == 0) // red
+			color = vec4(tmp2.r*0.8, 0, tmp2.r*0.2, tmp2.a*mag*0.95);
+		else if (col == 1) // blue
+			color = vec4(tmp2.r*0.2, 0, tmp2.r*0.8, tmp2.a*mag*0.95);
+		else // off
+			color = vec4(tmp2.rgb,0.0);
 	}
 }

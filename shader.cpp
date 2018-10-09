@@ -126,7 +126,7 @@ void ShaderProgram::compile()
 		// TODO: get these buffers off of stack
 		char buff[512];
 		ctx->glGetProgramInfoLog(m_program_id, 512, nullptr, buff);
-		throw 0;
+		throw DETAILEDEXCEPTION(buff);
 	}
 }
 

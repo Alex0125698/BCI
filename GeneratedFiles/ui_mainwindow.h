@@ -13,6 +13,7 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QCheckBox>
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QGroupBox>
@@ -211,6 +212,56 @@ public:
     QVBoxLayout *verticalLayout_13;
     BallTest *openGLWidget_3;
     QWidget *tab_translation;
+    QVBoxLayout *verticalLayout_28;
+    GraphWidget *plot_translation;
+    QToolButton *btn_tr_larger;
+    QGroupBox *groupBox_translation;
+    QVBoxLayout *verticalLayout_27;
+    QVBoxLayout *verticalLayout_25;
+    QHBoxLayout *horizontalLayout_36;
+    QLabel *label_29;
+    QSpacerItem *horizontalSpacer_21;
+    QFrame *line_4;
+    QHBoxLayout *horizontalLayout_40;
+    QVBoxLayout *verticalLayout_24;
+    QHBoxLayout *horizontalLayout_38;
+    QLabel *label_30;
+    QSpinBox *box_tr_centre_freq;
+    QLabel *label_32;
+    QSpinBox *box_tr_span;
+    QLabel *label_33;
+    QSpinBox *box_tr_spreading;
+    QSpacerItem *horizontalSpacer_20;
+    QCheckBox *box_tr_flip;
+    QHBoxLayout *horizontalLayout_35;
+    QLabel *label_34;
+    QSlider *slider_tr_sensitivity;
+    QHBoxLayout *horizontalLayout_43;
+    QLabel *label_42;
+    QSlider *slider_tr_smoothing;
+    QVBoxLayout *verticalLayout_26;
+    QHBoxLayout *horizontalLayout_37;
+    QLabel *label_31;
+    QSlider *slider_tr_gain;
+    QLabel *lbl_tr_gain;
+    QToolButton *btn_tr_auto_gain;
+    QHBoxLayout *horizontalLayout_39;
+    QLabel *label_35;
+    QSlider *slider_tr_offset;
+    QLabel *lbl_tr_off;
+    QToolButton *btn_tr_auto_offset;
+    QHBoxLayout *horizontalLayout_41;
+    QLabel *label_36;
+    QLabel *label_37;
+    QSlider *slider_tr_off_speed;
+    QLabel *label_38;
+    QSlider *slider_tr_off_limit;
+    QHBoxLayout *horizontalLayout_42;
+    QLabel *label_39;
+    QLabel *label_40;
+    QSlider *slider_tr_mag_speed;
+    QLabel *label_41;
+    QSlider *slider_tr_offset_5;
     QStatusBar *statusbar;
 
     void setupUi(QMainWindow *MainWindow)
@@ -1257,6 +1308,347 @@ public:
         tabWidget->addTab(tab_test, QString());
         tab_translation = new QWidget();
         tab_translation->setObjectName(QStringLiteral("tab_translation"));
+        tab_translation->setStyleSheet(QLatin1String("QWidget#tab_translation{\n"
+"background-image: url(:/images/images/background-dark.png);\n"
+"}"));
+        verticalLayout_28 = new QVBoxLayout(tab_translation);
+        verticalLayout_28->setSpacing(0);
+        verticalLayout_28->setObjectName(QStringLiteral("verticalLayout_28"));
+        plot_translation = new GraphWidget(tab_translation);
+        plot_translation->setObjectName(QStringLiteral("plot_translation"));
+
+        verticalLayout_28->addWidget(plot_translation);
+
+        btn_tr_larger = new QToolButton(tab_translation);
+        btn_tr_larger->setObjectName(QStringLiteral("btn_tr_larger"));
+        sizePolicy1.setHeightForWidth(btn_tr_larger->sizePolicy().hasHeightForWidth());
+        btn_tr_larger->setSizePolicy(sizePolicy1);
+        btn_tr_larger->setMaximumSize(QSize(16777215, 14));
+        btn_tr_larger->setCheckable(true);
+        btn_tr_larger->setChecked(false);
+        btn_tr_larger->setAutoRaise(true);
+        btn_tr_larger->setArrowType(Qt::DownArrow);
+
+        verticalLayout_28->addWidget(btn_tr_larger);
+
+        groupBox_translation = new QGroupBox(tab_translation);
+        groupBox_translation->setObjectName(QStringLiteral("groupBox_translation"));
+        groupBox_translation->setStyleSheet(QLatin1String("QWidget#groupBox_translation{\n"
+"background-color: rgba(150,150,170, 130);\n"
+"}"));
+        verticalLayout_27 = new QVBoxLayout(groupBox_translation);
+        verticalLayout_27->setObjectName(QStringLiteral("verticalLayout_27"));
+        verticalLayout_25 = new QVBoxLayout();
+        verticalLayout_25->setSpacing(0);
+        verticalLayout_25->setObjectName(QStringLiteral("verticalLayout_25"));
+        horizontalLayout_36 = new QHBoxLayout();
+        horizontalLayout_36->setSpacing(0);
+        horizontalLayout_36->setObjectName(QStringLiteral("horizontalLayout_36"));
+        label_29 = new QLabel(groupBox_translation);
+        label_29->setObjectName(QStringLiteral("label_29"));
+        label_29->setFont(font3);
+
+        horizontalLayout_36->addWidget(label_29);
+
+        horizontalSpacer_21 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_36->addItem(horizontalSpacer_21);
+
+
+        verticalLayout_25->addLayout(horizontalLayout_36);
+
+        line_4 = new QFrame(groupBox_translation);
+        line_4->setObjectName(QStringLiteral("line_4"));
+        line_4->setStyleSheet(QLatin1String("QFrame#line_4\n"
+"{\n"
+"color: rgb(139, 149, 157)\n"
+"}"));
+        line_4->setFrameShadow(QFrame::Plain);
+        line_4->setFrameShape(QFrame::HLine);
+
+        verticalLayout_25->addWidget(line_4);
+
+
+        verticalLayout_27->addLayout(verticalLayout_25);
+
+        horizontalLayout_40 = new QHBoxLayout();
+        horizontalLayout_40->setObjectName(QStringLiteral("horizontalLayout_40"));
+        verticalLayout_24 = new QVBoxLayout();
+        verticalLayout_24->setObjectName(QStringLiteral("verticalLayout_24"));
+        horizontalLayout_38 = new QHBoxLayout();
+        horizontalLayout_38->setObjectName(QStringLiteral("horizontalLayout_38"));
+        label_30 = new QLabel(groupBox_translation);
+        label_30->setObjectName(QStringLiteral("label_30"));
+        label_30->setMinimumSize(QSize(50, 0));
+        label_30->setFont(font4);
+
+        horizontalLayout_38->addWidget(label_30);
+
+        box_tr_centre_freq = new QSpinBox(groupBox_translation);
+        box_tr_centre_freq->setObjectName(QStringLiteral("box_tr_centre_freq"));
+        box_tr_centre_freq->setMinimumSize(QSize(26, 0));
+        box_tr_centre_freq->setMaximum(1024);
+        box_tr_centre_freq->setValue(10);
+
+        horizontalLayout_38->addWidget(box_tr_centre_freq);
+
+        label_32 = new QLabel(groupBox_translation);
+        label_32->setObjectName(QStringLiteral("label_32"));
+        label_32->setMinimumSize(QSize(0, 0));
+        label_32->setFont(font4);
+
+        horizontalLayout_38->addWidget(label_32);
+
+        box_tr_span = new QSpinBox(groupBox_translation);
+        box_tr_span->setObjectName(QStringLiteral("box_tr_span"));
+        box_tr_span->setMaximum(10);
+        box_tr_span->setValue(2);
+
+        horizontalLayout_38->addWidget(box_tr_span);
+
+        label_33 = new QLabel(groupBox_translation);
+        label_33->setObjectName(QStringLiteral("label_33"));
+        label_33->setMinimumSize(QSize(50, 0));
+        label_33->setFont(font4);
+
+        horizontalLayout_38->addWidget(label_33);
+
+        box_tr_spreading = new QSpinBox(groupBox_translation);
+        box_tr_spreading->setObjectName(QStringLiteral("box_tr_spreading"));
+        box_tr_spreading->setMaximum(10);
+        box_tr_spreading->setValue(2);
+
+        horizontalLayout_38->addWidget(box_tr_spreading);
+
+        horizontalSpacer_20 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_38->addItem(horizontalSpacer_20);
+
+        box_tr_flip = new QCheckBox(groupBox_translation);
+        box_tr_flip->setObjectName(QStringLiteral("box_tr_flip"));
+        box_tr_flip->setChecked(true);
+        box_tr_flip->setTristate(false);
+
+        horizontalLayout_38->addWidget(box_tr_flip);
+
+
+        verticalLayout_24->addLayout(horizontalLayout_38);
+
+        horizontalLayout_35 = new QHBoxLayout();
+        horizontalLayout_35->setObjectName(QStringLiteral("horizontalLayout_35"));
+        label_34 = new QLabel(groupBox_translation);
+        label_34->setObjectName(QStringLiteral("label_34"));
+        label_34->setMinimumSize(QSize(50, 0));
+        label_34->setFont(font4);
+
+        horizontalLayout_35->addWidget(label_34);
+
+        slider_tr_sensitivity = new QSlider(groupBox_translation);
+        slider_tr_sensitivity->setObjectName(QStringLiteral("slider_tr_sensitivity"));
+        slider_tr_sensitivity->setMinimumSize(QSize(100, 0));
+        slider_tr_sensitivity->setMaximum(1000);
+        slider_tr_sensitivity->setValue(500);
+        slider_tr_sensitivity->setOrientation(Qt::Horizontal);
+
+        horizontalLayout_35->addWidget(slider_tr_sensitivity);
+
+
+        verticalLayout_24->addLayout(horizontalLayout_35);
+
+        horizontalLayout_43 = new QHBoxLayout();
+        horizontalLayout_43->setObjectName(QStringLiteral("horizontalLayout_43"));
+        label_42 = new QLabel(groupBox_translation);
+        label_42->setObjectName(QStringLiteral("label_42"));
+        label_42->setMinimumSize(QSize(50, 0));
+        label_42->setFont(font4);
+
+        horizontalLayout_43->addWidget(label_42);
+
+        slider_tr_smoothing = new QSlider(groupBox_translation);
+        slider_tr_smoothing->setObjectName(QStringLiteral("slider_tr_smoothing"));
+        slider_tr_smoothing->setMinimumSize(QSize(100, 0));
+        slider_tr_smoothing->setMaximum(1000);
+        slider_tr_smoothing->setValue(500);
+        slider_tr_smoothing->setOrientation(Qt::Horizontal);
+
+        horizontalLayout_43->addWidget(slider_tr_smoothing);
+
+
+        verticalLayout_24->addLayout(horizontalLayout_43);
+
+
+        horizontalLayout_40->addLayout(verticalLayout_24);
+
+        verticalLayout_26 = new QVBoxLayout();
+        verticalLayout_26->setObjectName(QStringLiteral("verticalLayout_26"));
+        horizontalLayout_37 = new QHBoxLayout();
+        horizontalLayout_37->setObjectName(QStringLiteral("horizontalLayout_37"));
+        label_31 = new QLabel(groupBox_translation);
+        label_31->setObjectName(QStringLiteral("label_31"));
+        label_31->setMinimumSize(QSize(0, 0));
+        label_31->setFont(font4);
+
+        horizontalLayout_37->addWidget(label_31);
+
+        slider_tr_gain = new QSlider(groupBox_translation);
+        slider_tr_gain->setObjectName(QStringLiteral("slider_tr_gain"));
+        slider_tr_gain->setMinimumSize(QSize(100, 0));
+        slider_tr_gain->setMaximum(1000);
+        slider_tr_gain->setValue(500);
+        slider_tr_gain->setOrientation(Qt::Horizontal);
+
+        horizontalLayout_37->addWidget(slider_tr_gain);
+
+        lbl_tr_gain = new QLabel(groupBox_translation);
+        lbl_tr_gain->setObjectName(QStringLiteral("lbl_tr_gain"));
+        lbl_tr_gain->setMinimumSize(QSize(36, 0));
+        lbl_tr_gain->setFont(font4);
+        lbl_tr_gain->setAlignment(Qt::AlignCenter);
+
+        horizontalLayout_37->addWidget(lbl_tr_gain);
+
+        btn_tr_auto_gain = new QToolButton(groupBox_translation);
+        btn_tr_auto_gain->setObjectName(QStringLiteral("btn_tr_auto_gain"));
+        btn_tr_auto_gain->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+        btn_tr_auto_gain->setArrowType(Qt::NoArrow);
+
+        horizontalLayout_37->addWidget(btn_tr_auto_gain);
+
+
+        verticalLayout_26->addLayout(horizontalLayout_37);
+
+        horizontalLayout_39 = new QHBoxLayout();
+        horizontalLayout_39->setObjectName(QStringLiteral("horizontalLayout_39"));
+        label_35 = new QLabel(groupBox_translation);
+        label_35->setObjectName(QStringLiteral("label_35"));
+        label_35->setMinimumSize(QSize(40, 0));
+        label_35->setFont(font4);
+
+        horizontalLayout_39->addWidget(label_35);
+
+        slider_tr_offset = new QSlider(groupBox_translation);
+        slider_tr_offset->setObjectName(QStringLiteral("slider_tr_offset"));
+        slider_tr_offset->setMinimumSize(QSize(100, 0));
+        slider_tr_offset->setMaximum(1000);
+        slider_tr_offset->setValue(500);
+        slider_tr_offset->setOrientation(Qt::Horizontal);
+
+        horizontalLayout_39->addWidget(slider_tr_offset);
+
+        lbl_tr_off = new QLabel(groupBox_translation);
+        lbl_tr_off->setObjectName(QStringLiteral("lbl_tr_off"));
+        lbl_tr_off->setMinimumSize(QSize(36, 0));
+        lbl_tr_off->setFont(font4);
+        lbl_tr_off->setAlignment(Qt::AlignCenter);
+
+        horizontalLayout_39->addWidget(lbl_tr_off);
+
+        btn_tr_auto_offset = new QToolButton(groupBox_translation);
+        btn_tr_auto_offset->setObjectName(QStringLiteral("btn_tr_auto_offset"));
+
+        horizontalLayout_39->addWidget(btn_tr_auto_offset);
+
+
+        verticalLayout_26->addLayout(horizontalLayout_39);
+
+        horizontalLayout_41 = new QHBoxLayout();
+        horizontalLayout_41->setObjectName(QStringLiteral("horizontalLayout_41"));
+        label_36 = new QLabel(groupBox_translation);
+        label_36->setObjectName(QStringLiteral("label_36"));
+        label_36->setMinimumSize(QSize(66, 0));
+        label_36->setFont(font4);
+
+        horizontalLayout_41->addWidget(label_36);
+
+        label_37 = new QLabel(groupBox_translation);
+        label_37->setObjectName(QStringLiteral("label_37"));
+        label_37->setMinimumSize(QSize(40, 0));
+        label_37->setFont(font4);
+
+        horizontalLayout_41->addWidget(label_37);
+
+        slider_tr_off_speed = new QSlider(groupBox_translation);
+        slider_tr_off_speed->setObjectName(QStringLiteral("slider_tr_off_speed"));
+        slider_tr_off_speed->setMinimumSize(QSize(100, 0));
+        slider_tr_off_speed->setMaximum(1000);
+        slider_tr_off_speed->setValue(500);
+        slider_tr_off_speed->setOrientation(Qt::Horizontal);
+
+        horizontalLayout_41->addWidget(slider_tr_off_speed);
+
+        label_38 = new QLabel(groupBox_translation);
+        label_38->setObjectName(QStringLiteral("label_38"));
+        label_38->setMinimumSize(QSize(30, 0));
+        label_38->setFont(font4);
+
+        horizontalLayout_41->addWidget(label_38);
+
+        slider_tr_off_limit = new QSlider(groupBox_translation);
+        slider_tr_off_limit->setObjectName(QStringLiteral("slider_tr_off_limit"));
+        slider_tr_off_limit->setMinimumSize(QSize(100, 0));
+        slider_tr_off_limit->setMaximum(1000);
+        slider_tr_off_limit->setValue(500);
+        slider_tr_off_limit->setOrientation(Qt::Horizontal);
+
+        horizontalLayout_41->addWidget(slider_tr_off_limit);
+
+
+        verticalLayout_26->addLayout(horizontalLayout_41);
+
+        horizontalLayout_42 = new QHBoxLayout();
+        horizontalLayout_42->setObjectName(QStringLiteral("horizontalLayout_42"));
+        label_39 = new QLabel(groupBox_translation);
+        label_39->setObjectName(QStringLiteral("label_39"));
+        label_39->setMinimumSize(QSize(66, 0));
+        label_39->setFont(font4);
+
+        horizontalLayout_42->addWidget(label_39);
+
+        label_40 = new QLabel(groupBox_translation);
+        label_40->setObjectName(QStringLiteral("label_40"));
+        label_40->setMinimumSize(QSize(40, 0));
+        label_40->setFont(font4);
+
+        horizontalLayout_42->addWidget(label_40);
+
+        slider_tr_mag_speed = new QSlider(groupBox_translation);
+        slider_tr_mag_speed->setObjectName(QStringLiteral("slider_tr_mag_speed"));
+        slider_tr_mag_speed->setMinimumSize(QSize(100, 0));
+        slider_tr_mag_speed->setMaximum(1000);
+        slider_tr_mag_speed->setValue(500);
+        slider_tr_mag_speed->setOrientation(Qt::Horizontal);
+
+        horizontalLayout_42->addWidget(slider_tr_mag_speed);
+
+        label_41 = new QLabel(groupBox_translation);
+        label_41->setObjectName(QStringLiteral("label_41"));
+        label_41->setMinimumSize(QSize(30, 0));
+        label_41->setFont(font4);
+
+        horizontalLayout_42->addWidget(label_41);
+
+        slider_tr_offset_5 = new QSlider(groupBox_translation);
+        slider_tr_offset_5->setObjectName(QStringLiteral("slider_tr_offset_5"));
+        slider_tr_offset_5->setMinimumSize(QSize(100, 0));
+        slider_tr_offset_5->setMaximum(1000);
+        slider_tr_offset_5->setValue(500);
+        slider_tr_offset_5->setOrientation(Qt::Horizontal);
+
+        horizontalLayout_42->addWidget(slider_tr_offset_5);
+
+
+        verticalLayout_26->addLayout(horizontalLayout_42);
+
+
+        horizontalLayout_40->addLayout(verticalLayout_26);
+
+
+        verticalLayout_27->addLayout(horizontalLayout_40);
+
+
+        verticalLayout_28->addWidget(groupBox_translation);
+
+        verticalLayout_28->setStretch(0, 1);
         tabWidget->addTab(tab_translation, QString());
 
         verticalLayout_4->addWidget(tabWidget);
@@ -1268,7 +1660,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(4);
+        tabWidget->setCurrentIndex(7);
         box_spatial_type->setCurrentIndex(1);
         box_channel_source->setCurrentIndex(0);
 
@@ -1354,6 +1746,27 @@ public:
         tabWidget->setTabText(tabWidget->indexOf(tab_stft), QApplication::translate("MainWindow", "STFT Plot", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_activity), QApplication::translate("MainWindow", "Brain Activity", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_test), QApplication::translate("MainWindow", "Ball Test", nullptr));
+        btn_tr_larger->setText(QApplication::translate("MainWindow", "...", nullptr));
+        groupBox_translation->setTitle(QString());
+        label_29->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-size:16pt; color:#ccdbe7;\">Controls</span></p></body></html>", nullptr));
+        label_30->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-size:10pt; color:#ccdbe7;\">Centre Freq (Hz): </span></p></body></html>", nullptr));
+        label_32->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-size:10pt; color:#ccdbe7;\">Span (Hz):</span></p></body></html>", nullptr));
+        label_33->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-size:10pt; color:#ccdbe7;\">Spreading:</span></p></body></html>", nullptr));
+        box_tr_flip->setText(QApplication::translate("MainWindow", "Flip", nullptr));
+        label_34->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-size:10pt; color:#ccdbe7;\">Sensitivity:</span></p></body></html>", nullptr));
+        label_42->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-size:10pt; color:#ccdbe7;\">Smoothing:</span></p></body></html>", nullptr));
+        label_31->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-size:10pt; color:#ccdbe7;\">Gain:</span></p></body></html>", nullptr));
+        lbl_tr_gain->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-size:10pt; color:#ccdbe7;\">10</span></p></body></html>", nullptr));
+        btn_tr_auto_gain->setText(QApplication::translate("MainWindow", "Auto", nullptr));
+        label_35->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-size:10pt; color:#ccdbe7;\">Offset:</span></p></body></html>", nullptr));
+        lbl_tr_off->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-size:10pt; color:#ccdbe7;\">10</span></p></body></html>", nullptr));
+        btn_tr_auto_offset->setText(QApplication::translate("MainWindow", "Auto", nullptr));
+        label_36->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-size:9pt; color:#ccdbe7;\">Offset Corr</span></p></body></html>", nullptr));
+        label_37->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" color:#ccdbe7;\">Speed:</span></p></body></html>", nullptr));
+        label_38->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" color:#ccdbe7;\">Limit</span></p></body></html>", nullptr));
+        label_39->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-size:9pt; color:#ccdbe7;\">Mag Corr</span></p></body></html>", nullptr));
+        label_40->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" color:#ccdbe7;\">Speed:</span></p></body></html>", nullptr));
+        label_41->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" color:#ccdbe7;\">Limit</span></p></body></html>", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_translation), QApplication::translate("MainWindow", "Translation", nullptr));
     } // retranslateUi
 
