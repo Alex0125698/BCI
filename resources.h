@@ -97,6 +97,7 @@
 #include <QWidget>
 #include <QDebug>
 #include <QTimer>
+#include <QThread>
 
 // === My Stuff ===
 

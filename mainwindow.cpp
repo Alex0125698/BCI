@@ -496,11 +496,6 @@ void MainWindow::on_btn_stft_enabled_toggled(bool checked)
 	state->dtft.enabled = checked;
 }
 
-void MainWindow::on_box_spatial_type_currentIndexChanged(const QString &arg1)
-{
-
-}
-
 void MainWindow::on_box_time_span_valueChanged(int arg1)
 {
 	std::lock_guard<std::mutex> lock(state->mtx_data);
@@ -529,12 +524,6 @@ void MainWindow::on_slider_hard_limit_valueChanged(int value)
 {
 	std::lock_guard<std::mutex> lock(state->mtx_data);
 	state->dtft.hardLimit = value / 999.0;
-}
-
-void MainWindow::on_box_channel_source_currentIndexChanged(int index)
-{
-	std::lock_guard<std::mutex> lock(state->mtx_data);
-	state->dtft.channelSource = index;
 }
 
 // ==================================== //

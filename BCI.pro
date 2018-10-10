@@ -25,29 +25,53 @@ DEFINES += QT_DEPRECATED_WARNINGS QCUSTOMPLOT_USE_OPENGL
 
 
 SOURCES += \
+    balltest.cpp \
     bciinterface.cpp \
+    brainmap.cpp \
     controller.cpp \
+    controllerstate.cpp \
     core.cpp \
     csvio.cpp \
+    cytoninterface.cpp \
+    debugwindow.cpp \
     error.cpp \
     graphwidget.cpp \
     main.cpp \
     mainwindow.cpp \
+    mainwindowstate.cpp \
+    offline.cpp \
+    pixplotter.cpp \
+    profiler.cpp \
     qcustomplot.cpp \
-    serialio.cpp \
-    state.cpp
+    resources.cpp \
+    shader.cpp \
+    sigprocessing.cpp \
+    texture.cpp \
+    stb_image.c
 
 HEADERS += \
+    balltest.h \
     bciinterface.h \
+    brainmap.h \
     controller.h \
+    controllerstate.h \
     core.h \
     csvio.h \
+    cytoninterface.h \
+    debugwindow.h \
     error.h \
     graphwidget.h \
     mainwindow.h \
+    mainwindowstate.h \
+    offline.h \
+    openglresources.h \
+    pixplotter.h \
+    profiler.h \
     qcustomplot.h \
-    serialio.h \
-    state.h \
+    resources.h \
+    shader.h \
+    sigprocessing.h \
+    texture.h \
     timer.h \
     translation.h
 

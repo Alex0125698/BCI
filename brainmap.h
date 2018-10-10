@@ -2,6 +2,7 @@
 
 #include "resources.h"
 #include "openglresources.h"
+#include "brainmapstate.h"
 #include <stack>
 
 class QWidget;
@@ -36,13 +37,11 @@ public:
 		glw::Texture* tmp = new glw::Texture(ctx, std::move(path),2);
 		textures.push_back(tmp);
 	}
-
 	void setActive(size_t index)
 	{
 		textures[index]->basic.glwActiveTexture();
 		textures[index]->basic.glwBindTexture();
 	}
-
 	auto* getTexture(size_t index)
 	{
 		return textures[index];
@@ -161,6 +160,8 @@ private:
 	int selected{ 0 };
 	glm::vec2 off;
 	// -1 = subtract ; 0 = ignore ; +1 = add
+
+public:
 	std::vector<double> elecStateRight;
 	std::vector<double> elecStateLeft;
 };
@@ -193,6 +194,7 @@ public:
 	}
 	void initializeGL() override;
 	void resizeGL(int width, int height) override;
+	void exportState();
 	void paintGL() override;
 	void drawLabels();
 	void mousePressEvent(QMouseEvent * event) override;
@@ -211,6 +213,9 @@ private:
 private:
 	static float vertices[];
 	static unsigned int indices[];
+
+private:
+	BrainMapState* state{ &BrainMapState::state };
 
 private:
 	struct GUIelements

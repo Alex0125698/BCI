@@ -4,8 +4,6 @@
 #include "mainwindow.h"
 #include "bciinterface.h"
 
-#include <QThread>
-
 Core::Core(MainWindow* wnd)
 {
 	// ====== Setup Threads ======

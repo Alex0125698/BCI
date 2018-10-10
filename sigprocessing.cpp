@@ -226,6 +226,44 @@ static size_t reverseBits(size_t x, int n) {
 	return result;
 }
 
+
+// dim1 = ch ;  dim2 = time , dim = ch , dim = time
+void spatialFilter(std::vector<std::vector<double>>& data_in, std::vector<double>& weights, std::vector<double>& data_out)
+{
+	sassert(data_in.size() == weights.size());
+	sassert(data_in.size() > 0);
+	sassert(data_in[0].size() == data_out.size());
+
+	double neg_sum = 0.0;
+	double pos_sum = 0.0;
+	for (auto& v : weights)
+	{
+		if (v < 0) neg_sum -= v;
+		else if (v > 0) pos_sum += v;
+	}
+
+	// normalise so that the +ve cancels the -ve
+	for (auto& v : weights)
+	{
+		if (v < 0) v /= neg_sum;
+		else if (v > 0) v /= pos_sum;
+	}
+
+	std::fill(data_out.begin(), data_out.end(), 0.0);
+
+	auto numTimePoints = data_in[0].size();
+	auto numChannels = data_in.size();
+
+	for (size_t t = 0; t < numTimePoints; ++t)
+	{
+		for (size_t ch = 0; ch < numChannels; ++ch)
+		{
+			data_out[t] += data_in[ch][t] * weights[ch];
+		}
+	}
+
+}
+
 // apply gaussianwindow on data and store result back in data
 // at either end the data is reduced to 10%, in the muddle it is the same
 void applyGaussianWindow(std::vector<double>& data)

@@ -1,6 +1,5 @@
 #include "resources.h"
 #include "bciinterface.h"
-#include <QThread>
 
 // automatically add line & file macros
 #define SIGERROR(x) sigError(x,__FILE__,__LINE__)

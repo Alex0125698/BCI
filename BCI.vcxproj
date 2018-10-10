@@ -246,6 +246,7 @@
     <QtMoc Include="core.h" />
     <QtMoc Include="brainmap.h" />
     <QtMoc Include="balltest.h" />
+    <ClInclude Include="brainmapstate.h" />
     <ClInclude Include="controllerstate.h" />
     <ClInclude Include="csvio.h" />
     <QtMoc Include="cytoninterface.h" />
@@ -305,6 +306,7 @@
     <ClCompile Include="balltest.cpp" />
     <ClCompile Include="bciinterface.cpp" />
     <ClCompile Include="brainmap.cpp" />
+    <ClCompile Include="brainmapstate.cpp" />
     <ClCompile Include="controller.cpp" />
     <ClCompile Include="controllerstate.cpp" />
     <ClCompile Include="core.cpp" />

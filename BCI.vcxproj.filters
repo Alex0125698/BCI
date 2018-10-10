@@ -221,6 +221,9 @@
     <ClCompile Include="resources.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="brainmapstate.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="bciinterface.h">
@@ -296,6 +299,9 @@
     </ClInclude>
     <ClInclude Include="controllerstate.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="brainmapstate.h">
+      <Filter>OpenGL</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

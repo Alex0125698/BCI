@@ -3,17 +3,18 @@
 #include "resources.h"
 #include "error.h"
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846264338327950288
+#endif // M_PI
+
 template<typename T>
 T map(T val, T val_min, T val_max, T min, T max)
 {
 	return (max - min)*(val - val_min) / (val_max - val_min) + min;
 }
 
-#include <vector>
-
-#ifndef M_PI
-#define M_PI 3.14159265358979323846264338327950288
-#endif // M_PI
+// dim1 = ch ;  dim2 = time , dim = ch , dim = time
+void spatialFilter(std::vector<std::vector<double>>& data_in, std::vector<double>& weights, std::vector<double>& data_out);
 
 namespace Fft {
 

@@ -1,18 +1,10 @@
 #include "resources.h"
 #include "controller.h"
-#include "bciinterface.h"
 #include "cytoninterface.h"
 #include "offline.h"
 #include "sigprocessing.h"
 
-Controller::Controller()
-{
-}
-
-Controller::~Controller()
-{
-}
-
+// READY
 void Controller::slotStart(int source, QString file, uint32_t freq)
 {
 	sassert(m_bci == nullptr);
@@ -21,7 +13,7 @@ void Controller::slotStart(int source, QString file, uint32_t freq)
 	switch (source)
 	{
 	case BCISource::Emotiv:
-		DEBUG_PRINTLN("Emotiv is unavaliable. Please fix emotiv.cpp");
+		DEBUG_PRINTLNY("Emotiv is unavaliable. Please fix emotiv.cpp", MSG_TYPE::DEXCEP);
 		return;
 	case BCISource::Offline:
 		m_bci = new bci::Offline(file.toStdString(), freq);
@@ -31,7 +23,7 @@ void Controller::slotStart(int source, QString file, uint32_t freq)
 		break;
 	}
 
-	// redo connections
+	// make connections
 	connect(m_bci, &bci::Interface::sigDataReady, this, &Controller::slotDataReady, Qt::QueuedConnection);
 	connect(m_bci, &bci::Interface::sigCallStopHelper, this, &Controller::slotStop, Qt::QueuedConnection);
 	connect(m_bci, &bci::Interface::sigError, this, [this](QString msg, QString file, int line) {
@@ -67,11 +59,13 @@ void Controller::slotStart(int source, QString file, uint32_t freq)
 	{
 		DEBUG_PRINTLNY("ERROR: BCI has 0 channels", MSG_TYPE::DEXCEP);
 		slotStop();
+		return;
 	}
 
-	resetData();
+	initData();
 }
 
+// READY
 void Controller::slotStop()
 {
 	if (m_bci != nullptr)
@@ -85,102 +79,223 @@ void Controller::slotStop()
 	}
 }
 
-void Controller::resetData()
+// READY
+void Controller::slotDataReady()
+{
+	if (m_bci == nullptr) return;
+	if (!m_bci->isConnected())
+	{
+		slotStop();
+		return;
+	}
+
+	runFilters();
+
+	if (m_viewTimer.getDuration() > 0.15)
+	{
+		emit sigViewRefresh();
+		m_viewTimer.restart();
+	}
+}
+
+// READY
+void Controller::initData()
 {
 	sassert(m_bci != nullptr);
 	sassert(m_bci->numChannels() > 0);
 	sassert((m_bci->freq() >= 1.0) && (m_bci->freq() <= 1000.0));
 
 	// clear controller data
-	m_dataTD.clear();
-	m_dataFD.clear();
-	m_laplaceData.clear();
-	m_finalData.clear();
-	m_CARcontrolData = 0.0;
-	m_timeIndex = -1;
-	m_recalc_img_filter = true;
+	m_data.rawTD.clear();
+	m_data.spfilTD.clear();
+	m_data.chCAR_TD.clear();
+	m_data.rawFD.clear();
+	m_data.spfilFD.clear();
+	m_data.imgStoreFD.clear();
+	m_data.imgOutputFD.clear();
+	m_data.chCAR_FD.clear();
+	m_data.spfilTR.clear();
+	m_data.chCAR_TR.clear();
+
+	// resize controller data
+	m_data.rawTD.resize(m_bci->numChannels());
+	m_data.spfilTD.resize(2);
+	m_data.chCAR_TD.resize(m_bci->numChannels());
+	m_data.rawFD.resize(m_bci->numChannels());
+	m_data.spfilFD.resize(2);
+	m_data.imgStoreFD.resize(2);
+	m_data.imgOutputFD.resize(2);
+	m_data.chCAR_FD.resize(m_bci->numChannels());
+	//m_data.spfilTR.resize(n);
+	m_data.chCAR_TR.resize(m_bci->numChannels());
 
 	// clear shared data
-
 	{
-		std::lock_guard<std::mutex> lock(ControllerState::state.mtx_data);
-		ControllerState::state.freq = m_bci->freq();
-		ControllerState::state.finalData.clear();
-		ControllerState::state.filteredFreqs.clear();
-		ControllerState::state.controlMW.clear();
-		ControllerState::state.controlBT.clear();
-		ControllerState::state.times.clear();
+		std::lock_guard<std::mutex> lock(shared->mtx_data);
+
+		shared->reset = true;
+		shared->freq = m_bci->freq();
+		shared->latestTime = 0;
+
+		shared->rawTD.clear();
+		shared->rawD_times.clear();
+		shared->rawFD.clear();
+		shared->imgOutpuFD.clear();
+		shared->ball_spfillTR.clear();
+		shared->graph_spfillTR.clear();
+		shared->chCAR_TR.clear();
 	}
-
-	// resize data
-	m_dataTD.resize(m_bci->numChannels());
-	m_dataFD.resize(m_bci->numChannels());
-
-	sassert(m_dataTD[0].size() <= m_dtft.wndSize);
 }
 
-void Controller::checkDTFTproperties()
+// READY
+void Controller::runFilters()
 {
-	// the dtft properties selected by the user
-	static DTFTproperties newDTFT;
+	// need to check if we changed the window size etc.
+	// must be called before extract data since we may clear m_dataTD
+	updateProperties();
 
-	// we need to check for changes of the DTFT window
+	// get next set of data from the bci
+	extractData();
+
+	// check if we have enough points to do the transform
+	const size_t reqTimePoints = m_dtft.wndSize;
+	sassert(m_data.rawTD.size() > 0);
+	const size_t numTimePoints = m_data.rawTD[0].size();
+	sassert(numTimePoints <= m_dtft.wndSize);
+
+	if (numTimePoints == reqTimePoints)
 	{
-		std::lock_guard<std::mutex> lock(MainWindowState::state.mtx_data);
-		newDTFT = MainWindowState::state.dtft;
-		// also grab latest copy of TrProperties
-		m_trans = MainWindowState::state.translation;
+		spatialFilers();
+		sassert(m_data.spfilTD.size() > 0);
+		sassert(m_data.spfilTD[0].size() == numTimePoints);
+		sassert(m_data.chCAR_TD.size() == m_bci->numChannels());
+		sassert(m_data.chCAR_TD[0].size() == numTimePoints);
+		freqTransforms();
+		sassert(m_data.rawFD.size() == m_bci->numChannels());
+		sassert(m_data.rawFD[0].size() == numTimePoints);
+		sassert(m_data.spfilFD.size() == 2);
+		sassert(m_data.spfilFD[0].size() == numTimePoints);
+		sassert(m_data.chCAR_FD.size() == m_bci->numChannels());
+		sassert(m_data.chCAR_FD[0].size() == numTimePoints);
+		imageProcessing();
+		sassert(m_data.imgStoreFD.size() == 2);
+		sassert(m_data.imgStoreFD[0].size() >= 1);
+		sassert(m_data.imgStoreFD[0][0].size() == numTimePoints);
+		sassert(m_data.imgOutputFD.size() == 2);
+		sassert(m_data.imgOutputFD[0].size() == numTimePoints);
+		translation();
+		sassert(m_data.spfilTR.size() == m_trans.freqSpreading);
+		sassert(m_data.spfilTR[0].size() == 2);
+		sassert(m_data.chCAR_TR.size() == m_bci->numChannels());
+		exportAll();
+		removeOldData();
 	}
-
-	if (newDTFT.wndSize != m_dtft.wndSize ||
-		newDTFT.wndOverlap != m_dtft.wndOverlap ||
-		newDTFT.wndType != m_dtft.wndType)
-	{
-		// in this case we give up trying to update all the data
-		// just delete the old data and start again with the new windowing
-		resetData();
-		m_recalc_img_filter = true;
-	}
-	else if (newDTFT.sharpenKernelSize != m_dtft.sharpenKernelSize ||
-			 newDTFT.sharpenAmount != m_dtft.sharpenAmount ||
-			 newDTFT.blurKernelSize != m_dtft.blurKernelSize ||
-			 newDTFT.blurAmount != m_dtft.blurAmount)
-	{
-		// in this case we re-calc all the data with the new
-		// image processing parameters
-		m_recalc_img_filter = true;
-	}
-
-	// finally update our copy of dtft properties
-	m_dtft = newDTFT;
-
-	// note we dont worry about DTFTproperties::enabled - only the plotting
-	// can be disabled, not the signal processing
 }
 
+// READY
 void Controller::extractData()
 {
 	// poll the bci for the next channel data
 	// we need a temporary vector to fill in
 	static std::vector<double> tmpData;
-	if (tmpData.size() != m_bci->numChannels()) tmpData.resize(m_bci->numChannels());
+	tmpData.resize(m_bci->numChannels());
+
 	double time;
 	m_bci->getData(tmpData,time);
 
-	sassert(m_dataTD.size() == m_bci->numChannels());
-	sassert(m_dataTD[0].size() <= m_dtft.wndSize);
+	sassert(m_data.rawTD.size() == m_bci->numChannels());
 
-	// the first buffer to fill in, is m_dataTD
 	// Warning: this is inefficient - we are filling in distant locations
 	for (size_t ch = 0; ch < m_bci->numChannels(); ++ch)
 	{
-		m_dataTD[ch].push_back(tmpData[ch]);
+		m_data.rawTD[ch].push_back(tmpData[ch]);
 	}
 
-	sassert(m_dataTD[0].size() <= m_dtft.wndSize);
+	sassert(m_data.rawTD[0].size() <= m_dtft.wndSize);
 }
 
-void Controller::freqTransform()
+void Controller::updateProperties()
+{
+	// the dtft properties selected by the user
+	static DTFTproperties oldSTFT;
+	oldSTFT = m_dtft;
+
+	// we need to check for changes of the DTFT window
+	{
+		std::lock_guard<std::mutex> lock(MainWindowState::state.mtx_data);
+		m_dtft = MainWindowState::state.dtft;
+		// also grab latest copy of TrProperties
+		m_trans = MainWindowState::state.translation;
+	}
+
+	if (oldSTFT.wndSize != m_dtft.wndSize ||
+		oldSTFT.wndOverlap != m_dtft.wndOverlap ||
+		oldSTFT.wndType != m_dtft.wndType)
+	{
+		// in this case we give up trying to update all the data
+		// just delete the old data and start again with the new windowing
+		initData();
+	}
+	else if (oldSTFT.sharpenKernelSize != m_dtft.sharpenKernelSize ||
+		oldSTFT.sharpenAmount != m_dtft.sharpenAmount ||
+		oldSTFT.blurKernelSize != m_dtft.blurKernelSize ||
+		oldSTFT.blurAmount != m_dtft.blurAmount)
+	{
+		// in this case we re-calc all the data with the new
+		// image processing parameters
+		initData();
+	}
+
+	// note we dont worry about DTFTproperties::enabled - only the plotting
+	// can be disabled, not the signal processing
+}
+
+void Controller::spatialFilers()
+{
+	// === left/right spatial filters ===
+
+	auto numTimePoints = m_dtft.wndSize;
+
+	sassert(m_data.spfilTD.size() == 2);
+	m_data.spfilTD[0].resize(numTimePoints);
+	m_data.spfilTD[1].resize(numTimePoints);
+
+	spatialFilter(m_data.rawTD, ,m_data.spfilTD[0]);
+	spatialFilter(m_data.rawTD, ,m_data.spfilTD[1]);
+	
+	// === channel CAR filters ===
+
+	sassert(m_data.chCAR_TD.size() == m_bci->numChannels());
+	for (auto& v : m_data.chCAR_TD)
+		v.resize(numTimePoints);
+
+	// temporary vector to store CAR references
+	static std::vector<double> CARmags;
+	CARmags.resize(numTimePoints);
+
+	// calc reference/average of each timepoint
+	for (size_t t = 0; t < numTimePoints; ++t)
+	{
+		CARmags[t] = 0;
+		for (size_t ch = 0; ch < m_bci->numChannels(); ++ch)
+		{
+			CARmags[t] += m_data.rawTD[ch][t];
+		}
+		// normalise
+		CARmags[t] /= m_bci->numChannels();
+	}
+
+	// now subtract the reference from each channel
+	for (size_t ch = 0; ch < numTimePoints; ++ch)
+	{
+		for (size_t t = 0; t < numTimePoints; ++t)
+		{
+			m_data.chCAR_TD[ch][t] = m_data.rawTD[ch][t] - CARmags[t];
+		}
+	}
+}
+
+void Controller::freqTransforms()
 {
 	sassert(m_dataTD.size() == m_bci->numChannels());
 	sassert(m_dataFD.size() == m_bci->numChannels());
@@ -222,37 +337,6 @@ void Controller::freqTransform()
 	}
 }
 
-// ADD LAPLACIAN FILTER
-void Controller::laplaceFilter()
-{
-	// apply laplacian/CAR filter
-	// for now only use CAR
-
-	// add new time point
-	m_laplaceData.push_back(std::vector<double>(m_dtft.wndSize));
-
-	sassert(m_laplaceData.size() - 1 == m_timeIndex);
-	sassert(m_dataFD.size() == m_bci->numChannels());
-	sassert(m_dataFD[0].size() == m_timeIndex+1);
-	sassert(m_dataFD[0][0].size() == m_dtft.wndSize);
-
-	// add up all channel data 
-	for (int ch = 0; ch < m_bci->numChannels(); ++ch)
-	{
-		for (int freq = 0; freq < m_dtft.wndSize; ++freq)
-		{
-			m_laplaceData[m_timeIndex][freq] += m_dataFD[ch][m_timeIndex][freq];
-		}
-	}
-
-	// normalise
-	for (int freq = 0; freq < m_dtft.wndSize; ++freq)
-	{
-		m_laplaceData[m_timeIndex][freq] /= (double)m_bci->numChannels();
-	}
-}
-
-// NOT DONE YET
 void Controller::imageProcessing()
 {
 	// apply blur + sharpen filters
@@ -265,13 +349,6 @@ void Controller::imageProcessing()
 		m_recalc_img_filter = false;
 	}
 }
-
-//int freqSpreading{ 2 };
-//double smoothing{ 0.5 };
-//double offCorrSpeed{ 0.5 };
-//double offCorrLimit{ 0.5 };
-//double magCorrSpeed{ 0.5 };
-//double magCorrLimit{ 0.5 };
 
 void Controller::translation()
 {
@@ -329,61 +406,31 @@ void Controller::translation()
 	oldSum = m_CARcontrolData;
 }
 
-void Controller::clearOldData()
+void Controller::exportTimePlot()
 {
-	sassert(m_dataTD.size() == m_bci->numChannels());
-
-	// we need to get rid of the old timpoints
-	// but keep enough for the overlap
-	const size_t numKeep = m_dtft.wndOverlap;
-	const size_t offset = m_dtft.wndSize - numKeep;
-
-	sassert(numKeep < m_dtft.wndSize);
-
-	for (size_t ch = 0; ch < m_bci->numChannels(); ++ch)
-	{
-		sassert(m_dataTD[ch].size() == m_dtft.wndSize);
-
-		// we cannot guarantee no alaising so use normal loop
-		for (size_t freq = 0; freq < numKeep; ++freq)
-		{
-			if (!(freq + offset < m_dataTD[ch].size()))
-			{
-				sassert(false);
-			}
-			sassert(freq + offset < m_dataTD[ch].size());
-			m_dataTD[ch][freq] = m_dataTD[ch][freq + offset];
-		}
-		// todo: check for alaising and use std::copy
-
-		// this will effectively delete the old data
-		m_dataTD[ch].resize(numKeep);
-	}
-
-	sassert(m_dataTD[0].size() <= m_dtft.wndSize);
-
-	// there is a maximum number of timepoints for the freq data
-	// we just keep enough to do the image processing
-	// we may need to delete from the front
-	// the timpoints use std::deque so this is fast
-	// todo: allow for more timepoins
-	while (m_timeIndex > -1)
-	{
-		--m_timeIndex;
-		for (size_t ch = 0; ch < m_bci->numChannels(); ++ch)
-		{
-			m_dataFD[ch].pop_front();
-		}
-		m_laplaceData.pop_front();
-		// we do not touch final data - it will be exported
-	}
-
-	sassert(m_timeIndex == -1);
-	sassert(m_dataTD[0].size() == m_dtft.wndOverlap);
 }
 
-// NEED TO ADD TIME AND FREQS
-void Controller::exportData()
+void Controller::exportFreqPlot()
+{
+}
+
+void Controller::exportSTFTPlot()
+{
+}
+
+void Controller::exportBallTest()
+{
+}
+
+void Controller::exportTrPlot()
+{
+}
+
+void Controller::exportBrainMap()
+{
+}
+
+void Controller::exportAll()
 {
 	// ===== check if buffer is getting too large =====
 
@@ -400,7 +447,7 @@ void Controller::exportData()
 		return;
 	}
 
-	
+
 
 	// === create filtered freq for MainWindow ===
 
@@ -416,7 +463,7 @@ void Controller::exportData()
 	if (tmp.size() != m_bci->numChannels())
 		tmp.resize(m_bci->numChannels());
 
-	sassert(m_dataFD[0].size()-1 == m_timeIndex);
+	sassert(m_dataFD[0].size() - 1 == m_timeIndex);
 	sassert(m_dataFD.size() == m_bci->numChannels());
 
 	if (tmp[0].size() != m_dtft.wndSize)
@@ -427,7 +474,7 @@ void Controller::exportData()
 			tmp[ch].resize(m_dtft.wndSize);
 			std::copy(m_dataFD[ch][m_timeIndex].begin(), m_dataFD[ch][m_timeIndex].end(), tmp[ch].begin());
 		}
-			
+
 	}
 	else
 	{
@@ -497,54 +544,55 @@ void Controller::exportData()
 	tmp4.clear();
 }
 
-// TIMERS + STATE NOT DONE
-void Controller::slotDataReady()
+void Controller::removeOldData()
 {
-	if (m_bci == nullptr) return;
-	if (!m_bci->isConnected())
+	sassert(m_dataTD.size() == m_bci->numChannels());
+
+	// we need to get rid of the old timpoints
+	// but keep enough for the overlap
+	const size_t numKeep = m_dtft.wndOverlap;
+	const size_t offset = m_dtft.wndSize - numKeep;
+
+	sassert(numKeep < m_dtft.wndSize);
+
+	for (size_t ch = 0; ch < m_bci->numChannels(); ++ch)
 	{
-		slotStop();
-		return;
+		sassert(m_dataTD[ch].size() == m_dtft.wndSize);
+
+		// we cannot guarantee no alaising so use normal loop
+		for (size_t freq = 0; freq < numKeep; ++freq)
+		{
+			if (!(freq + offset < m_dataTD[ch].size()))
+			{
+				sassert(false);
+			}
+			sassert(freq + offset < m_dataTD[ch].size());
+			m_dataTD[ch][freq] = m_dataTD[ch][freq + offset];
+		}
+		// todo: check for alaising and use std::copy
+
+		// this will effectively delete the old data
+		m_dataTD[ch].resize(numKeep);
 	}
-
-	static double totalCalcTime{ 0 };
-	m_calcTimer.restart();
-
-	// need to check if we changed the window size etc.
-	// must be called before extract data since we may clear m_dataTD
-	checkDTFTproperties();
-
-	// get next set of data from the bci
-	extractData();
-
-	// check if we have enough points to do the transform
-	const size_t reqTimePoints = m_dtft.wndSize;
-	const size_t numTimePoints = m_dataTD[0].size();
 
 	sassert(m_dataTD[0].size() <= m_dtft.wndSize);
 
-	if (numTimePoints == reqTimePoints)
+	// there is a maximum number of timepoints for the freq data
+	// we just keep enough to do the image processing
+	// we may need to delete from the front
+	// the timpoints use std::deque so this is fast
+	// todo: allow for more timepoins
+	while (m_timeIndex > -1)
 	{
-		++m_timeIndex;
-		// calculate dft 
-		freqTransform();
-		sassert(m_dataTD[0].size() == m_dataFD[0][0].size());
-		// calc laplace / CAR filter
-		laplaceFilter();
-		// calc blur + sharpen filters
-		imageProcessing();
-		// translation algs (generate control signals)
-		translation();
-		// create new shared data for MainWindow + STFTplot
-		// this data is asynchronous and is removed whenever it is polled
-		exportData();
-		// remove old data
-		clearOldData();
+		--m_timeIndex;
+		for (size_t ch = 0; ch < m_bci->numChannels(); ++ch)
+		{
+			m_dataFD[ch].pop_front();
+		}
+		m_laplaceData.pop_front();
+		// we do not touch final data - it will be exported
 	}
 
-	if (m_viewTimer.getDuration() > 0.15)
-	{
-		emit sigViewRefresh();
-		m_viewTimer.restart();
-	}	
+	sassert(m_timeIndex == -1);
+	sassert(m_dataTD[0].size() == m_dtft.wndOverlap);
 }

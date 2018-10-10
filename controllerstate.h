@@ -22,24 +22,33 @@ public:
 	static ControllerState state;
 
 public:
-	// BCI freq. todo: move to BCIstate
-	// consumer = 
-	double freq;
-	// dim1 = time ; dim2 = freq ; STFT data
-	// consumer = 
-	std::vector<std::vector<double>> finalData;
-	// dim1 = channel ; dim2 = freq ; for FFT Plot
-	// consumer = 
-	std::vector<std::vector<double>> filteredFreqs;
+	bool reset{ false };
+	double freq{ 1 };
+	double latestTime{ 0 };
+	double timeStep{ 1 };
+
+public:
+	// dim1 = ch ; dim2 = time
+	// consumer: Time Plot
+	std::vector<std::vector<double>> rawTD;
 	// dim = time
-	// consumer = 
-	std::vector<double> controlMW;
-	// dim = time
-	// consumer = 
-	std::vector<double> controlBT;
-	// dim1 = index
-	// consumer = 
-	std::vector<double> times;
+	// consumer: Time Plot
+	std::vector<double> rawD_times;
+	// dim1 = channel ; dim2 = freq
+	// consumer: Freq Plot
+	std::vector<std::vector<double>> rawFD; // smoothed
+	// dim1 = buff ; dim2 = left/right ; dim3 = freq
+	// consumer: STFT Plot
+	std::vector<std::vector<std::vector<double>>> imgOutpuFD;
+	// dim1 = buff ; dim2 = left/right
+	// consumer: Ball Test
+	std::vector<std::vector<double>> ball_spfillTR;
+	// dim1 = buff ; dim2 = n (freq spread) ; dim3 = left/right
+	// consumer: Tr Plot
+	std::vector<std::vector<std::vector<double>>> graph_spfillTR;
+	// dim = channel
+	// consumer: BrainMap
+	std::vector<double> chCAR_TR; // smoothed
 
 private:
 	ControllerState() = default;

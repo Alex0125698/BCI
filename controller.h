@@ -17,26 +17,25 @@
 
 #pragma once
 
+#include "resources.h"
+#include "brainmapstate.h"
 #include "mainwindowstate.h"
 #include "controllerstate.h"
 
 // forward declarations
 namespace bci { class Interface; }
 
+enum BCISource
+{
+	Offline,
+	OpenBCI,
+	Emotiv
+};
+
 class Controller : public QObject
 {
 	Q_OBJECT
 
-public:
-	enum BCISource
-	{
-		Offline,
-		OpenBCI,
-		Emotiv
-	};
-	Controller();
-	~Controller();
-	
 signals:
 	// feedBack for mainwindow
 	void sigRunStateChanged(bool running);
@@ -54,28 +53,35 @@ public slots:
 	// and the signal processing is done when enough data is avaliable
 	void slotDataReady();
 
-	
 private: 
 	// === helper functions ===
-	// clears all data & resets state
-	void resetData();
-	// updates STFT properties such as window size
-	void checkDTFTproperties();
+	// clears all data & resets state (called upon new BCI connection)
+	void initData();
+	// a function to call the other filtering functions in order
+	void runFilters();
 	// gets data from the BCI
 	void extractData();
-	// applies Fourier transform
-	void freqTransform();
-	// applies spatial filters
-	void laplaceFilter();
+	// updates properties for STFT, Tr, BrainMap (based on user input)
+	void updateProperties();
+	// applies custom & channel spatial filters
+	void spatialFilers();
+	// applies custom, channel & raw Fourier transform
+	void freqTransforms();
 	// applies blur/sharpen filters (to make STFT clearer)
 	void imageProcessing();
-	// calculates the control signal from filtered data 
+	// calculates the control signals from filtered data 
 	void translation();
+	void exportTimePlot();
+	void exportFreqPlot();
+	void exportSTFTPlot();
+	void exportBallTest();
+	void exportTrPlot();
+	void exportBrainMap();
+	// exports all shared data produced by controller
+	void exportAll();
 	// clears data that is no longer needed
-	void clearOldData();	
-	// update shared data
-	void exportData();
-	
+	void removeOldData();
+
 protected:
 	// shown in status bar
 	Timer m_runTimer;
@@ -87,34 +93,50 @@ protected:
 	bci::Interface* m_bci{ nullptr };
 
 private:
+	// === parameters used for the algs ===
 	// stores the latest copy from MainWindow
 	DTFTproperties m_dtft;
 	// stores the latest copy from MainWindow
 	TrProperties m_trans;
-	// may need to redo all blur+sharpen filtering
-	bool m_recalc_img_filter{ true };
-	// stores the current index inside of m_dataFD
-	// note: there are less timepoints in the STFT than the raw data
-	int64_t m_timeIndex{ -1 };
+	// parameters for two spatial filters (for each channel)
+	// >0 means add ; <0 means subtract ; =0 means ignore
+	std::vector<double> m_spatial1Params;
+	std::vector<double> m_spatial2Params;
 
 private:
-	// the BCI buffered data
-	// time-domain ; dim1 = channel ; dim2 = time
-	std::vector<std::vector<double>> m_dataTD;
-	// freq domain ; dim1 = channel  ; dim2 = time ; dim3 = freq (0-wndSize)
-	// we need multiple timepoints to do image processing
-	std::vector<std::deque<std::vector<double>>> m_dataFD;
-	// laplacian filtered data - no image processing applied yet
-	// we need multiple timepoints to do image processing
-	// dim1 = time ; dim2 = freq
-	std::deque<std::vector<double>> m_laplaceData;
-	// final data 
-	// dim = freq
-	std::vector<double> m_finalData;
-	// the lastest control data point
-	double m_CARcontrolData{ 0 };
+	struct Data
+	{
+		// === Raw ===
+		// dim1 = ch ; dim2 = time
+		std::vector<std::vector<double>> rawTD;
+
+		// === spatial Filtered (in time-domain)===
+		// dim1 = left/right ; dim2 = time
+		std::vector<std::vector<double>> spfilTD;
+		// dim1 = channel ; dim2 = time
+		std::vector<std::vector<double>> chCAR_TD;
+
+		// === Freq Domain ===
+		// dim1 = channel ; dim2 = freq
+		std::vector<std::vector<double>> rawFD;
+		// dim1 = left/right ; dim2 = freq
+		std::vector<std::vector<double>> spfilFD;
+		// dim1 = left/right ; dim2 = num ; dim3 = freq
+		std::vector<std::vector<std::vector<double>>> imgStoreFD;
+		// dim1 = left/right ; dim2 = freq
+		std::vector<std::vector<double>> imgOutputFD;
+		// dim1 = channel ; dim2 = freq
+		std::vector<std::vector<double>> chCAR_FD;
+
+		// === Translation ===
+		// dim1 = fspread ; dim2 = left/right
+		std::vector<std::vector<double>> spfilTR;
+		// dim = channel
+		std::vector<double> chCAR_TR;
+	};
+	Data m_data;
 
 private:
-	ControllerState* state{ &ControllerState::state };
+	ControllerState* shared{ &ControllerState::state };
 };
 

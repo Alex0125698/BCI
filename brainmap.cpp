@@ -127,6 +127,15 @@ void BrainMap::resizeGL(int width, int height)
 	width; height;
 }
 
+void BrainMap::exportState()
+{
+	std::lock_guard<std::mutex> lock(state->mtx_data);
+
+	// export spatial filter parameters (for CAR/Laplacian)
+	state->spatial1Params = elecManager.elecStateLeft;
+	state->spatial2Params = elecManager.elecStateRight;
+}
+
 void BrainMap::paintGL()
 {
 	{
@@ -218,6 +227,7 @@ void BrainMap::paintGL()
 
 		//painter.endNativePainting();
 	}
+	exportState();
 	//drawLabels();
 }
 

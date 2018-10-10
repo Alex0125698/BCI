@@ -27,6 +27,7 @@
 #include <QtWidgets/QSlider>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QSpinBox>
+#include <QtWidgets/QSplitter>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTabWidget>
 #include <QtWidgets/QToolButton>
@@ -196,12 +197,6 @@ public:
     QHBoxLayout *horizontalLayout_16;
     QLabel *label_16;
     QComboBox *box_wnd_type;
-    QHBoxLayout *horizontalLayout_27;
-    QLabel *label_23;
-    QComboBox *box_spatial_type;
-    QHBoxLayout *horizontalLayout_34;
-    QLabel *label_28;
-    QComboBox *box_channel_source;
     QHBoxLayout *horizontalLayout_28;
     QSpacerItem *horizontalSpacer_18;
     QToolButton *btn_stft_enabled;
@@ -213,7 +208,9 @@ public:
     BallTest *openGLWidget_3;
     QWidget *tab_translation;
     QVBoxLayout *verticalLayout_28;
+    QSplitter *splitter;
     GraphWidget *plot_translation;
+    GraphWidget *plot_translation_2;
     QToolButton *btn_tr_larger;
     QGroupBox *groupBox_translation;
     QVBoxLayout *verticalLayout_27;
@@ -1212,41 +1209,6 @@ public:
 
         verticalLayout_16->addLayout(horizontalLayout_16);
 
-        horizontalLayout_27 = new QHBoxLayout();
-        horizontalLayout_27->setObjectName(QStringLiteral("horizontalLayout_27"));
-        label_23 = new QLabel(groupBox_stft_controls);
-        label_23->setObjectName(QStringLiteral("label_23"));
-        label_23->setFont(font4);
-
-        horizontalLayout_27->addWidget(label_23);
-
-        box_spatial_type = new QComboBox(groupBox_stft_controls);
-        box_spatial_type->addItem(QString());
-        box_spatial_type->addItem(QString());
-        box_spatial_type->setObjectName(QStringLiteral("box_spatial_type"));
-
-        horizontalLayout_27->addWidget(box_spatial_type);
-
-
-        verticalLayout_16->addLayout(horizontalLayout_27);
-
-        horizontalLayout_34 = new QHBoxLayout();
-        horizontalLayout_34->setObjectName(QStringLiteral("horizontalLayout_34"));
-        label_28 = new QLabel(groupBox_stft_controls);
-        label_28->setObjectName(QStringLiteral("label_28"));
-        label_28->setFont(font4);
-
-        horizontalLayout_34->addWidget(label_28);
-
-        box_channel_source = new QComboBox(groupBox_stft_controls);
-        box_channel_source->addItem(QString());
-        box_channel_source->setObjectName(QStringLiteral("box_channel_source"));
-
-        horizontalLayout_34->addWidget(box_channel_source);
-
-
-        verticalLayout_16->addLayout(horizontalLayout_34);
-
         horizontalLayout_28 = new QHBoxLayout();
         horizontalLayout_28->setObjectName(QStringLiteral("horizontalLayout_28"));
         horizontalSpacer_18 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
@@ -1314,10 +1276,24 @@ public:
         verticalLayout_28 = new QVBoxLayout(tab_translation);
         verticalLayout_28->setSpacing(0);
         verticalLayout_28->setObjectName(QStringLiteral("verticalLayout_28"));
-        plot_translation = new GraphWidget(tab_translation);
+        verticalLayout_28->setContentsMargins(4, 4, 4, 4);
+        splitter = new QSplitter(tab_translation);
+        splitter->setObjectName(QStringLiteral("splitter"));
+        splitter->setMinimumSize(QSize(400, 120));
+        splitter->setLineWidth(1);
+        splitter->setOrientation(Qt::Horizontal);
+        splitter->setOpaqueResize(true);
+        splitter->setHandleWidth(4);
+        plot_translation = new GraphWidget(splitter);
         plot_translation->setObjectName(QStringLiteral("plot_translation"));
+        plot_translation->setMinimumSize(QSize(360, 240));
+        splitter->addWidget(plot_translation);
+        plot_translation_2 = new GraphWidget(splitter);
+        plot_translation_2->setObjectName(QStringLiteral("plot_translation_2"));
+        plot_translation_2->setMinimumSize(QSize(360, 240));
+        splitter->addWidget(plot_translation_2);
 
-        verticalLayout_28->addWidget(plot_translation);
+        verticalLayout_28->addWidget(splitter);
 
         btn_tr_larger = new QToolButton(tab_translation);
         btn_tr_larger->setObjectName(QStringLiteral("btn_tr_larger"));
@@ -1661,8 +1637,6 @@ public:
         retranslateUi(MainWindow);
 
         tabWidget->setCurrentIndex(7);
-        box_spatial_type->setCurrentIndex(1);
-        box_channel_source->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -1731,13 +1705,6 @@ public:
         label_16->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-size:9pt; color:#ccdbe7;\">Window Type:</span></p></body></html>", nullptr));
         box_wnd_type->setItemText(0, QApplication::translate("MainWindow", "Gaussian", nullptr));
         box_wnd_type->setItemText(1, QApplication::translate("MainWindow", "Rectangular", nullptr));
-
-        label_23->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-size:9pt; color:#ccdbe7;\">Spatial Filter:</span></p></body></html>", nullptr));
-        box_spatial_type->setItemText(0, QApplication::translate("MainWindow", "Laplacian", nullptr));
-        box_spatial_type->setItemText(1, QApplication::translate("MainWindow", "CAR", nullptr));
-
-        label_28->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-size:9pt; color:#ccdbe7;\">Channel Src:</span></p></body></html>", nullptr));
-        box_channel_source->setItemText(0, QApplication::translate("MainWindow", "Spatial", nullptr));
 
 #ifndef QT_NO_TOOLTIP
         btn_stft_enabled->setToolTip(QApplication::translate("MainWindow", "Enable/Disable STFT Plot (disable to improve perfromance)", nullptr));

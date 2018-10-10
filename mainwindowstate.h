@@ -25,7 +25,6 @@ struct DTFTproperties
 	double blurAmount{ 0 };
 
 	DFTwindow wndType{ DFTwindow::GAUSSIAN };
-	int channelSource{ 0 };
 	bool enabled{ true };
 };
 

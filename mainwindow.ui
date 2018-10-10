@@ -1665,67 +1665,6 @@ color: rgb(139, 149, 157)
                 </layout>
                </item>
                <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_27">
-                 <item>
-                  <widget class="QLabel" name="label_23">
-                   <property name="font">
-                    <font>
-                     <family>Levenim MT</family>
-                    </font>
-                   </property>
-                   <property name="text">
-                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:9pt; color:#ccdbe7;&quot;&gt;Spatial Filter:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QComboBox" name="box_spatial_type">
-                   <property name="currentIndex">
-                    <number>1</number>
-                   </property>
-                   <item>
-                    <property name="text">
-                     <string>Laplacian</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>CAR</string>
-                    </property>
-                   </item>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_34">
-                 <item>
-                  <widget class="QLabel" name="label_28">
-                   <property name="font">
-                    <font>
-                     <family>Levenim MT</family>
-                    </font>
-                   </property>
-                   <property name="text">
-                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:9pt; color:#ccdbe7;&quot;&gt;Channel Src:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QComboBox" name="box_channel_source">
-                   <property name="currentIndex">
-                    <number>0</number>
-                   </property>
-                   <item>
-                    <property name="text">
-                     <string>Spatial</string>
-                    </property>
-                   </item>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-               <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_28">
                  <item>
                   <spacer name="horizontalSpacer_18">
@@ -1816,8 +1755,55 @@ background-image: url(:/images/images/background-dark.png);
         <property name="spacing">
          <number>0</number>
         </property>
+        <property name="leftMargin">
+         <number>4</number>
+        </property>
+        <property name="topMargin">
+         <number>4</number>
+        </property>
+        <property name="rightMargin">
+         <number>4</number>
+        </property>
+        <property name="bottomMargin">
+         <number>4</number>
+        </property>
         <item>
-         <widget class="GraphWidget" name="plot_translation" native="true"/>
+         <widget class="QSplitter" name="splitter">
+          <property name="minimumSize">
+           <size>
+            <width>400</width>
+            <height>120</height>
+           </size>
+          </property>
+          <property name="lineWidth">
+           <number>1</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="opaqueResize">
+           <bool>true</bool>
+          </property>
+          <property name="handleWidth">
+           <number>4</number>
+          </property>
+          <widget class="GraphWidget" name="plot_translation" native="true">
+           <property name="minimumSize">
+            <size>
+             <width>360</width>
+             <height>240</height>
+            </size>
+           </property>
+          </widget>
+          <widget class="GraphWidget" name="plot_translation_2" native="true">
+           <property name="minimumSize">
+            <size>
+             <width>360</width>
+             <height>240</height>
+            </size>
+           </property>
+          </widget>
+         </widget>
         </item>
         <item>
          <widget class="QToolButton" name="btn_tr_larger">

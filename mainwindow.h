@@ -86,13 +86,11 @@ private slots:
 	void on_tabWidget_currentChanged(int index);
 	void on_btn_data_in_clicked();
 	void on_btn_debug_window_toggled(bool checked);
-	void on_box_spatial_type_currentIndexChanged(const QString &arg1);
 	void on_box_time_span_valueChanged(int arg1);
 	void on_slider_max_freq_valueChanged(int value);
 	void on_slider_brightness_valueChanged(int value);
 	void on_slider_dark_boost_valueChanged(int value);
 	void on_slider_hard_limit_valueChanged(int value);
-	void on_box_channel_source_currentIndexChanged(int index);
 	void on_slider_tr_span_valueChanged(int value);
 	void on_slider_tr_gain_valueChanged(int value);
 	void on_box_tr_centre_freq_valueChanged(int arg1);
