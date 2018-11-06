@@ -9,7 +9,7 @@ bci::Interface::~Interface()
 	if (m_bci_thread)
 	{
 		// TODO: is this done right ???
-		m_bci_thread->deleteLater();
+		
 		m_bci_thread->quit();
 		auto finished = m_bci_thread->wait(40);
 		if (!finished)
@@ -21,7 +21,8 @@ bci::Interface::~Interface()
 		{
 			DEBUG_PRINTLN("BCI Thread finished");
 		}
-		
+		delete m_bci_thread;
+		//m_bci_thread->deleteLater();
 		m_bci_thread = nullptr;
 	}
 }
@@ -47,7 +48,7 @@ void bci::Interface::getData(std::vector<double>& rx, double& time)
 	 }
  }
 
- void bci::Interface::getGyroXYZ(double& gX, double& gY, double& gZ)
+void bci::Interface::getGyroXYZ(double& gX, double& gY, double& gZ)
  {
 	 //TODO: sassert(rx.size() <= numChannels());
 	 std::lock_guard<std::mutex> lock(m_gyro_mtx);
@@ -64,7 +65,7 @@ void bci::Interface::getData(std::vector<double>& rx, double& time)
 	 }
  }
 
- void bci::Interface::getElecImpedance(std::vector<double>& rx)
+void bci::Interface::getElecImpedance(std::vector<double>& rx)
  {
 	 std::lock_guard<std::mutex> lock(m_imp_mtx);
 	 sassert(rx.size() == m_elec_imp.size());
@@ -78,7 +79,7 @@ void bci::Interface::getData(std::vector<double>& rx, double& time)
 	 }
  }
 
- bci::Interface::Interface()
+bci::Interface::Interface()
  {
 	 m_bci_thread = new QThread;
 	 this->moveToThread(m_bci_thread);

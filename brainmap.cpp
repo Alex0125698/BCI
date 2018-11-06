@@ -1,5 +1,6 @@
 #include "resources.h"
 #include "brainmap.h"
+#include "controllerstate.h"
 #include <QMouseEvent>
 #include <QPainter>
 #include <QFont>
@@ -132,12 +133,22 @@ void BrainMap::exportState()
 	std::lock_guard<std::mutex> lock(state->mtx_data);
 
 	// export spatial filter parameters (for CAR/Laplacian)
-	state->spatial1Params = elecManager.elecStateLeft;
-	state->spatial2Params = elecManager.elecStateRight;
+	state->properties.spatial1Params = elecManager.elecStateLeft;
+	state->properties.spatial2Params = elecManager.elecStateRight;
 }
 
 void BrainMap::paintGL()
 {
+	std::vector<double> tmp;
+	{
+		std::lock_guard<std::mutex> lock(ControllerState::state.mtx_data);
+		tmp = ControllerState::state.chCAR_TR;
+	}
+
+	//sassert(tmp.size() <= 16);
+	if (elecManager.getElectrodeCount() != tmp.size()) elecManager.setElectrodeCount(tmp.size());
+	elecManager.chCAR_TR = tmp;
+
 	{
 		//QPainter painter(this);
 		//painter.beginNativePainting();
@@ -154,8 +165,6 @@ void BrainMap::paintGL()
 		int magLoc = ctx->glGetUniformLocation(m_sprogram->m_program_id, "mag");
 		int selectLoc = ctx->glGetUniformLocation(m_sprogram->m_program_id, "selected");
 		int colLoc = ctx->glGetUniformLocation(m_sprogram->m_program_id, "col");
-
-		
 
 		ctx->glClearColor(1.0, 1.0, 1.0, 1.0);
 
@@ -198,13 +207,20 @@ void BrainMap::paintGL()
 			if (showColor)
 				ctx->glUniform1f(magLoc,(GLfloat)1.0);
 			else
-				ctx->glUniform1f(magLoc, GLfloat(i) / GLfloat(elecManager.get().size()));
+			{
+				double mag = elecManager.chCAR_TR[i];
+				mag = mag / 2 + 0.5;
+				mag = std::clamp(mag, 0.0, 1.0);
+				ctx->glUniform1f(magLoc, (GLfloat)mag);
+			}
+				
 			ctx->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		}
 
 		// === draw channel names ===
 		for (int i = 0; i < elecManager.get().size(); ++i)
 		{
+			if (i >= 16) break;
 			m_textures->setActive(i);
 			double x = elecManager.get()[i].pos.x;
 			double y = elecManager.get()[i].pos.y;
@@ -250,6 +266,8 @@ void BrainMap::drawLabels()
 
 void BrainMap::mousePressEvent(QMouseEvent* event)
 {
+	if (elecManager.getElectrodeCount() == 0) return;
+
 	float x = 2.0f * event->x() / (float)this->width() - 1.0f;
 	float y = 1.0f - 2.0f * event->y() / (float)this->height();
 
@@ -261,12 +279,16 @@ void BrainMap::mousePressEvent(QMouseEvent* event)
 
 void BrainMap::mouseReleaseEvent(QMouseEvent* event)
 {
+	if (elecManager.getElectrodeCount() == 0) return;
+
 	event;
 	elecManager.deselect();
 }
 
 void BrainMap::mouseMoveEvent(QMouseEvent* event)
 {
+	if (elecManager.getElectrodeCount() == 0) return;
+
 	float x = 2.0f * event->x() / (float)this->width() - 1.0f;
 	float y = 1.0f - 2.0f * event->y() / (float)this->height();
 

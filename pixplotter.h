@@ -18,6 +18,7 @@ public:
 		m_width = width;
 		m_height = height;
 		m_maxHeight = height * 2;
+		m_pixels.clear();
 		m_pixels.resize(m_width*m_maxHeight);
 		m_resize = true;
 		m_currOffset = 0;
@@ -26,7 +27,7 @@ public:
 
 	void sendToGPU()
 	{
-		assert(m_currOffset <= m_height);
+		sassert(m_currOffset <= m_height);
 		basic.glwActiveTexture();
 		basic.glwBindTexture();
 		if (m_resize)
@@ -59,7 +60,7 @@ public:
 
 	void shiftData()
 	{
-		assert(m_height % 2 == 0);
+		sassert(m_height % 2 == 0);
 		auto startLastHalf  = m_pixels.begin()+(m_width*m_height);
 		auto endLastHalf = m_pixels.end();
 		auto startFirstHalf = m_pixels.begin();
@@ -130,7 +131,7 @@ public:
 	void initializeGL() override;
 	void resizeGL(int width, int height) override;
 	// get the FFT data, freq, wndSize
-	void checkState(std::vector<std::vector<double>>& data_out);
+	void checkState();
 	void paintGL() override;
 
 	void drawLabels();
@@ -152,8 +153,17 @@ private:
 private:
 	QTimer* timer;
 	DTFTproperties dtft;
-	double m_freq = 1;
 	static float vertices[];
 	static unsigned int indices[];
+
+private:
+	struct STFTstate
+	{
+		bool resetSTFT{ false };
+		double freq{ 1 };
+		double stft_plot_time{ 1 };
+		double timeLerp{ 1 };
+		std::vector<std::vector<std::vector<double>>> imgOutputFD;
+	} state;
 };
 

@@ -99,7 +99,7 @@ namespace glw
 			// The number of texture units is implementation dependent, but must be at least 80
 			void glwActiveTexture()
 			{
-				assert(m_glTexId != 0);
+				sassert(m_glTexId != 0);
 				m_ctx->glActiveTexture(m_unit);
 			}
 
@@ -111,7 +111,7 @@ namespace glw
 			{
 				// todo: must make sure we are binding the right unit
 				//assert(m_curr_active_unit == m_unit);
-				assert(m_glTexId != 0);
+				sassert(m_glTexId != 0);
 				m_ctx->glBindTexture(GL_TEXTURE_2D, m_glTexId);
 			}
 
@@ -119,7 +119,7 @@ namespace glw
 			// generates a list of texture names(ids)
 			void glwGenTextures()
 			{
-				assert(m_glTexId == 0);
+				sassert(m_glTexId == 0);
 				m_ctx->glGenTextures(1, &m_glTexId);
 				if (m_glTexId == 0)
 					throw DETAILEDEXCEPTION("Texture could not be generated");

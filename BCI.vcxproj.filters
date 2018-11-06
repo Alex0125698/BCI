@@ -23,10 +23,6 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
       <Extensions>qrc;*</Extensions>
@@ -40,22 +36,25 @@
     <Filter Include="Source Files">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Libraries">
-      <UniqueIdentifier>{5c056b14-c313-40c3-8531-045c6cbc1ee0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="OpenGL">
-      <UniqueIdentifier>{b03271f8-f561-4102-9e00-ea8b3085dde6}</UniqueIdentifier>
     </Filter>
     <Filter Include="Shaders">
       <UniqueIdentifier>{a3159d06-f017-4f37-8ce4-9cc0fd77bae7}</UniqueIdentifier>
     </Filter>
     <Filter Include="Textures">
       <UniqueIdentifier>{9e6d6107-7da3-419f-b800-0a12a628414e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics">
+      <UniqueIdentifier>{b03271f8-f561-4102-9e00-ea8b3085dde6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Generic">
+      <UniqueIdentifier>{5c056b14-c313-40c3-8531-045c6cbc1ee0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BCI">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Libraries">
+      <UniqueIdentifier>{1e9b9e16-3b85-4666-ad52-ba309bebf6ca}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -65,9 +64,6 @@
     <CustomBuild Include="release\moc_predefs.h.cbt">
       <Filter>Generated Files</Filter>
     </CustomBuild>
-    <ClInclude Include="ui_mainwindow.h">
-      <Filter>Generated Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="mainwindow.ui">
@@ -153,155 +149,155 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="csvio.cpp">
-      <Filter>Libraries</Filter>
+      <Filter>Generic</Filter>
     </ClCompile>
     <ClCompile Include="error.cpp">
-      <Filter>Libraries</Filter>
+      <Filter>Generic</Filter>
     </ClCompile>
     <ClCompile Include="graphwidget.cpp">
-      <Filter>Libraries</Filter>
+      <Filter>Generic</Filter>
+    </ClCompile>
+    <ClCompile Include="shader.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="texture.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="profiler.cpp">
+      <Filter>Generic</Filter>
+    </ClCompile>
+    <ClCompile Include="pixplotter.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="brainmap.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="balltest.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="brainmapstate.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="debugwindow.cpp">
+      <Filter>Generic</Filter>
+    </ClCompile>
+    <ClCompile Include="sigprocessing.cpp">
+      <Filter>Generic</Filter>
+    </ClCompile>
+    <ClCompile Include="resources.cpp">
+      <Filter>Generic</Filter>
+    </ClCompile>
+    <ClCompile Include="bciinterface.cpp">
+      <Filter>BCI</Filter>
+    </ClCompile>
+    <ClCompile Include="controller.cpp">
+      <Filter>BCI</Filter>
+    </ClCompile>
+    <ClCompile Include="controllerstate.cpp">
+      <Filter>BCI</Filter>
+    </ClCompile>
+    <ClCompile Include="core.cpp">
+      <Filter>BCI</Filter>
+    </ClCompile>
+    <ClCompile Include="cytoninterface.cpp">
+      <Filter>BCI</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>BCI</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow.cpp">
+      <Filter>BCI</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindowstate.cpp">
+      <Filter>BCI</Filter>
+    </ClCompile>
+    <ClCompile Include="offline.cpp">
+      <Filter>BCI</Filter>
     </ClCompile>
     <ClCompile Include="qcustomplot.cpp">
       <Filter>Libraries</Filter>
     </ClCompile>
-    <ClCompile Include="bciinterface.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="controller.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="core.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="cytoninterface.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="mainwindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="offline.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="sigprocessing.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="stb_image.c">
-      <Filter>OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="shader.cpp">
-      <Filter>OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="texture.cpp">
-      <Filter>OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="profiler.cpp">
       <Filter>Libraries</Filter>
-    </ClCompile>
-    <ClCompile Include="pixplotter.cpp">
-      <Filter>OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="brainmap.cpp">
-      <Filter>OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="debugwindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="controllerstate.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="mainwindowstate.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="balltest.cpp">
-      <Filter>OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="resources.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="brainmapstate.cpp">
-      <Filter>OpenGL</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="bciinterface.h">
-      <Filter>Header Files</Filter>
+      <Filter>BCI</Filter>
     </QtMoc>
     <QtMoc Include="controller.h">
-      <Filter>Header Files</Filter>
+      <Filter>BCI</Filter>
     </QtMoc>
     <QtMoc Include="core.h">
-      <Filter>Header Files</Filter>
+      <Filter>BCI</Filter>
     </QtMoc>
     <QtMoc Include="cytoninterface.h">
-      <Filter>Header Files</Filter>
+      <Filter>BCI</Filter>
     </QtMoc>
     <QtMoc Include="error.h">
-      <Filter>Libraries</Filter>
+      <Filter>Generic</Filter>
+    </QtMoc>
+    <QtMoc Include="brainmap.h">
+      <Filter>Graphics</Filter>
+    </QtMoc>
+    <QtMoc Include="pixplotter.h">
+      <Filter>Graphics</Filter>
+    </QtMoc>
+    <QtMoc Include="offline.h">
+      <Filter>BCI</Filter>
+    </QtMoc>
+    <QtMoc Include="balltest.h">
+      <Filter>Graphics</Filter>
+    </QtMoc>
+    <QtMoc Include="graphwidget.h">
+      <Filter>Generic</Filter>
+    </QtMoc>
+    <QtMoc Include="mainwindow.h">
+      <Filter>BCI</Filter>
+    </QtMoc>
+    <QtMoc Include="debugwindow.h">
+      <Filter>Generic</Filter>
     </QtMoc>
     <QtMoc Include="qcustomplot.h">
       <Filter>Libraries</Filter>
     </QtMoc>
-    <QtMoc Include="brainmap.h">
-      <Filter>OpenGL</Filter>
-    </QtMoc>
-    <QtMoc Include="pixplotter.h">
-      <Filter>OpenGL</Filter>
-    </QtMoc>
-    <QtMoc Include="offline.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="debugwindow.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="balltest.h">
-      <Filter>OpenGL</Filter>
-    </QtMoc>
-    <QtMoc Include="graphwidget.h">
-      <Filter>Libraries</Filter>
-    </QtMoc>
-    <QtMoc Include="mainwindow.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="resources.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="sigprocessing.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="translation.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="timer.h">
-      <Filter>Libraries</Filter>
+      <Filter>Generic</Filter>
     </ClInclude>
     <ClInclude Include="csvio.h">
-      <Filter>Libraries</Filter>
+      <Filter>Generic</Filter>
     </ClInclude>
     <ClInclude Include="shader.h">
-      <Filter>OpenGL</Filter>
+      <Filter>Graphics</Filter>
     </ClInclude>
     <ClInclude Include="texture.h">
-      <Filter>OpenGL</Filter>
+      <Filter>Graphics</Filter>
     </ClInclude>
     <ClInclude Include="profiler.h">
-      <Filter>Libraries</Filter>
+      <Filter>Generic</Filter>
     </ClInclude>
     <ClInclude Include="openglresources.h">
-      <Filter>OpenGL</Filter>
+      <Filter>Graphics</Filter>
     </ClInclude>
     <ClInclude Include="mainwindowstate.h">
-      <Filter>Header Files</Filter>
+      <Filter>BCI</Filter>
     </ClInclude>
     <ClInclude Include="controllerstate.h">
-      <Filter>Header Files</Filter>
+      <Filter>BCI</Filter>
     </ClInclude>
     <ClInclude Include="brainmapstate.h">
-      <Filter>OpenGL</Filter>
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_mainwindow.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resources.h">
+      <Filter>Generic</Filter>
+    </ClInclude>
+    <ClInclude Include="sigprocessing.h">
+      <Filter>Generic</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

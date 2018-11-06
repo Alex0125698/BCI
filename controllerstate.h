@@ -22,24 +22,26 @@ public:
 	static ControllerState state;
 
 public:
-	bool reset{ false };
-	double freq{ 1 };
-	double latestTime{ 0 };
-	double timeStep{ 1 };
+	bool resetMainwindow{ false };
+	bool resetSTFT{ false };
+	double freq{ 1 }; // constant
+
+	double timeLerp{ 1 }; // seconds
+	double time_plot_time{ 0 }; // seconds
+	double freq_plot_time{ 0 }; // seconds
+	double tr_plot_time{ 0 }; // seconds
+	double stft_plot_time{ 0 }; // seconds
 
 public:
 	// dim1 = ch ; dim2 = time
 	// consumer: Time Plot
 	std::vector<std::vector<double>> rawTD;
-	// dim = time
-	// consumer: Time Plot
-	std::vector<double> rawD_times;
 	// dim1 = channel ; dim2 = freq
 	// consumer: Freq Plot
 	std::vector<std::vector<double>> rawFD; // smoothed
 	// dim1 = buff ; dim2 = left/right ; dim3 = freq
 	// consumer: STFT Plot
-	std::vector<std::vector<std::vector<double>>> imgOutpuFD;
+	std::vector<std::vector<std::vector<double>>> imgOutputFD;
 	// dim1 = buff ; dim2 = left/right
 	// consumer: Ball Test
 	std::vector<std::vector<double>> ball_spfillTR;

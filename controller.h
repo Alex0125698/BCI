@@ -46,12 +46,16 @@ signals:
 
 public slots:
 	// creates the BCI object, data aquisition starts auomatically
-	void slotStart(int source, QString file, uint32_t freq);
+	void slotStart(int source, QString serialPort, QString file, uint32_t freq);
 	// deletes the BCI object, data will be kept until BCI started again
 	void slotStop();
 	// called whenever new data is avaliable. it will be added to the buffer
 	// and the signal processing is done when enough data is avaliable
 	void slotDataReady();
+	void slotViewReady()
+	{
+		m_view_ready = true;
+	}
 
 private: 
 	// === helper functions ===
@@ -100,8 +104,7 @@ private:
 	TrProperties m_trans;
 	// parameters for two spatial filters (for each channel)
 	// >0 means add ; <0 means subtract ; =0 means ignore
-	std::vector<double> m_spatial1Params;
-	std::vector<double> m_spatial2Params;
+	SpfilProperties m_spatial;
 
 private:
 	struct Data
@@ -110,7 +113,7 @@ private:
 		// dim1 = ch ; dim2 = time
 		std::vector<std::vector<double>> rawTD;
 
-		// === spatial Filtered (in time-domain)===
+		// === spatial Filtered (in time-domain) ===
 		// dim1 = left/right ; dim2 = time
 		std::vector<std::vector<double>> spfilTD;
 		// dim1 = channel ; dim2 = time
@@ -135,8 +138,10 @@ private:
 		std::vector<double> chCAR_TR;
 	};
 	Data m_data;
+	double latestTime{ 0 }; // seconds
 
 private:
+	bool m_view_ready{ true };
 	ControllerState* shared{ &ControllerState::state };
 };
 

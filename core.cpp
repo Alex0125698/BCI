@@ -20,6 +20,7 @@ Core::Core(MainWindow* wnd)
 	// ====== Connections ======
 	connect(wnd, &MainWindow::sigRunController, m_controller, &Controller::slotStart, Qt::QueuedConnection);
 	connect(wnd, &MainWindow::sigStopController, m_controller, &Controller::slotStop, Qt::QueuedConnection);
+	connect(wnd, &MainWindow::sigViewReady, m_controller, &Controller::slotViewReady, Qt::QueuedConnection);
 	connect(m_controller, &Controller::sigViewRefresh, wnd, &MainWindow::slotViewUpdate, Qt::QueuedConnection);
 	connect(m_controller, &Controller::sigRunStateChanged, wnd, &MainWindow::slotRunStateChanged, Qt::QueuedConnection);
 	connect(m_controller, &Controller::sigSaveStateChanged, wnd, &MainWindow::slotSaveStateChanged, Qt::QueuedConnection);

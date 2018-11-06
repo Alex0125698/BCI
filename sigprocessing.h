@@ -1,66 +1,50 @@
 #pragma once
-
 #include "resources.h"
-#include "error.h"
 
-#ifndef M_PI
-#define M_PI 3.14159265358979323846264338327950288
-#endif // M_PI
-
-template<typename T>
-T map(T val, T val_min, T val_max, T min, T max)
+namespace algs
 {
-	return (max - min)*(val - val_min) / (val_max - val_min) + min;
+	typedef std::vector<double> vec;
+	typedef std::vector<std::vector<double>> vec2D;
+	const double PI = 3.14159265358979323846264338327950288;
+	const double TWO_PI = 2.0 * PI;
+
+	template<typename T>
+	inline T map(T val, T val_min, T val_max, T min, T max)
+	{
+		return (max - min)*(val - val_min) / (val_max - val_min) + min;
+	}
+
+	// {dim1 = channel ; dim2 = time} , {dim = channel} , {dim = time}
+	void spatialFilter(const vec2D& data_in, vec& weights, vec& data_out);
+
+	// removes the DC component / average
+	// dim = time
+	void removeDC(vec& data_io);
+
+	// applies a gaussianwindow on some data (in place)
+	// mag is 10% at either end and 100% in middle
+	// dim = time
+	void applyGaussianWindow(vec& data_io);
+
+	// Computes the DFT of a complex vector (in place) using the FFT algorithm
+	// dim = time/freq, dim = time/freq
+	void FFTransfrom(vec& real_io, vec& imag_io);
+
+	// computes a naive DTF (very slow)
+	// dim = time/freq, dim = time/freq
+	void DFTransfrom(vec& real_io, vec& imag_io);
+
+	// Computes the inverse DFT of a complex vector (in place) using the FFT algorithm
+	// Does not perform scaling !!!
+	// dim = time/freq, dim = time/freq
+	inline void FFTinverse(vec& real_io, vec& imag_io)
+	{
+		FFTransfrom(imag_io, real_io);
+	}
+
+	// Computes the circular convolution of the given real vectors.
+	void convolve(const vec& v1_in, const vec& v2_in, vec& out);
+
+	// Computes the circular convolution of the given complex vectors
+	void convolve(const vec& xreal, const vec& ximag, const vec& yreal, const vec& yimag, vec& outreal, vec& outimag);
 }
-
-// dim1 = ch ;  dim2 = time , dim = ch , dim = time
-void spatialFilter(std::vector<std::vector<double>>& data_in, std::vector<double>& weights, std::vector<double>& data_out);
-
-namespace Fft {
-
-	/*
-	 * Computes the discrete Fourier transform (DFT) of the given complex vector, storing the result back into the vector.
-	 * The vector can have any length. This is a wrapper function.
-	 */
-	void transform(std::vector<double> &real, std::vector<double> &imag);
-
-
-	/*
-	 * Computes the inverse discrete Fourier transform (IDFT) of the given complex vector, storing the result back into the vector.
-	 * The vector can have any length. This is a wrapper function. This transform does not perform scaling, so the inverse is not a true inverse.
-	 */
-	void inverseTransform(std::vector<double> &real, std::vector<double> &imag);
-
-
-	/*
-	 * Computes the discrete Fourier transform (DFT) of the given complex vector, storing the result back into the vector.
-	 * The vector's length must be a power of 2. Uses the Cooley-Tukey decimation-in-time radix-2 algorithm.
-	 */
-	void transformRadix2(std::vector<double> &real, std::vector<double> &imag);
-
-
-	/*
-	 * Computes the discrete Fourier transform (DFT) of the given complex vector, storing the result back into the vector.
-	 * The vector can have any length. This requires the convolution function, which in turn requires the radix-2 FFT function.
-	 * Uses Bluestein's chirp z-transform algorithm.
-	 */
-	void transformBluestein(std::vector<double> &real, std::vector<double> &imag);
-
-
-	/*
-	 * Computes the circular convolution of the given real vectors. Each vector's length must be the same.
-	 */
-	void convolve(const std::vector<double> &x, const std::vector<double> &y, std::vector<double> &out);
-
-
-	/*
-	 * Computes the circular convolution of the given complex vectors. Each vector's length must be the same.
-	 */
-	void convolve(
-		const std::vector<double> &xreal, const std::vector<double> &ximag,
-		const std::vector<double> &yreal, const std::vector<double> &yimag,
-		std::vector<double> &outreal, std::vector<double> &outimag);
-
-}
-
-void applyGaussianWindow(std::vector<double>& data);

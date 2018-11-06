@@ -49,12 +49,13 @@ public:
 	void closeEvent(QCloseEvent* event);
 
 signals:
-	void sigRunController(int mode, QString file, uint32_t freq);
+	void sigRunController(int mode, QString serialPort, QString file, uint32_t freq);
 	void sigStopController();
 	void sigSendInFileName(QString file);
 	void sigSendOutFileName(QString file);
 	void sigSaveStateChanged(bool saving);
 	void sigSourceChanged(QString mode);
+	void sigViewReady();
 
 public slots:
 	// add message to debug window

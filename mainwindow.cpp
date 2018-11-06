@@ -2,6 +2,7 @@
 #include <QWinTaskbarButton>
 #include <QtWidgets>
 #include <QDesktopServices>
+#include <QSerialPortInfo>
 
 #include "mainwindow.h"
 #include "controllerstate.h"
@@ -38,16 +39,24 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	ui->plot_freq->setTitle("FFT Plot");
 	ui->plot_freq->setAxisTitles("Magnitude (V)", "", "Frequency (Hz)", "");
-	ui->plot_freq->setRange({ 0,128 }, { 0,1 });
+	ui->plot_freq->setRange({ 0,60 }, { 0,10 });
 
 	ui->plot_time->setTitle("Time-Domain Data");
 	ui->plot_time->setAxisTitles("Magnitude (V)", "", "Time (h:m:s)", "");
-	ui->plot_time->setRange({ 0,128 }, { 0,1 });
+	ui->plot_time->setRange({ 0,128 }, { -0.2,0.2 });
+	ui->plot_time->setRealTime();
 
-	ui->plot_translation->setTitle("Translation Control Signals");
-	ui->plot_translation->setAxisTitles("Magnitude (V)", "", "Time (h:m:s)", "");
-	ui->plot_translation->setRange({ 0,120 }, { -1,1 });
-	ui->plot_translation->addGraph({ "Control", "", true});
+	ui->plot_translation_left->setTitle("Translation Control (left)");
+	ui->plot_translation_left->setAxisTitles("Magnitude (V)", "", "Time (h:m:s)", "");
+	ui->plot_translation_left->setRange({ 0,120 }, { -1,1 });
+	ui->plot_translation_left->addGraph({ "Control", "", true});
+	ui->plot_translation_left->setRealTime();
+
+	ui->plot_translation_right->setTitle("Translation Control (right)");
+	ui->plot_translation_right->setAxisTitles("Magnitude (V)", "", "Time (h:m:s)", "");
+	ui->plot_translation_right->setRange({ 0,120 }, { -1,1 });
+	ui->plot_translation_right->addGraph({ "Control", "", true });
+	ui->plot_translation_right->setRealTime();
 
 	auto makeQLabel = [](QString text, QColor c = QColor("#701515"), QFont f = QFont("times"), int pt = 11)
 	{
@@ -80,6 +89,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->statusbar->addPermanentWidget(m_bar.savingLabel);
 	ui->statusbar->addPermanentWidget(m_bar.timeText);
 	ui->statusbar->addPermanentWidget(m_bar.timeLabel);
+
+	on_box_source_currentIndexChanged("Offline");
 }
 
 MainWindow::~MainWindow()
@@ -168,66 +179,125 @@ void MainWindow::slotDebugMessage(QString msg, QString file, int line, int type)
 
 void MainWindow::slotViewUpdate()
 {
+
 	// update labels
+
 
 
 	// add data to graphs
 
-	std::vector<std::vector<double>> tmp;
+	bool resetMainwindow;
 	double freq;
+	double timeLerp;
+	double time_plot_time;
+	double tr_plot_time;
+	std::vector<std::vector<double>> rawTD;
+	std::vector<std::vector<double>> rawFD;
+	std::vector<std::vector<std::vector<double>>> graph_spfillTR;
+
+	// get data
 	{
 		std::lock_guard<std::mutex> lock(ControllerState::state.mtx_data);
-		// copy NOT move the data
-		tmp = ControllerState::state.filteredFreqs;
+		resetMainwindow = ControllerState::state.resetMainwindow;
+		ControllerState::state.resetMainwindow = false;
 		freq = ControllerState::state.freq;
+		timeLerp = ControllerState::state.timeLerp;
+		time_plot_time = ControllerState::state.time_plot_time;
+		tr_plot_time = ControllerState::state.tr_plot_time;
+		rawTD = std::move(ControllerState::state.rawTD);
+		ControllerState::state.rawTD.clear();
+		rawFD = std::move(ControllerState::state.rawFD);
+		ControllerState::state.rawFD.clear();
+		graph_spfillTR = std::move(ControllerState::state.graph_spfillTR);
+		ControllerState::state.graph_spfillTR.clear();
 	}
 
-	// size == 0 means controller is using it
-	if (tmp.size() != 0)
+	if (resetMainwindow)
 	{
-		// generate frequencies vector
-		static std::vector<double> freqs;
-		if (freqs.size() != tmp[0].size()) freqs.resize(tmp[0].size());
+		ui->plot_time->clearData();
+		ui->plot_translation_left->clearData();
+		ui->plot_translation_right->clearData();
+	}
 
-		for (size_t i = 0; i < freqs.size(); i++)
+	// update time plot
+
+	if (rawTD.size() > 0 && rawTD[0].size() > 0)
+	{
+		// ensure we have the right number of graphs
+		if (ui->plot_time->numGraphs() != rawTD.size())
 		{
-			freqs[i] = (freq*i) / (double)freqs.size();
+			ui->plot_time->clearGraphs();
+			for (size_t i = 0; i < rawTD.size(); i++)
+			{
+				ui->plot_time->addGraph({ ("Channel " + QString::number(i)), " (V)", true });
+			}
 		}
 
+		double deltaT = 1.0 / freq;
+		double startTime = time_plot_time - rawTD[0].size()*deltaT;
+
+		for (size_t ch = 0; ch < rawTD.size(); ++ch)
+		{
+			for (size_t t = 0; t < rawTD[0].size(); ++t)
+			{
+				ui->plot_time->addData(ch, startTime + deltaT*(t+1), rawTD[ch][t]);
+			}
+		}
+	}
+
+	// update freq plot
+	
+	if (rawFD.size() > 0 && rawFD[0].size() > 0)
+	{
 		// ensure we have the right number of graphs
-		if (ui->plot_freq->numGraphs() != tmp.size())
+		if (ui->plot_freq->numGraphs() != rawFD.size())
 		{
 			ui->plot_freq->clearGraphs();
-			for (size_t i = 0; i < tmp.size(); i++)
+			for (size_t i = 0; i < rawFD.size(); i++)
 			{
 				ui->plot_freq->addGraph({ ("Channel " + QString::number(i)), " (V)", true });
 			}
 		}
 
-		// replace the old graph data
 		ui->plot_freq->clearData();
-		for (size_t i = 0; i < tmp.size(); i++)
+
+		for (size_t ch = 0; ch < rawFD.size(); ++ch)
 		{
-			ui->plot_freq->addData(i, freqs, tmp[i]);
+			for (size_t t = 0; t < rawFD[0].size(); ++t)
+			{
+				ui->plot_freq->addData(ch, (freq*t)/rawFD[0].size(), rawFD[ch][t]);
+			}
 		}
 	}
 
-
 	// add translation data
 
-	std::vector<double> control;
+	if (graph_spfillTR.size() > 0)
 	{
-		std::lock_guard<std::mutex> lock(ControllerState::state.mtx_data);
-		control = std::move(ControllerState::state.controlMW);
-		ControllerState::state.controlMW.clear();
-	}
+		// ensure we have the right number of graphs
+		if (ui->plot_translation_left->numGraphs() != graph_spfillTR[0].size())
+		{
+			ui->plot_translation_left->clearGraphs();
+			ui->plot_translation_right->clearGraphs();
 
-	static int counter = 0;
+			for (size_t i = 0; i < graph_spfillTR[0].size(); i++)
+			{
+				ui->plot_translation_left->addGraph({ ("Channel " + QString::number(i)), " (V)", true });
+				ui->plot_translation_right->addGraph({ ("Channel " + QString::number(i)), " (V)", true });
+			}
+		}
 
-	for (size_t i = 0; i < control.size(); i++)
-	{
-		ui->plot_translation->addData(0, counter, control[i]);
-		++counter;
+		double deltaT = timeLerp;
+		double startTime = tr_plot_time - graph_spfillTR.size()*deltaT;
+
+		for (size_t t = 0; t < graph_spfillTR.size(); ++t)
+		{
+			for (size_t n = 0; n < graph_spfillTR[0].size(); ++n)
+			{
+				ui->plot_translation_left->addData(n, startTime + deltaT*(t+1), graph_spfillTR[t][n][0]);
+				ui->plot_translation_right->addData(n, startTime + deltaT*(t+1), graph_spfillTR[t][n][1]);
+			}
+		}
 	}
 
 	// replot graphs
@@ -236,7 +306,12 @@ void MainWindow::slotViewUpdate()
 	else if (ui->tabWidget->tabText(ui->tabWidget->currentIndex()) == "Time Analysis")
 		ui->plot_time->replot();
 	else if (ui->tabWidget->tabText(ui->tabWidget->currentIndex()) == "Translation")
-		ui->plot_translation->replot();
+	{
+		ui->plot_translation_left->replot();
+		ui->plot_translation_right->replot();
+	}
+
+	emit sigViewReady();
 }
 
 void MainWindow::slotRunStateChanged(bool running)
@@ -252,6 +327,8 @@ void MainWindow::slotRunStateChanged(bool running)
 		ui->btn_connect->setIcon(QIcon(":/icons/icons/arrow_green.jpg"));
 		ui->btn_connect->setText("Connect");
 	}
+
+	on_box_source_currentIndexChanged(ui->box_source->currentText());
 }
 
 void MainWindow::slotSaveStateChanged(bool saving)
@@ -276,6 +353,8 @@ void MainWindow::on_btn_connect_clicked(bool checked)
 {
 	if (checked)
 	{
+		ui->btn_connect->setText("Connecting");
+
 		if (ui->box_source->currentText() == "Offline")
 		{
 			if (ui->line_data_in->text().isEmpty())
@@ -287,7 +366,22 @@ void MainWindow::on_btn_connect_clicked(bool checked)
 				return;
 			}
 		}
-		emit sigRunController(ui->box_source->currentIndex(), ui->line_data_in->text(), ui->box_freq->value());
+		if (ui->box_source->currentText() == "CytonDaisy")
+		{
+			if (ui->box_com_port->currentText() == "No ports available")
+			{
+				DEBUG_PRINTLNY("Please plug in the USB Dongle", MSG_TYPE::DEXCEP);
+				slotRunStateChanged(false);
+				return;
+			}
+			auto comPort = ui->box_com_port->currentText().section(' ', 0, 0);
+			emit sigRunController(ui->box_source->currentIndex(), comPort, ui->line_data_in->text(),  ui->box_freq->value());
+		}
+		else
+		{
+			emit sigRunController(ui->box_source->currentIndex(), "", ui->line_data_in->text(), ui->box_freq->value());
+		}
+
 	}	
 	else
 		emit sigStopController();
@@ -342,6 +436,41 @@ void MainWindow::on_box_source_currentIndexChanged(const QString& arg1)
 		ui->widget_offline->setVisible(true);
 	else
 		ui->widget_offline->setVisible(false);
+
+	if (arg1 == "CytonDaisy")
+	{
+		ui->box_com_port->setVisible(true);
+		ui->lbl_com_port->setVisible(true);
+	}
+	else
+	{
+		ui->box_com_port->setVisible(false);
+		ui->lbl_com_port->setVisible(false);
+	}
+
+	auto ports = QSerialPortInfo::availablePorts();
+	ui->box_com_port->clear();
+	if (ports.size() == 0)
+	{
+		ui->box_com_port->addItem("No ports available");
+		ui->box_com_port->setEnabled(false);
+	}
+	else
+	{
+		ui->box_com_port->setEnabled(true);
+	}
+			
+
+	for (auto& p : ports)
+	{
+		auto str = p.portName();
+		if (p.manufacturer() != "")
+			str += " (" + p.manufacturer() + ')';
+		if (p.isBusy())
+			str += " (busy)";
+
+		ui->box_com_port->addItem(str);
+	}
 }
 
 // REMOVE??

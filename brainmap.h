@@ -12,7 +12,6 @@ class QComboBox;
 class QToolButton;
 class QSlider;
 
-
 class TextureGroup
 {
 public:
@@ -62,10 +61,15 @@ class electrodeManager
 public:
 	electrodeManager()
 	{
-		setElectrodeCount(16);
+		//setElectrodeCount(16);
+	}
+	auto getElectrodeCount()
+	{
+		return electrodes.size();
 	}
 	void setElectrodeCount(size_t n)
 	{
+		chCAR_TR.resize(n,0.0);
 		elecStateRight.resize(n, 1.0);
 		elecStateLeft.resize(n, 1.0);
 		electrodes.resize(n);
@@ -78,14 +82,14 @@ public:
 	}
 	void moveElectrode(glm::vec2 cursorPos)
 	{
-		assert(electrodes.size() > 0);
+		sassert(electrodes.size() > 0);
 
 		if (selectOn)
 			electrodes[selected].pos = cursorPos - off;
 	}
 	void testSelect(glm::vec2 cursorPos)
 	{
-		assert(electrodes.size() > 0);
+		sassert(electrodes.size() > 0);
 		// check if any electrodes are within range
 		// if so we select the one closest to the cursor
 		const float elecRadius = 0.08f;
@@ -162,6 +166,7 @@ private:
 	// -1 = subtract ; 0 = ignore ; +1 = add
 
 public:
+	std::vector<double> chCAR_TR;
 	std::vector<double> elecStateRight;
 	std::vector<double> elecStateLeft;
 };

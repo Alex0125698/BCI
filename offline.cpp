@@ -103,9 +103,10 @@ void bci::Offline::openFile()
 void bci::Offline::start_helper()
 {
 	// unfortunately Qt timers have a minimum interval of 1 millisecond
-	assert(uint64_t(1000.0 / m_freq_hz) >= 1);
+	sassert(uint64_t(1000.0 / m_freq_hz) >= 1);
 	openFile();
 	// TODO: should I be using a semaphore for this ???
+	m_connected = true;
 	m_stats_avaliable = true;
 	m_data_counter = 0;
 	m_timer->setInterval(std::chrono::milliseconds(uint64_t(1000.0 / m_freq_hz)));
@@ -115,6 +116,7 @@ void bci::Offline::start_helper()
 void bci::Offline::stop_helper()
 {
 	m_timer->stop();
+	m_connected = false;
 }
 
 void bci::Offline::init()

@@ -70,13 +70,19 @@ void PixPlotter::resizeGL(int width, int height)
 	width; height;
 }
 
-void PixPlotter::checkState(std::vector<std::vector<double>>& data_out)
+void PixPlotter::checkState()
 {
 	{
 		std::lock_guard<std::mutex> lock(ControllerState::state.mtx_data);
-		data_out = std::move(ControllerState::state.finalData);
-		ControllerState::state.finalData.clear();
-		m_freq = ControllerState::state.freq;
+
+		if (ControllerState::state.resetSTFT)
+			state.resetSTFT = true;
+		ControllerState::state.resetSTFT = false;
+		state.imgOutputFD = std::move(ControllerState::state.imgOutputFD);
+		ControllerState::state.imgOutputFD.clear();
+		state.freq = ControllerState::state.freq;
+		state.stft_plot_time = ControllerState::state.stft_plot_time;
+		state.timeLerp = ControllerState::state.timeLerp;
 	}
 
 	{
@@ -92,39 +98,43 @@ void PixPlotter::updateTexture()
 	// store our old properties for comparison
 	DTFTproperties old_dtft = dtft;
 
-	// grab the shared data
-	std::vector<std::vector<double>> newData;
-	checkState(newData);
+	checkState();
 
 	// no data means we are done
-	if (newData.size() == 0) return;
+	if (state.imgOutputFD.size() == 0) return;
 
 	// check if freq/time dim sizes have changed
-	size_t reqTime = dtft.timeSpan << 1u;
-	size_t reqFreq = newData[0].size();
-
+	size_t reqTime = dtft.timeSpan + 1; // in seconds
+	size_t reqTimePoints = (size_t(reqTime / state.timeLerp) & 0xFFFFFFFEu) + 2; // in num points
+	size_t reqFreqPoints = state.imgOutputFD[0][0].size(); // index
+	
 	// we need to ajust the gain until the pixels are visible
 	double gain = 5.0*std::pow(10.0, dtft.brightness*8.0 - 3.0);
 
 	// resize pixel buffer + delete old pixels
-	if (reqTime != m_numTimepoints || reqFreq != m_numFreqpoints)
+	if (reqTimePoints != m_numTimepoints || (reqFreqPoints != m_numFreqpoints) || state.resetSTFT)
 	{
-		m_pixels->resize(reqTime, reqFreq);
+		state.resetSTFT = false;
+		m_pixels->resize(reqTimePoints, reqFreqPoints);
 		m_pixels->fillColor(glw::color(5, 5, 15));
-		m_numTimepoints = reqTime;
-		m_numFreqpoints = reqFreq;
+		m_numTimepoints = reqTimePoints;
+		m_numFreqpoints = reqFreqPoints;
 	}
 
 	// copy the pixels
-	for (size_t w = 0; w < newData.size(); ++w)
+	// dim1 = buff ; dim2 = left/right ; dim3 = freq
+	for (size_t t = 0; t < state.imgOutputFD.size(); ++t) // width
 	{
-		for (size_t h = 0; h < reqFreq; ++h)
+		for (size_t freq = 0; freq < state.imgOutputFD[0][0].size(); ++freq) // height
 		{
 			// todo: this could be done in GPU if we use floating-point image
-			double col = newData[w][h] * gain - dtft.hardLimit*255.0;
-			if (col > 255.0) col = 255.0;
-			if (col < 0.0) col = 0.0;
-			m_pixels->pixel(h) = glw::color((uint8_t)col);
+			double g = state.imgOutputFD[t][0][freq] * gain - dtft.hardLimit*255.0; // left
+			double b = state.imgOutputFD[t][1][freq] * gain - dtft.hardLimit*255.0; // right
+			g = std::clamp(g, 0.0, 255.0);
+			b = std::clamp(b, 0.0, 255.0);
+			auto r = std::clamp((b+g)/2.0, 0.0, 255.0);
+
+			m_pixels->pixel(freq) = glw::color((uint8_t)r, (uint8_t)g, (uint8_t)b);// (r, g, b);
 		}
 		m_pixels->nextColumn();
 	}
@@ -163,14 +173,14 @@ void PixPlotter::drawLabels()
 	// === Frequency Labels ===
 	{
 		int xpos = 0.005*this->width() + 2;
-		int blockSize = this->height() / m_numFreqpoints + 2;
+		int blockSize = int(this->height() / m_numFreqpoints + 2);
 
 		int num_freqs = 2 + ((8 * this->height()) / 550) & 0xFFFFFFFE;
 
 		for (int i = 0; i < num_freqs; ++i)
 		{
 			int ypos = 8.0 + int(blockSize / 2.0 + (i / double(num_freqs - 1.0)) * (this->height() - blockSize - 8.0));
-			int freq = int((dtft.maxFreq * m_freq * (num_freqs - i - 1.0)) / double(num_freqs - 1.0));
+			int freq = int((dtft.maxFreq * state.freq * (num_freqs - i - 1.0)) / double(num_freqs - 1.0));
 
 			painter.drawText(xpos, ypos, QString::number(freq) + " Hz");
 		}
@@ -179,13 +189,13 @@ void PixPlotter::drawLabels()
 	// === Time Labels ===
 	{
 		int ypos = int(this->height()*0.995 - 2);
-		int blockSize = this->width() / m_numTimepoints;
+		int blockSize = int(this->width() / m_numTimepoints);
 
 		for (int i = 0; i < 10; ++i)
 		{
 			int xpos = int(this->width() * i / 10.0);
 			if (xpos < 20) continue;
-			painter.drawText(xpos,ypos, " S");
+			painter.drawText(xpos,ypos, QString::number((i+1)*dtft.timeSpan/10.0 + state.stft_plot_time - dtft.timeSpan) + " S");
 		}
 	}
 }

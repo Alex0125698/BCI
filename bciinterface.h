@@ -39,9 +39,9 @@ public:
 	// all base classes must have a virtual destructor to avoid leaks
 	virtual ~Interface() = 0;
 	// use this to connect to BCI & start data aquisition
-	virtual void start() { m_connected = true; m_time = 0; emit sigCallStartHelper(); }
+	virtual void start() { m_time = 0; emit sigCallStartHelper(); }
 	// use this to disconnect the BCI
-	virtual void stop() { m_connected = false;  emit sigCallStopHelper(); };
+	virtual void stop() { emit sigCallStopHelper(); };
 
 public:
 	// are we currentlly connected and getting data?
@@ -99,8 +99,6 @@ protected:
 	std::atomic<bool> m_stats_avaliable{ false };
 	// the total time since start of data aquisition
 	double m_time{ 0 };
-
-
 };
 
 }

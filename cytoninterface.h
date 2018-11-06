@@ -33,7 +33,11 @@ class CytonInterface : public bci::Interface
 	Q_OBJECT
 
 public:
-	CytonInterface() = default;
+	CytonInterface(QString port)
+		: m_port{ port }
+	{
+
+	}
 	virtual ~CytonInterface();
 
 public:
@@ -46,6 +50,7 @@ public:
 protected:
 	// === required helper functions ===
 	virtual void init() override;
+	QString m_port;
 
 private slots:
 	void slotTimeout();
@@ -61,6 +66,21 @@ private:
 	void decode();
 
 private:
+	bool firstPacket{ true };
+	struct RX_Packet
+	{
+		uint8_t sampleNum{ 255 };
+		std::array<double,16> channels{ {0} };
+		double accX{ 0 };
+		double accY{ 0 };
+		double accZ{ 0 };
+		enum class AuxType
+		{
+
+		};
+		AuxType aux;
+	};
+	RX_Packet m_rxPacket;
 	// private data is for BCI thread only
 	// this is used to communicate with the Bluetooth dongle
 	QSerialPort* m_serialPort{ nullptr };
@@ -86,8 +106,6 @@ private:
 	QString m_info;
 	// block using the serial port
 	bool m_error_state{ false };
-	bool m_interleave{ false };
-	std::array<double, 16> m_tmp_buff{ {0} };
 };
 
 }

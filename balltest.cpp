@@ -86,18 +86,19 @@ void BallTest::paintGL()
 	ctx->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	ctx->glBindVertexArray(0);
 
-	std::vector<double> control;
-
+	// dim1 = buff ; dim2 = left/right
+	std::vector<std::vector<double>> ball_spfillTR;
 	{
 		std::lock_guard<std::mutex> lock(ControllerState::state.mtx_data);
-		control = std::move(ControllerState::state.controlBT);
-		ControllerState::state.controlBT.clear();
+		ball_spfillTR = std::move(ControllerState::state.ball_spfillTR);
+		ControllerState::state.ball_spfillTR.clear();
 	}
 
-	for (auto& c : control)
+	for (auto& c : ball_spfillTR)
 	{
-		auto tmp = std::clamp(c, -0.3, 1.0);
-		ballMovement(tmp,tmp);
+		auto left = std::clamp(c[0], -0.3, 1.0);
+		auto right = std::clamp(c[1], -0.3, 1.0);
+		ballMovement(left,right);
 	}
 }
 

@@ -85,6 +85,9 @@ public:
     QLabel *label_18;
     QSpinBox *box_freq;
     QSpacerItem *horizontalSpacer_14;
+    QHBoxLayout *horizontalLayout_27;
+    QLabel *lbl_com_port;
+    QComboBox *box_com_port;
     QHBoxLayout *horizontalLayout_24;
     QSpacerItem *horizontalSpacer_17;
     QToolButton *btn_debug_window;
@@ -139,9 +142,6 @@ public:
     QWidget *tab_freq;
     QVBoxLayout *verticalLayout_10;
     GraphWidget *plot_freq;
-    QHBoxLayout *horizontalLayout_9;
-    QWidget *group_freqs;
-    QWidget *widget_4;
     QWidget *tab_stft;
     QVBoxLayout *verticalLayout_18;
     PixPlotter *openGLWidget_2;
@@ -209,8 +209,8 @@ public:
     QWidget *tab_translation;
     QVBoxLayout *verticalLayout_28;
     QSplitter *splitter;
-    GraphWidget *plot_translation;
-    GraphWidget *plot_translation_2;
+    GraphWidget *plot_translation_left;
+    GraphWidget *plot_translation_right;
     QToolButton *btn_tr_larger;
     QGroupBox *groupBox_translation;
     QVBoxLayout *verticalLayout_27;
@@ -463,11 +463,15 @@ public:
 "background-color: rgba(150,150,170, 130);\n"
 "}"));
         verticalLayout_20 = new QVBoxLayout(groupBox_2);
+        verticalLayout_20->setSpacing(4);
         verticalLayout_20->setObjectName(QStringLiteral("verticalLayout_20"));
+        verticalLayout_20->setContentsMargins(9, 6, 9, 6);
         widget_offline = new QWidget(groupBox_2);
         widget_offline->setObjectName(QStringLiteral("widget_offline"));
         verticalLayout_21 = new QVBoxLayout(widget_offline);
+        verticalLayout_21->setSpacing(4);
         verticalLayout_21->setObjectName(QStringLiteral("verticalLayout_21"));
+        verticalLayout_21->setContentsMargins(0, 0, 0, 0);
         horizontalLayout_21 = new QHBoxLayout();
         horizontalLayout_21->setObjectName(QStringLiteral("horizontalLayout_21"));
         label_17 = new QLabel(widget_offline);
@@ -512,6 +516,27 @@ public:
 
 
         verticalLayout_20->addWidget(widget_offline);
+
+        horizontalLayout_27 = new QHBoxLayout();
+        horizontalLayout_27->setObjectName(QStringLiteral("horizontalLayout_27"));
+        lbl_com_port = new QLabel(groupBox_2);
+        lbl_com_port->setObjectName(QStringLiteral("lbl_com_port"));
+        QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(lbl_com_port->sizePolicy().hasHeightForWidth());
+        lbl_com_port->setSizePolicy(sizePolicy);
+
+        horizontalLayout_27->addWidget(lbl_com_port);
+
+        box_com_port = new QComboBox(groupBox_2);
+        box_com_port->setObjectName(QStringLiteral("box_com_port"));
+
+        horizontalLayout_27->addWidget(box_com_port);
+
+        horizontalLayout_27->setStretch(1, 1);
+
+        verticalLayout_20->addLayout(horizontalLayout_27);
 
         horizontalLayout_24 = new QHBoxLayout();
         horizontalLayout_24->setObjectName(QStringLiteral("horizontalLayout_24"));
@@ -709,11 +734,11 @@ public:
 
         toolButton_3 = new QToolButton(groupBox_6);
         toolButton_3->setObjectName(QStringLiteral("toolButton_3"));
-        QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-        sizePolicy.setHorizontalStretch(0);
-        sizePolicy.setVerticalStretch(0);
-        sizePolicy.setHeightForWidth(toolButton_3->sizePolicy().hasHeightForWidth());
-        toolButton_3->setSizePolicy(sizePolicy);
+        QSizePolicy sizePolicy1(QSizePolicy::Fixed, QSizePolicy::Fixed);
+        sizePolicy1.setHorizontalStretch(0);
+        sizePolicy1.setVerticalStretch(0);
+        sizePolicy1.setHeightForWidth(toolButton_3->sizePolicy().hasHeightForWidth());
+        toolButton_3->setSizePolicy(sizePolicy1);
         toolButton_3->setIcon(icon1);
         toolButton_3->setCheckable(true);
         toolButton_3->setChecked(true);
@@ -756,8 +781,8 @@ public:
 
         toolButton_4 = new QToolButton(groupBox_7);
         toolButton_4->setObjectName(QStringLiteral("toolButton_4"));
-        sizePolicy.setHeightForWidth(toolButton_4->sizePolicy().hasHeightForWidth());
-        toolButton_4->setSizePolicy(sizePolicy);
+        sizePolicy1.setHeightForWidth(toolButton_4->sizePolicy().hasHeightForWidth());
+        toolButton_4->setSizePolicy(sizePolicy1);
         toolButton_4->setIcon(icon1);
         toolButton_4->setCheckable(true);
         toolButton_4->setChecked(true);
@@ -838,25 +863,7 @@ public:
 
         verticalLayout_10->addWidget(plot_freq);
 
-        horizontalLayout_9 = new QHBoxLayout();
-        horizontalLayout_9->setObjectName(QStringLiteral("horizontalLayout_9"));
-        group_freqs = new QWidget(tab_freq);
-        group_freqs->setObjectName(QStringLiteral("group_freqs"));
-
-        horizontalLayout_9->addWidget(group_freqs);
-
-        widget_4 = new QWidget(tab_freq);
-        widget_4->setObjectName(QStringLiteral("widget_4"));
-
-        horizontalLayout_9->addWidget(widget_4);
-
-        horizontalLayout_9->setStretch(0, 1);
-        horizontalLayout_9->setStretch(1, 1);
-
-        verticalLayout_10->addLayout(horizontalLayout_9);
-
         verticalLayout_10->setStretch(0, 3);
-        verticalLayout_10->setStretch(1, 1);
         tabWidget->addTab(tab_freq, QString());
         tab_stft = new QWidget();
         tab_stft->setObjectName(QStringLiteral("tab_stft"));
@@ -870,11 +877,11 @@ public:
 
         btn_stft_larger = new QToolButton(tab_stft);
         btn_stft_larger->setObjectName(QStringLiteral("btn_stft_larger"));
-        QSizePolicy sizePolicy1(QSizePolicy::Expanding, QSizePolicy::Fixed);
-        sizePolicy1.setHorizontalStretch(0);
-        sizePolicy1.setVerticalStretch(0);
-        sizePolicy1.setHeightForWidth(btn_stft_larger->sizePolicy().hasHeightForWidth());
-        btn_stft_larger->setSizePolicy(sizePolicy1);
+        QSizePolicy sizePolicy2(QSizePolicy::Expanding, QSizePolicy::Fixed);
+        sizePolicy2.setHorizontalStretch(0);
+        sizePolicy2.setVerticalStretch(0);
+        sizePolicy2.setHeightForWidth(btn_stft_larger->sizePolicy().hasHeightForWidth());
+        btn_stft_larger->setSizePolicy(sizePolicy2);
         btn_stft_larger->setMaximumSize(QSize(16777215, 14));
         btn_stft_larger->setCheckable(true);
         btn_stft_larger->setChecked(false);
@@ -1217,8 +1224,8 @@ public:
 
         btn_stft_enabled = new QToolButton(groupBox_stft_controls);
         btn_stft_enabled->setObjectName(QStringLiteral("btn_stft_enabled"));
-        sizePolicy1.setHeightForWidth(btn_stft_enabled->sizePolicy().hasHeightForWidth());
-        btn_stft_enabled->setSizePolicy(sizePolicy1);
+        sizePolicy2.setHeightForWidth(btn_stft_enabled->sizePolicy().hasHeightForWidth());
+        btn_stft_enabled->setSizePolicy(sizePolicy2);
         btn_stft_enabled->setIcon(icon1);
         btn_stft_enabled->setCheckable(true);
         btn_stft_enabled->setChecked(true);
@@ -1284,21 +1291,21 @@ public:
         splitter->setOrientation(Qt::Horizontal);
         splitter->setOpaqueResize(true);
         splitter->setHandleWidth(4);
-        plot_translation = new GraphWidget(splitter);
-        plot_translation->setObjectName(QStringLiteral("plot_translation"));
-        plot_translation->setMinimumSize(QSize(360, 240));
-        splitter->addWidget(plot_translation);
-        plot_translation_2 = new GraphWidget(splitter);
-        plot_translation_2->setObjectName(QStringLiteral("plot_translation_2"));
-        plot_translation_2->setMinimumSize(QSize(360, 240));
-        splitter->addWidget(plot_translation_2);
+        plot_translation_left = new GraphWidget(splitter);
+        plot_translation_left->setObjectName(QStringLiteral("plot_translation_left"));
+        plot_translation_left->setMinimumSize(QSize(360, 240));
+        splitter->addWidget(plot_translation_left);
+        plot_translation_right = new GraphWidget(splitter);
+        plot_translation_right->setObjectName(QStringLiteral("plot_translation_right"));
+        plot_translation_right->setMinimumSize(QSize(360, 240));
+        splitter->addWidget(plot_translation_right);
 
         verticalLayout_28->addWidget(splitter);
 
         btn_tr_larger = new QToolButton(tab_translation);
         btn_tr_larger->setObjectName(QStringLiteral("btn_tr_larger"));
-        sizePolicy1.setHeightForWidth(btn_tr_larger->sizePolicy().hasHeightForWidth());
-        btn_tr_larger->setSizePolicy(sizePolicy1);
+        sizePolicy2.setHeightForWidth(btn_tr_larger->sizePolicy().hasHeightForWidth());
+        btn_tr_larger->setSizePolicy(sizePolicy2);
         btn_tr_larger->setMaximumSize(QSize(16777215, 14));
         btn_tr_larger->setCheckable(true);
         btn_tr_larger->setChecked(false);
@@ -1636,7 +1643,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(7);
+        tabWidget->setCurrentIndex(3);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -1647,13 +1654,13 @@ public:
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", nullptr));
         btn_uoa->setText(QString());
         label_2->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-size:28pt; color:#d9e9f5;\">BCI Controller</span></p></body></html>", nullptr));
-        label_3->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-size:11pt; color:#a2b1c3;\">Version 2.0.0</span></p></body></html>", nullptr));
+        label_3->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-size:11pt; color:#a2b1c3;\">Version 3.0.0</span></p></body></html>", nullptr));
         label_4->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-size:11pt; color:#a2b1c3;\">by A.S. Woodcock &amp; A. Vasilyev</span></p></body></html>", nullptr));
         label_7->setText(QString());
         groupBox->setTitle(QString());
         label_15->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-size:10pt; color:#ccdbe7;\">Source:</span></p></body></html>", nullptr));
         box_source->setItemText(0, QApplication::translate("MainWindow", "Offline", nullptr));
-        box_source->setItemText(1, QApplication::translate("MainWindow", "OpenBCI", nullptr));
+        box_source->setItemText(1, QApplication::translate("MainWindow", "CytonDaisy", nullptr));
         box_source->setItemText(2, QApplication::translate("MainWindow", "Emotiv", nullptr));
 
         btn_connect->setText(QApplication::translate("MainWindow", "Connect", nullptr));
@@ -1661,6 +1668,7 @@ public:
         label_17->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-size:9pt; color:#ccdbe7;\">Data:</span></p></body></html>", nullptr));
         btn_data_in->setText(QApplication::translate("MainWindow", "...", nullptr));
         label_18->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" color:#ccdbe7;\">Frequency:</span></p></body></html>", nullptr));
+        lbl_com_port->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" color:#ccdbe7;\">Serial Port:</span></p></body></html>", nullptr));
         btn_debug_window->setText(QApplication::translate("MainWindow", "Hide Debug Window", nullptr));
         groupBox_3->setTitle(QString());
         label_5->setText(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-size:14pt; color:#ccdbe7;\">Save Options</span></p></body></html>", nullptr));

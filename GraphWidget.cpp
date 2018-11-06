@@ -43,7 +43,7 @@ GraphWidget::GraphWidget(QWidget* parent)
 	gui.scrollBox = new QCheckBox(this);
 	gui.scrollBox->setText(tr("Auto-Scroll"));
 	gui.scrollBox->move({ 30,0 });
-	gui.scrollBox->setChecked(true);
+	gui.scrollBox->setChecked(false);
 
 	connect(m_plot, &QCustomPlot::mousePress, [this]() {gui.scrollBox->setChecked(false); });
 	connect(m_plot, &QCustomPlot::mouseWheel, [this]() {gui.scrollBox->setChecked(false); });
@@ -128,6 +128,7 @@ void GraphWidget::setRealTime()
 {
 	m_timeticker->setTimeFormat("%h:%m:%s");
 	m_plot->xAxis->setTicker(m_timeticker);
+	gui.scrollBox->setChecked(true);
 }
 
 int GraphWidget::numGraphs()
@@ -170,7 +171,7 @@ void GraphWidget::addGraph(GraphWidget::Graph&& properties)
 
 void GraphWidget::addData(size_t index, std::vector<double>& x, std::vector<double>& y)
 {
-	assert(x.size() == y.size());
+	sassert(x.size() == y.size());
 	for (size_t i = 0; i < x.size(); ++i)
 		m_plot->graph((int)index)->addData(x[i], y[i]);
 

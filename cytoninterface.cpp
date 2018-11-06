@@ -8,12 +8,15 @@
 bci::CytonInterface::~CytonInterface()
 {
 	stop();
+	std::this_thread::sleep_for(std::chrono::milliseconds(20));
 	while (m_connected)
 		std::this_thread::sleep_for(std::chrono::milliseconds(20));
+	DEBUG_PRINTLN("Cyton Interface Stopped");
 }
 
 void bci::CytonInterface::start_helper()
 {
+	firstPacket = true;
 	m_stats_avaliable = true;
 	if (m_serialPort->isOpen())
 	{
@@ -22,7 +25,7 @@ void bci::CytonInterface::start_helper()
 		return;
 	}
 
-	m_serialPort->setPortName("COM3");
+	m_serialPort->setPortName(m_port);
 	bool open = m_serialPort->open(QIODevice::ReadWrite);
 
 	if (open)
@@ -37,7 +40,7 @@ void bci::CytonInterface::start_helper()
 	else
 	{
 		m_error_state = true;
-		emit SIGERROR(QString("Failed to open serial port, error: %1").arg(m_serialPort->errorString()));
+		emit SIGERROR(QString("Failed to open serial port: %2, error: %1").arg(m_serialPort->errorString()).arg(m_port));
 		stop();
 	}
 }
@@ -83,8 +86,18 @@ void bci::CytonInterface::processByte(quint8 byte)
 
 void bci::CytonInterface::decode()
 {
-	//pkt.sampleNum = m_pkt_raw[0];
+	auto sampleNum = m_pkt_raw[0];
 
+	uint8_t requiredSample = uint8_t(m_rxPacket.sampleNum + 1);
+
+	if ((sampleNum != requiredSample) && (!firstPacket))
+	{
+		DEBUG_PRINTLNY(QString("Dropped packed, ecpected %1, got %2").arg(requiredSample).arg(sampleNum), MSG_TYPE::WARNING);
+	}
+
+	firstPacket = false;
+	m_rxPacket.sampleNum = sampleNum;
+	   
 	auto get24Signed = [&](int i)
 	{
 		return int32_t((uint32_t((int8_t)m_pkt_raw[i]) << 16u) | (m_pkt_raw[i + 1] << 8u) | m_pkt_raw[i + 2]);
@@ -97,22 +110,18 @@ void bci::CytonInterface::decode()
 	double SCALE = V_REF / (MAX_RAW*GAIN);
 
 	int chByte = 1;
-
 	for (int i=0; i<8; ++i)
 	{
 		double tmp = SCALE*get24Signed(chByte);
-		{
-			if (m_interleave)
-				m_tmp_buff[i] = tmp;
-			else
-				m_tmp_buff[i + 8] = tmp;
-		}
-
 		chByte += 3;
+		{
+			if ((m_rxPacket.sampleNum & 0x01u) == 0)
+				m_rxPacket.channels[i] = tmp;
+			else
+				m_rxPacket.channels[i + 8] = tmp;
+		}
 	}
 
-	m_interleave = !m_interleave;
-	
 	// todo chByte = 25
 	/*
 	for (auto& aux : pkt.aux)
@@ -128,15 +137,14 @@ void bci::CytonInterface::stop_helper()
 	m_pkt_rdy = false;
 	m_counting = false;
 	m_pkt_byte_num = 0;
-
+	m_timer->stop();
 	if (m_serialPort->isOpen())
 	{
-		if (!m_error_state)
-			write("s");
-		m_timer->stop();
-		std::this_thread::sleep_for(std::chrono::milliseconds(10));
+		if (!m_error_state) write("s");
+		std::this_thread::sleep_for(std::chrono::milliseconds(80));
 		m_serialPort->close();
-		disconnect(m_serialPort, 0, 0, 0);
+		disconnect(m_serialPort);
+		DEBUG_PRINTLN("Closed " + m_port);
 	}
 	m_error_state = false;
 	m_connected = false;
@@ -227,7 +235,7 @@ void bci::CytonInterface::slotReadyRead()
 				m_info = "";
 			}
 			decode();
-			if (m_interleave)
+			if ((m_rxPacket.sampleNum & 0x01u) == 1)
 			{
 				{
 					std::lock_guard<std::mutex> lock(m_ch_mtx);
@@ -236,7 +244,7 @@ void bci::CytonInterface::slotReadyRead()
 						stop();
 						emit SIGERROR("Controller failed to keep up with BCI");
 					}
-					m_channel.emplace(m_tmp_buff.begin(), m_tmp_buff.end());
+					m_channel.emplace(m_rxPacket.channels.begin(), m_rxPacket.channels.end());
 				}
 				
 				emit sigDataReady();

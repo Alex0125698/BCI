@@ -5,7 +5,7 @@
 #include "sigprocessing.h"
 
 // READY
-void Controller::slotStart(int source, QString file, uint32_t freq)
+void Controller::slotStart(int source, QString serialPort, QString file, uint32_t freq)
 {
 	sassert(m_bci == nullptr);
 
@@ -19,7 +19,7 @@ void Controller::slotStart(int source, QString file, uint32_t freq)
 		m_bci = new bci::Offline(file.toStdString(), freq);
 		break;
 	case BCISource::OpenBCI:
-		m_bci = new bci::CytonInterface;
+		m_bci = new bci::CytonInterface(serialPort);
 		break;
 	}
 
@@ -71,12 +71,14 @@ void Controller::slotStop()
 	if (m_bci != nullptr)
 	{
 		m_bci->stop();
-		m_bci->disconnect();
-		DEBUG_PRINTLN("Data aquisition stopped");
+		m_bci->disconnect(this);	
 		emit sigRunStateChanged(false);
-		delete m_bci;
+		m_bci->deleteLater();
+		//delete m_bci;
 		m_bci = nullptr;
+		DEBUG_PRINTLN("Data aquisition stopped");
 	}
+	
 }
 
 // READY
@@ -91,10 +93,13 @@ void Controller::slotDataReady()
 
 	runFilters();
 
-	if (m_viewTimer.getDuration() > 0.15)
+	if (!m_view_ready) m_viewTimer.restart();
+
+	if (m_viewTimer.getDuration() > 0.066666)
 	{
 		emit sigViewRefresh();
 		m_viewTimer.restart();
+		m_view_ready = false;
 	}
 }
 
@@ -126,24 +131,33 @@ void Controller::initData()
 	m_data.imgStoreFD.resize(2);
 	m_data.imgOutputFD.resize(2);
 	m_data.chCAR_FD.resize(m_bci->numChannels());
-	//m_data.spfilTR.resize(n);
+	m_data.spfilTR.resize(1);
+	m_data.spfilTR[0].resize(2);
 	m_data.chCAR_TR.resize(m_bci->numChannels());
 
 	// clear shared data
 	{
 		std::lock_guard<std::mutex> lock(shared->mtx_data);
 
-		shared->reset = true;
+		shared->resetMainwindow = true;
+		shared->resetSTFT = true;
 		shared->freq = m_bci->freq();
-		shared->latestTime = 0;
+		shared->time_plot_time = 0;
+		shared->freq_plot_time = 0;
+		shared->tr_plot_time = 0;
+		shared->stft_plot_time = 0;
 
 		shared->rawTD.clear();
-		shared->rawD_times.clear();
 		shared->rawFD.clear();
-		shared->imgOutpuFD.clear();
+		shared->imgOutputFD.clear();
 		shared->ball_spfillTR.clear();
 		shared->graph_spfillTR.clear();
 		shared->chCAR_TR.clear();
+
+		// resize shared data
+		shared->rawTD.resize(m_bci->numChannels());
+		shared->rawFD.resize(m_bci->numChannels());
+		shared->chCAR_TR.resize(m_bci->numChannels(),0.0);
 	}
 }
 
@@ -155,6 +169,7 @@ void Controller::runFilters()
 	updateProperties();
 
 	// get next set of data from the bci
+	sassert(m_data.rawTD[0].size() <= m_dtft.wndSize-1);
 	extractData();
 
 	// check if we have enough points to do the transform
@@ -162,6 +177,7 @@ void Controller::runFilters()
 	sassert(m_data.rawTD.size() > 0);
 	const size_t numTimePoints = m_data.rawTD[0].size();
 	sassert(numTimePoints <= m_dtft.wndSize);
+	sassert(numTimePoints > 0);
 
 	if (numTimePoints == reqTimePoints)
 	{
@@ -178,13 +194,14 @@ void Controller::runFilters()
 		sassert(m_data.chCAR_FD.size() == m_bci->numChannels());
 		sassert(m_data.chCAR_FD[0].size() == numTimePoints);
 		imageProcessing();
-		sassert(m_data.imgStoreFD.size() == 2);
-		sassert(m_data.imgStoreFD[0].size() >= 1);
-		sassert(m_data.imgStoreFD[0][0].size() == numTimePoints);
+		//sassert(m_data.imgStoreFD.size() == 2);
+		//sassert(m_data.imgStoreFD[0].size() >= 1);
+		//sassert(m_data.imgStoreFD[0][0].size() == numTimePoints);
 		sassert(m_data.imgOutputFD.size() == 2);
 		sassert(m_data.imgOutputFD[0].size() == numTimePoints);
 		translation();
-		sassert(m_data.spfilTR.size() == m_trans.freqSpreading);
+		//sassert(m_data.spfilTR.size() == m_trans.freqSpreading);
+		sassert(m_data.spfilTR.size() == 1); // todo: remove
 		sassert(m_data.spfilTR[0].size() == 2);
 		sassert(m_data.chCAR_TR.size() == m_bci->numChannels());
 		exportAll();
@@ -200,8 +217,7 @@ void Controller::extractData()
 	static std::vector<double> tmpData;
 	tmpData.resize(m_bci->numChannels());
 
-	double time;
-	m_bci->getData(tmpData,time);
+	m_bci->getData(tmpData,latestTime);
 
 	sassert(m_data.rawTD.size() == m_bci->numChannels());
 
@@ -214,6 +230,8 @@ void Controller::extractData()
 	sassert(m_data.rawTD[0].size() <= m_dtft.wndSize);
 }
 
+// TODO m_data.spfilTR resize
+// READY
 void Controller::updateProperties()
 {
 	// the dtft properties selected by the user
@@ -224,32 +242,38 @@ void Controller::updateProperties()
 	{
 		std::lock_guard<std::mutex> lock(MainWindowState::state.mtx_data);
 		m_dtft = MainWindowState::state.dtft;
-		// also grab latest copy of TrProperties
 		m_trans = MainWindowState::state.translation;
 	}
 
-	if (oldSTFT.wndSize != m_dtft.wndSize ||
-		oldSTFT.wndOverlap != m_dtft.wndOverlap ||
-		oldSTFT.wndType != m_dtft.wndType)
 	{
-		// in this case we give up trying to update all the data
-		// just delete the old data and start again with the new windowing
-		initData();
-	}
-	else if (oldSTFT.sharpenKernelSize != m_dtft.sharpenKernelSize ||
-		oldSTFT.sharpenAmount != m_dtft.sharpenAmount ||
-		oldSTFT.blurKernelSize != m_dtft.blurKernelSize ||
-		oldSTFT.blurAmount != m_dtft.blurAmount)
-	{
-		// in this case we re-calc all the data with the new
-		// image processing parameters
-		initData();
+		std::lock_guard<std::mutex> lock(BrainMapState::state.mtx_data);
+
+		// brain map may not have initialise the spatial filter params yet
+		if (BrainMapState::state.properties.spatial1Params.size() != m_bci->numChannels())
+		{
+			BrainMapState::state.properties.spatial1Params.resize(m_bci->numChannels(), 1.0);
+			BrainMapState::state.properties.spatial2Params.resize(m_bci->numChannels(), 1.0);
+		}
+		m_spatial = BrainMapState::state.properties;
 	}
 
-	// note we dont worry about DTFTproperties::enabled - only the plotting
-	// can be disabled, not the signal processing
+	if (oldSTFT.wndSize    != m_dtft.wndSize    ||
+		oldSTFT.wndOverlap != m_dtft.wndOverlap ||
+		oldSTFT.wndType    != m_dtft.wndType    ||
+	    oldSTFT.sharpenKernelSize != m_dtft.sharpenKernelSize ||
+		oldSTFT.sharpenAmount     != m_dtft.sharpenAmount     ||
+		oldSTFT.blurKernelSize    != m_dtft.blurKernelSize    ||
+		oldSTFT.blurAmount        != m_dtft.blurAmount)
+	{
+		initData();
+		std::lock_guard<std::mutex> lock(shared->mtx_data);
+		shared->resetMainwindow = true;
+		shared->resetSTFT = true;
+	}
+
 }
 
+// READY
 void Controller::spatialFilers()
 {
 	// === left/right spatial filters ===
@@ -260,8 +284,8 @@ void Controller::spatialFilers()
 	m_data.spfilTD[0].resize(numTimePoints);
 	m_data.spfilTD[1].resize(numTimePoints);
 
-	spatialFilter(m_data.rawTD, ,m_data.spfilTD[0]);
-	spatialFilter(m_data.rawTD, ,m_data.spfilTD[1]);
+	algs::spatialFilter(m_data.rawTD, m_spatial.spatial1Params, m_data.spfilTD[0]);
+	algs::spatialFilter(m_data.rawTD, m_spatial.spatial2Params, m_data.spfilTD[1]);
 	
 	// === channel CAR filters ===
 
@@ -286,7 +310,7 @@ void Controller::spatialFilers()
 	}
 
 	// now subtract the reference from each channel
-	for (size_t ch = 0; ch < numTimePoints; ++ch)
+	for (size_t ch = 0; ch < m_bci->numChannels(); ++ch)
 	{
 		for (size_t t = 0; t < numTimePoints; ++t)
 		{
@@ -295,258 +319,421 @@ void Controller::spatialFilers()
 	}
 }
 
+// READY
 void Controller::freqTransforms()
 {
-	sassert(m_dataTD.size() == m_bci->numChannels());
-	sassert(m_dataFD.size() == m_bci->numChannels());
-	sassert(m_dataTD[0].size() == m_dtft.wndSize);
-	const auto N = m_dtft.wndSize;
+	auto N = m_dtft.wndSize;
 
-	// need to store the imaginary output of the FFT
+	// buffer for imaginary output
 	static std::vector<double> imag;
-	if (imag.size() != N) imag.resize(N);
+	imag.resize(N);
 
-	// run the DFT over all channels
+	// === FFT of raw data ===
+
+	sassert(m_data.rawTD.size() == m_bci->numChannels());
+	sassert(m_data.rawFD.size() == m_bci->numChannels());
+	sassert(m_data.rawTD[0].size() == N);
+
 	for (size_t ch = 0; ch < m_bci->numChannels(); ++ch)
 	{
-		// emplace_back a new time point in the FD data
-		// each time point is a vector containing the freq data
-
 		// we put the time data in the freq data position (to start with)
 		// as the FFT will apply the alg in place
-		m_dataFD[ch].push_back(m_dataTD[ch]);
+		m_data.rawFD[ch] = m_data.rawTD[ch];
+		// lets first get rid of the DC component
+		algs::removeDC(m_data.rawFD[ch]);
 
-		// apply the window function
-		sassert(m_timeIndex == (m_dataFD[ch].size()-1));
-		sassert(m_dtft.wndType == DFTwindow::GAUSSIAN); //remove
 		if (m_dtft.wndType == DFTwindow::GAUSSIAN)
-			applyGaussianWindow(m_dataFD[ch][m_timeIndex]);
+			algs::applyGaussianWindow(m_data.rawFD[ch]);
 
-		// reset imaginary data to 0
 		std::fill(imag.begin(), imag.end(), 0.0);
-		// now run the FFT alg
-		Fft::transform(m_dataFD[ch][m_timeIndex], imag);
+		algs::FFTransfrom(m_data.rawFD[ch], imag);
 
 		// get the magnitudes ; we don't care about phase!
 		for (size_t freq = 0; freq < N; ++freq)
 		{
-			const double real = m_dataFD[ch][m_timeIndex][freq];
+			const double real = m_data.rawFD[ch][freq];
 			const double img = imag[freq];
-			m_dataFD[ch][m_timeIndex][freq] = std::sqrt(real*real + img*img);
+			m_data.rawFD[ch][freq] = std::sqrt(real*real + img*img);
+		}
+	}
+
+	// === FFT of channel CAR data ===
+
+	sassert(m_data.chCAR_FD.size() == m_bci->numChannels());
+	sassert(m_data.chCAR_TD.size() == m_bci->numChannels());
+	sassert(m_data.chCAR_TD[0].size() == N);
+
+	for (size_t ch = 0; ch < m_bci->numChannels(); ++ch)
+	{
+		m_data.chCAR_FD[ch] = m_data.chCAR_TD[ch];
+		algs::removeDC(m_data.chCAR_FD[ch]);
+
+		if (m_dtft.wndType == DFTwindow::GAUSSIAN)
+			algs::applyGaussianWindow(m_data.chCAR_FD[ch]);
+
+		std::fill(imag.begin(), imag.end(), 0.0);
+		algs::FFTransfrom(m_data.chCAR_FD[ch], imag);
+
+		for (size_t freq = 0; freq < N; ++freq)
+		{
+			const double real = m_data.chCAR_FD[ch][freq];
+			const double img = imag[freq];
+			m_data.chCAR_FD[ch][freq] = std::sqrt(real*real + img * img);
+		}
+	}
+
+	// === FFT of spfill data ===
+
+	sassert(m_data.spfilTD.size() == m_data.spfilFD.size());
+	sassert(m_data.spfilTD.size() == 2);
+	sassert(m_data.spfilTD[0].size() == N);
+
+	for (size_t i = 0; i < m_data.spfilTD.size(); ++i)
+	{
+		m_data.spfilFD[i] = m_data.spfilTD[i];
+		algs::removeDC(m_data.spfilFD[i]);
+
+		if (m_dtft.wndType == DFTwindow::GAUSSIAN)
+			algs::applyGaussianWindow(m_data.spfilFD[i]);
+
+		std::fill(imag.begin(), imag.end(), 0.0);
+		algs::FFTransfrom(m_data.spfilFD[i], imag);
+
+		for (size_t freq = 0; freq < N; ++freq)
+		{
+			const double real = m_data.spfilFD[i][freq];
+			const double img = imag[freq];
+			m_data.spfilFD[i][freq] = std::sqrt(real*real + img*img);
 		}
 	}
 }
 
+// TODO IMAGE PROCESSING
+// READY
 void Controller::imageProcessing()
 {
-	// apply blur + sharpen filters
-	// for now just skip these
-	sassert(m_laplaceData.size()-1 == m_timeIndex);
-	m_finalData = m_laplaceData[m_timeIndex];
+	// === create image buffer ===
 
-	if (m_recalc_img_filter)
-	{
-		m_recalc_img_filter = false;
-	}
+
+	// === apply blur + sharpen filters ===
+
+	// skip for now
+	m_data.imgOutputFD = m_data.spfilFD;
 }
 
+// TODO FREQ SPREAD
+// READY
 void Controller::translation()
 {
-	// this alg will create a stat. proportional to the mag. of a
-	// user-selected freq. band
-
-	sassert(m_finalData.size() == m_dtft.wndSize);
-
 	// convert freq to index
-	int centreIndex = int(m_trans.centreFreq * (m_dtft.wndSize-1) / m_bci->freq());
+	size_t centreIndex = size_t(m_trans.centreFreq * (m_dtft.wndSize - 1) / m_bci->freq());
 	sassert(centreIndex < m_dtft.wndSize);
 	sassert(centreIndex >= 0);
 
-	double offset = 2.0*(m_trans.offset * 2.0 - 1.0);
-	int spanIndex = int(m_trans.spanFreq * (m_dtft.wndSize - 1) / m_bci->freq());
+	// the index band to add up
+	size_t spanIndex = size_t(m_trans.spanFreq * (m_dtft.wndSize - 1) / m_bci->freq());
 	if (spanIndex < 1) spanIndex = 1;
 	sassert(spanIndex <= 10);
 
+	double offset = 2.0*(m_trans.offset * 2.0 - 1.0);
 	double gain = 0.01*std::pow(10.0, m_trans.gain*8.0 - 3.0);
 	double sensitivity = std::pow(10.0, m_trans.sensitivity*4.0 - 2.0);
 
-	int offMin = centreIndex - spanIndex;
+	size_t offMin = centreIndex - spanIndex;
 	if (offMin < 0) offMin = 0;
-	
-	int offMax = centreIndex + spanIndex;
-	if (offMax > m_dtft.wndSize-1) offMax = m_dtft.wndSize-1;
+	size_t offMax = centreIndex + spanIndex;
+	if (offMax > m_dtft.wndSize - 1) offMax = m_dtft.wndSize - 1;
 
-	double sum = 0.0;
-	for (size_t i = offMin; i <= offMax; ++i)
+	// === translate channel CAR data ===
+
+	sassert(m_data.chCAR_FD.size() == m_bci->numChannels());
+	sassert(m_data.chCAR_TR.size() == m_bci->numChannels());
+
+	for (size_t ch = 0; ch < m_bci->numChannels(); ++ch)
 	{
-		// weird bug when we don't cast separately
-		// parameter 0 to 1
+		double sum = 0.0;
+		double totalW = 0.0;
+		for (size_t freq = offMin; freq <= offMax; ++freq)
+		{
+			// parameter 0 to 1
+			double s = (double(freq) - double(centreIndex)) / double(spanIndex);
+			sassert(std::abs(s) <= 1.0);
 
-		double s = (double(i) - double(centreIndex)) / double(spanIndex);
-		sassert(std::abs(s) <= 1.0);
-		
-		double weight = std::exp(-0.7*s*s);
-		sum += weight * m_finalData[i];
+			double weight = std::exp(-0.7*s*s);
+			sassert(ch < m_data.chCAR_TD.size());
+			sassert(freq < m_data.chCAR_TD[0].size());
+			sum += weight * m_data.chCAR_TD[ch][freq];
+			totalW += weight;
+		}
+
+		sum /= totalW;
+		sum = sum * gain + offset;
+		sum *= sensitivity;
+		sum = std::clamp(sum, -1.0, 1.0);
+
+		if (m_trans.flip) sum = -sum;
+
+		double w1 = m_trans.smoothing;
+		double w2 = 1.0 - w1;
+		sassert(ch < m_data.chCAR_TR.size());
+		m_data.chCAR_TR[ch] = w1 * m_data.chCAR_TR[ch] + w2 * sum;
 	}
 
-	sum = sum * gain + offset;
-	sum *= sensitivity;
-	sum = std::clamp(sum, -1.0, 1.0);
+	// === translate spfill data ===
 
-	if (m_trans.flip)
-		sum = -sum;
+	sassert(m_data.spfilFD.size() == 2);
+	sassert(m_data.spfilTR.size() == 1); // no freq spreading
+	sassert(m_data.spfilTR[0].size() == 2);
 
-	static double oldSum = 0;
+	for (size_t n = 0; n < m_data.spfilFD.size(); ++n)
+	{
+		double sum = 0.0;
+		double totalW = 0.0;
+		for (size_t freq = offMin; freq <= offMax; ++freq)
+		{
+			// parameter 0 to 1
+			double s = (double(freq) - double(centreIndex)) / double(spanIndex);
+			sassert(std::abs(s) <= 1.0);
 
-	double w1 = m_trans.smoothing;
-	double w2 = 1.0 - w1;
+			double weight = std::exp(-0.7*s*s);
+			sum += weight * m_data.spfilFD[n][freq];
+			totalW += weight;
+		}
 
-	m_CARcontrolData = w1*oldSum + w2*sum;
+		sum /= totalW;
+		sum = sum * gain + offset;
+		sum *= sensitivity;
+		sum = std::clamp(sum, -1.0, 1.0);
 
-	oldSum = m_CARcontrolData;
+		if (m_trans.flip)
+			sum = -sum;
+
+		double w1 = m_trans.smoothing;
+		double w2 = 1.0 - w1;
+
+		m_data.spfilTR[0][n] = w1 * m_data.spfilTR[0][n] + w2 * sum;
+	}
+
 }
 
+// READY
 void Controller::exportTimePlot()
 {
-}
-
-void Controller::exportFreqPlot()
-{
-}
-
-void Controller::exportSTFTPlot()
-{
-}
-
-void Controller::exportBallTest()
-{
-}
-
-void Controller::exportTrPlot()
-{
-}
-
-void Controller::exportBrainMap()
-{
-}
-
-void Controller::exportAll()
-{
-	// ===== check if buffer is getting too large =====
-
-	size_t totalBufferSize = 0;
-	{
-		std::lock_guard<std::mutex> lock(state->mtx_data);
-		totalBufferSize = state->finalData.size();
-	}
-
-	if (totalBufferSize > 64)
-	{
-		DEBUG_PRINTLNY("buffer overflow - DTFT was unable to keep up with controller", MSG_TYPE::DEXCEP);
-		slotStop();
-		return;
-	}
-
-
-
 	// === create filtered freq for MainWindow ===
 
 	// dim1 = channel ; dim2 = freq
 	std::vector<std::vector<double>> tmp;
+
 	{
 		// temporarily grab old data
-		std::lock_guard<std::mutex> lock(state->mtx_data);
-		tmp = std::move(state->filteredFreqs);
-		state->filteredFreqs.clear();
+		std::lock_guard<std::mutex> lock(shared->mtx_data);
+		tmp = std::move(shared->rawTD);
+		shared->rawTD.clear();
 	}
 
+	// append new array
 	if (tmp.size() != m_bci->numChannels())
 		tmp.resize(m_bci->numChannels());
 
-	sassert(m_dataFD[0].size() - 1 == m_timeIndex);
-	sassert(m_dataFD.size() == m_bci->numChannels());
+	for (size_t ch = 0; ch < m_bci->numChannels(); ++ch)
+	{
+		tmp[ch].reserve(tmp.size() + m_data.rawTD.size());
+
+		for (size_t t=m_dtft.wndOverlap; t<m_dtft.wndSize; ++t)
+			tmp[ch].push_back(m_data.rawTD[ch][t]);
+	}
+
+	{
+		// put array back
+		std::lock_guard<std::mutex> lock(shared->mtx_data);
+		shared->rawTD = std::move(tmp);
+		shared->time_plot_time = latestTime;
+	}
+	tmp.clear();
+}
+
+// READY
+void Controller::exportFreqPlot()
+{
+	// === create filtered freq for MainWindow ===
+
+	// dim1 = channel ; dim2 = freq
+	std::vector<std::vector<double>> tmp;
+
+	{
+		// temporarily grab old data
+		std::lock_guard<std::mutex> lock(shared->mtx_data);
+		tmp = std::move(shared->rawFD);
+		shared->rawFD.clear();
+	}
+	if (tmp.size() != m_bci->numChannels())
+		tmp.resize(m_bci->numChannels());
+	//sassert(tmp.size() == m_bci->numChannels());
+	sassert(m_data.rawFD.size() == m_bci->numChannels());
 
 	if (tmp[0].size() != m_dtft.wndSize)
 	{
-		// copy data
-		for (size_t ch = 0; ch < m_bci->numChannels(); ++ch)
-		{
-			tmp[ch].resize(m_dtft.wndSize);
-			std::copy(m_dataFD[ch][m_timeIndex].begin(), m_dataFD[ch][m_timeIndex].end(), tmp[ch].begin());
-		}
-
+		// no data yet, so we copy the data
+		tmp = m_data.rawFD;
 	}
 	else
 	{
+		// filter data using old data
 		for (size_t ch = 0; ch < m_bci->numChannels(); ++ch)
 		{
 			for (size_t f = 0; f < m_dtft.wndSize; ++f)
 			{
-				tmp[ch][f] = 0.9*tmp[ch][f] + 0.1*m_dataFD[ch][m_timeIndex][f];
+				tmp[ch][f] = 0.9*tmp[ch][f] + 0.1*m_data.rawFD[ch][f];
 			}
 		}
 	}
 
 	{
 		// put data back
-		std::lock_guard<std::mutex> lock(state->mtx_data);
-		state->filteredFreqs = std::move(tmp);
-		tmp.clear();
+		std::lock_guard<std::mutex> lock(shared->mtx_data);
+		shared->rawFD = std::move(tmp);
+		shared->freq_plot_time = latestTime;
 	}
+	tmp.clear();
+}
 
-
-
-	// === move data to final data buffer ===
-	std::vector<std::vector<double>> tmp2;
+// TODO TIME
+// READY
+void Controller::exportSTFTPlot()
+{
+	std::vector<std::vector<std::vector<double>>> tmp;
 	{
 		// temporarily grab old data
-		std::lock_guard<std::mutex> lock(state->mtx_data);
-		tmp2 = std::move(state->finalData);
-		state->finalData.clear();
+		std::lock_guard<std::mutex> lock(shared->mtx_data);
+		tmp = std::move(shared->imgOutputFD);
+		shared->imgOutputFD.clear();
+	}
+
+	if (tmp.size() > 0)
+	{
+		sassert(tmp[0].size() == 2);
+		sassert(tmp[0][0].size() == m_dtft.wndSize);
 	}
 
 	// append the new data	
-	auto oldSize = tmp2.size();
-	tmp2.push_back(m_finalData);
-	//m_finalData.clear();
+	tmp.push_back(m_data.imgOutputFD);
 
 	// copy all data back into the shared state
 	{
-		std::lock_guard<std::mutex> lock(state->mtx_data);
-		state->finalData = std::move(tmp2);
+		std::lock_guard<std::mutex> lock(shared->mtx_data);
+		shared->imgOutputFD = std::move(tmp);
+		shared->stft_plot_time = latestTime;
 	}
-	tmp2.clear();
-
-
-
-	// === export control signal data ===
-
-	std::vector<double> tmp3;
-	std::vector<double> tmp4;
-	{
-		std::lock_guard<std::mutex> lock(state->mtx_data);
-		tmp3 = std::move(state->controlMW);
-		state->controlMW.clear();
-		tmp4 = std::move(state->controlBT);
-		state->controlBT.clear();
-	}
-
-	tmp3.push_back(m_CARcontrolData);
-	tmp4.push_back(m_CARcontrolData);
-
-	{
-		std::lock_guard<std::mutex> lock(state->mtx_data);
-		state->controlMW = std::move(tmp3);
-		state->controlBT = std::move(tmp4);
-	}
-
-	tmp3.clear();
-	tmp4.clear();
+	tmp.clear();
 }
 
+// READY
+void Controller::exportBallTest()
+{
+	std::vector<std::vector<double>> tmp;
+	{
+		// temporarily grab old data
+		std::lock_guard<std::mutex> lock(shared->mtx_data);		
+		tmp = std::move(shared->ball_spfillTR);
+		shared->ball_spfillTR.clear();
+	}
+
+	sassert((m_data.spfilTR.size() & 0x01) == 1);
+	auto centre = (m_data.spfilTR.size()-1) / 2;
+	tmp.push_back(m_data.spfilTR[centre]);
+
+	{
+		// put data back
+		std::lock_guard<std::mutex> lock(shared->mtx_data);
+		shared->ball_spfillTR = std::move(tmp);
+	}
+	tmp.clear();
+}
+
+// READY
+void Controller::exportTrPlot()
+{
+	std::vector<std::vector<std::vector<double>>> tmp;
+	{
+		// temporarily grab old data
+		std::lock_guard<std::mutex> lock(shared->mtx_data);
+		tmp = std::move(shared->graph_spfillTR);
+		shared->graph_spfillTR.clear();
+	}
+
+	sassert((m_data.spfilTR.size() & 0x01) == 1);
+	tmp.push_back(m_data.spfilTR);
+
+	{
+		// put data back
+		std::lock_guard<std::mutex> lock(shared->mtx_data);
+		shared->graph_spfillTR = std::move(tmp);
+		shared->tr_plot_time = latestTime;
+	}
+	tmp.clear();
+}
+
+// READY
+void Controller::exportBrainMap()
+{
+	std::vector<double> tmp;
+	{
+		// temporarily grab old data
+		std::lock_guard<std::mutex> lock(shared->mtx_data);
+		tmp = std::move(shared->chCAR_TR);
+		shared->chCAR_TR.clear();
+	}
+
+	if (tmp.size() != m_bci->numChannels())
+	{
+		// no data yet, so we copy the data
+		tmp = m_data.chCAR_TR;
+	}
+	else
+	{
+		// filter data using old data
+		for (size_t ch = 0; ch < m_bci->numChannels(); ++ch)
+		{
+			tmp[ch] = 0.6*tmp[ch] + 0.4*m_data.chCAR_TR[ch];
+		}
+	}
+
+	{
+		// put data back
+		std::lock_guard<std::mutex> lock(shared->mtx_data);
+		shared->chCAR_TR = std::move(tmp);
+	}
+	tmp.clear();
+}
+
+// READY
+void Controller::exportAll()
+{
+	std::vector<std::vector<double>> tmp;
+	{
+		// temporarily grab old data
+		std::lock_guard<std::mutex> lock(shared->mtx_data);
+		shared->timeLerp = (m_dtft.wndSize - m_dtft.wndOverlap) / m_bci->freq();
+	}
+
+	exportTimePlot();
+
+	exportFreqPlot();
+
+	exportBallTest();
+
+	exportTrPlot();
+
+	exportBrainMap();
+
+	exportSTFTPlot();
+}
+
+// TODO CLEAR IMAGE PROCESSING DATA
+// READY
 void Controller::removeOldData()
 {
-	sassert(m_dataTD.size() == m_bci->numChannels());
+	// === time data ===
 
 	// we need to get rid of the old timpoints
 	// but keep enough for the overlap
@@ -554,45 +741,27 @@ void Controller::removeOldData()
 	const size_t offset = m_dtft.wndSize - numKeep;
 
 	sassert(numKeep < m_dtft.wndSize);
+	sassert(m_data.rawTD.size() == m_bci->numChannels());
+	sassert(m_data.rawTD[0].size() == m_dtft.wndSize);
 
 	for (size_t ch = 0; ch < m_bci->numChannels(); ++ch)
 	{
-		sassert(m_dataTD[ch].size() == m_dtft.wndSize);
+		sassert(m_data.rawTD[ch].size() == m_dtft.wndSize);
 
 		// we cannot guarantee no alaising so use normal loop
 		for (size_t freq = 0; freq < numKeep; ++freq)
 		{
-			if (!(freq + offset < m_dataTD[ch].size()))
-			{
-				sassert(false);
-			}
-			sassert(freq + offset < m_dataTD[ch].size());
-			m_dataTD[ch][freq] = m_dataTD[ch][freq + offset];
+			sassert(freq + offset < m_data.rawTD[ch].size());
+			m_data.rawTD[ch][freq] = m_data.rawTD[ch][freq + offset];
 		}
 		// todo: check for alaising and use std::copy
 
 		// this will effectively delete the old data
-		m_dataTD[ch].resize(numKeep);
+		m_data.rawTD[ch].resize(numKeep);
 	}
 
-	sassert(m_dataTD[0].size() <= m_dtft.wndSize);
+	sassert(m_data.rawTD[0].size() == m_dtft.wndOverlap);
 
-	// there is a maximum number of timepoints for the freq data
-	// we just keep enough to do the image processing
-	// we may need to delete from the front
-	// the timpoints use std::deque so this is fast
-	// todo: allow for more timepoins
-	while (m_timeIndex > -1)
-	{
-		--m_timeIndex;
-		for (size_t ch = 0; ch < m_bci->numChannels(); ++ch)
-		{
-			m_dataFD[ch].pop_front();
-		}
-		m_laplaceData.pop_front();
-		// we do not touch final data - it will be exported
-	}
-
-	sassert(m_timeIndex == -1);
-	sassert(m_dataTD[0].size() == m_dtft.wndOverlap);
+	// === image processing data ===
+	
 }

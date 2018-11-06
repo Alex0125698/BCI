@@ -51,7 +51,7 @@ background-image: url(:/images/images/background-dark.png);
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>7</number>
+       <number>3</number>
       </property>
       <property name="elideMode">
        <enum>Qt::ElideNone</enum>
@@ -177,7 +177,7 @@ color: rgb(139, 149, 157)
                 </font>
                </property>
                <property name="text">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; color:#a2b1c3;&quot;&gt;Version 2.0.0&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; color:#a2b1c3;&quot;&gt;Version 3.0.0&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
               </widget>
              </item>
@@ -308,7 +308,7 @@ background-color: rgba(150,150,170, 130);
                  </item>
                  <item>
                   <property name="text">
-                   <string>OpenBCI</string>
+                   <string>CytonDaisy</string>
                   </property>
                  </item>
                  <item>
@@ -396,9 +396,39 @@ background-color: rgba(150,150,170, 130);
              <string/>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_20">
+             <property name="spacing">
+              <number>4</number>
+             </property>
+             <property name="leftMargin">
+              <number>9</number>
+             </property>
+             <property name="topMargin">
+              <number>6</number>
+             </property>
+             <property name="rightMargin">
+              <number>9</number>
+             </property>
+             <property name="bottomMargin">
+              <number>6</number>
+             </property>
              <item>
               <widget class="QWidget" name="widget_offline" native="true">
                <layout class="QVBoxLayout" name="verticalLayout_21">
+                <property name="spacing">
+                 <number>4</number>
+                </property>
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
                 <item>
                  <layout class="QHBoxLayout" name="horizontalLayout_21">
                   <item>
@@ -459,6 +489,26 @@ background-color: rgba(150,150,170, 130);
                 </item>
                </layout>
               </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_27" stretch="0,1">
+               <item>
+                <widget class="QLabel" name="lbl_com_port">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="text">
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ccdbe7;&quot;&gt;Serial Port:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QComboBox" name="box_com_port"/>
+               </item>
+              </layout>
              </item>
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_24">
@@ -1008,19 +1058,9 @@ background-color: rgba(150,150,170, 130);
        <attribute name="title">
         <string>Freq Analysis</string>
        </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_10" stretch="3,1">
+       <layout class="QVBoxLayout" name="verticalLayout_10" stretch="3">
         <item>
          <widget class="GraphWidget" name="plot_freq" native="true"/>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_9" stretch="1,1">
-          <item>
-           <widget class="QWidget" name="group_freqs" native="true"/>
-          </item>
-          <item>
-           <widget class="QWidget" name="widget_4" native="true"/>
-          </item>
-         </layout>
         </item>
        </layout>
       </widget>
@@ -1787,7 +1827,7 @@ background-image: url(:/images/images/background-dark.png);
           <property name="handleWidth">
            <number>4</number>
           </property>
-          <widget class="GraphWidget" name="plot_translation" native="true">
+          <widget class="GraphWidget" name="plot_translation_left" native="true">
            <property name="minimumSize">
             <size>
              <width>360</width>
@@ -1795,7 +1835,7 @@ background-image: url(:/images/images/background-dark.png);
             </size>
            </property>
           </widget>
-          <widget class="GraphWidget" name="plot_translation_2" native="true">
+          <widget class="GraphWidget" name="plot_translation_right" native="true">
            <property name="minimumSize">
             <size>
              <width>360</width>

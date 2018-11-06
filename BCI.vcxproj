@@ -256,6 +256,7 @@
     <QtMoc Include="offline.h" />
     <QtMoc Include="qcustomplot.h" />
     <QtMoc Include="debugwindow.h" />
+    <ClInclude Include="GeneratedFiles\ui_mainwindow.h" />
     <ClInclude Include="mainwindowstate.h" />
     <ClInclude Include="openglresources.h" />
     <QtMoc Include="pixplotter.h" />
@@ -265,8 +266,6 @@
     <ClInclude Include="sigprocessing.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="timer.h" />
-    <ClInclude Include="translation.h" />
-    <ClInclude Include="ui_mainwindow.h" />
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="mainwindow.ui">
